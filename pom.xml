@@ -11,6 +11,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <modules>
+        <module>judge-dao</module>
+        <module>judge-api</module>
+        <module>judge-provider</module>
     </modules>
     
     <groupId>com.ps.judge</groupId>
