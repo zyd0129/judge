@@ -1,0 +1,9 @@
+*.idea
+*.iml
+*target
+*.mvn
+
+*mvnw
+*mvnw.cmd
+
+docker-compose-rabbitmq.yml

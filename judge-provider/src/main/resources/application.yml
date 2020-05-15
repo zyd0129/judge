@@ -1,0 +1,22 @@
+logging:
+  level:
+    root:
+      info
+spring:
+  application:
+    name: judge-provider
+  redis:
+    host: 192.168.40.151
+    port: 6379
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${CONFIG_SERVER}
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: Dev@123456
+    username: dev
+    url: jdbc:mysql://192.168.40.147:3306/jury?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+
+mybatis:
+  type-aliases-package: com.ps.judge.dao.entities
