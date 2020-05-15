@@ -1,4 +1,4 @@
-package com.ps.judge.api.models;
+package com.ps.judge.provider.models;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.ps.judge.api.controllers;
+package com.ps.judge.provider.controllers;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

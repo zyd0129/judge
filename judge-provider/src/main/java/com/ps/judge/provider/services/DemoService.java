@@ -1,4 +1,4 @@
-package com.ps.judge.api.services;
+package com.ps.judge.provider.services;
 
 import org.springframework.stereotype.Service;
 
