@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ps.judge.dao.mapper.RiskParamMapper" >
+  <resultMap id="resultMap" type="com.ps.judge.dao.entity.RiskParamDO" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="tenant_id" property="tenantId" jdbcType="VARCHAR" />
+    <result column="apply_id" property="applyId" jdbcType="VARCHAR" />
+    <result column="input_param" property="inputParam" jdbcType="VARCHAR" />
+    <result column="output_param" property="outputParam" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <sql id="column" >
+    id, tenant_id, apply_id, input_param, output_param, create_time, update_time
+  </sql>
+
+  <select id="getRiskParamByTenantIdAndApplyId" resultMap="resultMap"  >
+    select <include refid="column" /> from risk_param where tenant_id = #{tenantId,jdbcType=VARCHAR}
+    and apply_id = #{applyId,jdbcType=VARCHAR};
+  </select>
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" >
+    insert into risk_param
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="tenantId != null" >
+        tenant_id,
+      </if>
+      <if test="applyId != null" >
+        apply_id,
+      </if>
+      <if test="inputParam != null" >
+        input_param,
+      </if>
+      <if test="outputParam != null" >
+        output_param,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="tenantId != null" >
+        #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="applyId != null" >
+        #{applyId,jdbcType=VARCHAR},
+      </if>
+      <if test="inputParam != null" >
+        #{inputParam,jdbcType=TINYINT},
+      </if>
+      <if test="outputParam != null" >
+        #{outputParam,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+</mapper>
