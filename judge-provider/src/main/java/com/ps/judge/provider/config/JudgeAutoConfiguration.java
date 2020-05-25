@@ -1,10 +1,10 @@
 package com.ps.judge.provider.config;
 
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan("com.ps.jury.api")
+@EnableConfigurationProperties(JudgeProperties.class)
 public class JudgeAutoConfiguration {
 
 }

@@ -1,5 +1,6 @@
 package com.ps.judge.provider.listener;
 
+import com.ps.judge.dao.entity.RiskDO;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
@@ -12,8 +13,13 @@ import org.springframework.stereotype.Component;
  * @author ：zhangqian9044.
  * @date ：2020/5/15
  */
-@Component
+//@Component
 public class RuleRuntimeEventListenerImpl implements RuleRuntimeEventListener {
+    private ThreadLocal<RiskDO> riskThreadLocal = new ThreadLocal();
+    public void setRiskThreadLocal(RiskDO risk) {
+        this.riskThreadLocal.set(risk);
+    }
+
     @Override
     public void objectInserted(ObjectInsertedEvent objectInsertedEvent) {
         //System.out.println("objectInserted" + objectInsertedEvent);

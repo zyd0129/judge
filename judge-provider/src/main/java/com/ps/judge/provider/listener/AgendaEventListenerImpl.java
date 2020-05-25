@@ -1,5 +1,6 @@
 package com.ps.judge.provider.listener;
 
+import com.ps.judge.dao.entity.RiskDO;
 import com.ps.judge.dao.entity.RuleDO;
 import com.ps.judge.dao.entity.TriggeredRuleDO;
 import com.ps.judge.dao.mapper.RuleMapper;
@@ -28,6 +29,11 @@ public class AgendaEventListenerImpl implements AgendaEventListener {
     RuleMapper ruleMapper;
     @Autowired
     TriggeredRuleMapper triggeredRuleMapper;
+
+    private ThreadLocal<RiskDO> riskThreadLocal = new ThreadLocal();
+    public void setRiskThreadLocal(RiskDO risk) {
+        this.riskThreadLocal.set(risk);
+    }
 
     @Override
     public void matchCreated(MatchCreatedEvent matchCreatedEvent) {

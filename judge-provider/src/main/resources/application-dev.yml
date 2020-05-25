@@ -29,3 +29,10 @@ mybatis:
   type-aliases-package: com.ps.judge.dao.entity
 server:
   port: 8081
+
+com:
+  ps:
+    judge:
+      cron-push: 0 0/1 * * * ?
+      cron-risk: 0 0/1 * * * ?
+

@@ -105,6 +105,7 @@ public class JudgeController extends BaseController implements JudgeApi {
     @Override
     public ApiResponse<String> submitVar(ApiResponse<VarResult> apiResponse) {
 
+        System.out.println(apiResponse);
         if(!apiResponse.isSuccess()){
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }

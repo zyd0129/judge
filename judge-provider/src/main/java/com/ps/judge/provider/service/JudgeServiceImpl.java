@@ -12,6 +12,7 @@ import com.ps.judge.dao.mapper.RiskParamMapper;
 import com.ps.judge.dao.mapper.RiskMapper;
 import com.ps.judge.dao.mapper.RuleMapper;
 import com.ps.judge.dao.mapper.TriggeredRuleMapper;
+import com.ps.judge.provider.listener.AgendaEventListenerImpl;
 import com.ps.jury.api.JuryApi;
 import com.ps.jury.api.objects.common.ApiResponse;
 import com.ps.jury.api.objects.request.ApplyRequest;
@@ -40,7 +41,7 @@ import java.util.Map;
 
 @Service
 public class JudgeServiceImpl implements JudgeService {
-    @Autowired(required = false)
+    @Autowired
     JuryApi juryApi;
     @Autowired
     RiskMapper riskMapper;
@@ -89,10 +90,10 @@ public class JudgeServiceImpl implements JudgeService {
         this.riskParamMapper.insert(riskParam);
         // TODO: 2020/5/19 缓存进件
         
-       // ApiResponse applyResponse = this.juryApi.apply(request);
-        //if (!applyResponse.isSuccess()) {
-            //return ApiResponse.error(applyResponse.getCode(), applyResponse.getMessage());
-       // }
+        ApiResponse applyResponse = this.juryApi.apply(request);
+        if (!applyResponse.isSuccess()) {
+            return ApiResponse.error(applyResponse.getCode(), applyResponse.getMessage());
+        }
         ApplyResultVO applyResultVO = new ApplyResultVO();
         applyResultVO.setApplyId(request.getApplyId());
         return ApiResponse.success(applyResultVO);
@@ -100,6 +101,9 @@ public class JudgeServiceImpl implements JudgeService {
 
     @Override
     public void startProcess(VarResult varResult) {
+        RiskDO risk = this.riskMapper.getRiskByTenantIdAndApplyId(varResult.getTenantId(), varResult.getApplyId());
+
+
         String url = "http://192.168.159.129:8080/business-central/maven2" +
                 "/com/ps/jury/api/objects/judge/1.0.0/judge-1.0.0.jar";
         //Kie服务
@@ -130,6 +134,9 @@ public class JudgeServiceImpl implements JudgeService {
 
         //kieSession.addEventListener(new ProcessEventListenerImpl());
         //kieSession.addEventListener(new RuleRuntimeEventListenerImpl());
+
+
+
         kieSession.addEventListener(agendaEventListener);
 
         //FactHandle factHandle = kieSession.insert(person);
@@ -139,9 +146,9 @@ public class JudgeServiceImpl implements JudgeService {
         map.put("system", varResult.getSystem());
         map.put("merchant", varResult.getMerchant());
         map.put("product", varResult.getProduct());
-        ProcessInstance processInstance = kieSession.startProcess("judge", map);
+        kieSession.startProcess("judge", map);
+        kieSession.dispose();
 
-        System.out.println("processInstance" + processInstance);
         // TODO: 2020/5/19 推送风控结果
         // TODO: 2020/5/19 推送成功，删除出件
     }
@@ -170,7 +177,6 @@ public class JudgeServiceImpl implements JudgeService {
         List<TriggeredRuleDO> triggeredRuleList = this.triggeredRuleMapper.listTriggeredRuleLogByApplyId(audit.getApplyId());
         for(TriggeredRuleDO triggeredRuleDO : triggeredRuleList){
             RuleDO rule = this.ruleMapper.getRuleByCode(triggeredRuleDO.getRuleCode());
-
             TriggeredRuleVO triggeredRuleVO = new TriggeredRuleVO();
             triggeredRuleVO.setRulePackageCode(rule.getCode());
             triggeredRuleVO.setRuleCode(triggeredRuleDO.getRuleCode());
@@ -178,7 +184,6 @@ public class JudgeServiceImpl implements JudgeService {
             triggeredRuleVO.setExpression(rule.getExpression());
             triggeredRuleVO.setParam(triggeredRuleDO.getParam());
             triggeredRuleVO.setTriggeredResult(rule.getResult());
-
             triggeredRules.add(triggeredRuleVO);
         }
 
