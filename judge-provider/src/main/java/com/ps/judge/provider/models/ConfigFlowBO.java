@@ -11,8 +11,12 @@ public class ConfigFlowBO {
     private String flowName;
     private String tenantCode;
     private String productCode;
-    private ConfigPackageBO currentPackage;
+    private Integer curPackageId;
+    private String curPackageGroup;
+    private String curPackageArtifact;
+    private String curPackageVersion;
     private Integer status;
+    private String operator;
     private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;
 }

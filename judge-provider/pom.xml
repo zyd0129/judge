@@ -17,7 +17,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <judge.api.version>0.0.1-SNAPSHOT</judge.api.version>
         <judge.dao.version>0.0.1-SNAPSHOT</judge.dao.version>
-        <drools.version>7.36.0.Final</drools.version>
     </properties>
 
     <dependencies>
@@ -126,7 +125,10 @@
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-bpmn2</artifactId>
-            <version>${drools.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-ci</artifactId>
         </dependency>
     </dependencies>
 
