@@ -5,12 +5,12 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class RiskDO {
+public class AuditTaskDO {
     private Integer id;
+    private String tenantCode;
+    private String productCode;
+    private String flowCode;
     private String applyId;
-    private String flow;
-    private String tenantId;
-    private String productId;
     private String userId;
     private String userName;
     private String mobile;
@@ -19,11 +19,11 @@ public class RiskDO {
     private String ip;
     private String deviceFingerPrint;
     private LocalDateTime transactionTime;
-    private Integer auditStatus;
+    private Integer taskStatus;
     private Integer auditScore;
     private String auditCode;
     private String callbackUrl;
     private Integer callbackCount;
-    private LocalDateTime createTime;
-    private LocalDateTime updateTime;
+    private LocalDateTime gmtCreate;
+    private LocalDateTime gmtModified;
 }

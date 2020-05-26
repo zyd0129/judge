@@ -4,9 +4,9 @@ import com.ps.judge.api.JudgeApi;
 import com.ps.judge.api.entity.ApplyResultVO;
 import com.ps.judge.api.entity.AuditResultQuery;
 import com.ps.judge.api.entity.AuditResultVO;
-import com.ps.jury.api.objects.common.ApiResponse;
-import com.ps.jury.api.objects.request.ApplyRequest;
-import com.ps.jury.api.objects.response.VarResult;
+import com.ps.jury.api.common.ApiResponse;
+import com.ps.jury.api.request.ApplyRequest;
+import com.ps.jury.api.response.VarResult;
 import org.springframework.http.HttpStatus;
 
 public class ApiFeignFallback implements JudgeApi {

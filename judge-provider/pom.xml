@@ -34,11 +34,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.ps.jury</groupId>
-            <artifactId>jury-api</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
@@ -143,24 +138,24 @@
             </plugin>
             <!--            代码检查-->
             <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>3.0.0</version>
-            <configuration>
-            <configLocation>src/main/resources/check_style.xml</configLocation>
-            </configuration>
-            <executions>
-            <execution>
-            <id>validate</id>
-            <phase>validate</phase>
-            <goals>
-            <goal>check</goal>
-            </goals>
-            <configuration>
-            <failOnViolation>true</failOnViolation>
-            </configuration>
-            </execution>
-            </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <configLocation>src/main/resources/check_style.xml</configLocation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <failOnViolation>true</failOnViolation>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

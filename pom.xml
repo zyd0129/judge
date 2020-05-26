@@ -26,7 +26,6 @@
         <java.version>1.8</java.version>
         <spring-cloud.version>Greenwich.SR5</spring-cloud.version>
         <spring-cloud-alibaba.version>2.1.1.RELEASE</spring-cloud-alibaba.version>
-        <jury.api.version>0.0.1-SNAPSHOT</jury.api.version>
     </properties>
 
     <dependencyManagement>
@@ -46,13 +45,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
-            <dependency>
-                <groupId>com.ps.jury</groupId>
-                <artifactId>jury-api</artifactId>
-                <version>${jury.api.version}</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 
@@ -68,21 +60,4 @@
             <url>http://192.168.20.178:8081/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
-
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/java</directory>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>**/*.*</include>
-                </includes>
-            </resource>
-        </resources>
-    </build>
 </project>

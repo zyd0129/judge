@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApiFeignFallbackFactory implements FallbackFactory<ApiFeignFallback> {
     @Override
-    public ApiFeignFallback create(Throwable cause) {
-        return new ApiFeignFallback(cause);
+    public ApiFeignFallback create(Throwable throwable) {
+        return new ApiFeignFallback(throwable);
     }
 }
