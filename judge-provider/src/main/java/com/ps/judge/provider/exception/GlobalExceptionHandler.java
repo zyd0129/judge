@@ -1,7 +1,6 @@
 package com.ps.judge.provider.exception;
 
-
-import com.ps.jury.api.objects.common.ApiResponse;
+import com.ps.jury.api.common.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;

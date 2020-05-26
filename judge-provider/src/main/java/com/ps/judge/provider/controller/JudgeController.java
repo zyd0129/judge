@@ -4,11 +4,11 @@ import com.ps.judge.api.JudgeApi;
 import com.ps.judge.api.entity.ApplyResultVO;
 import com.ps.judge.api.entity.AuditResultQuery;
 import com.ps.judge.api.entity.AuditResultVO;
-import com.ps.judge.dao.entity.RiskDO;
+import com.ps.judge.dao.entity.AuditTaskDO;
 import com.ps.judge.provider.service.JudgeService;
-import com.ps.jury.api.objects.common.ApiResponse;
-import com.ps.jury.api.objects.request.ApplyRequest;
-import com.ps.jury.api.objects.response.VarResult;
+import com.ps.jury.api.common.ApiResponse;
+import com.ps.jury.api.request.ApplyRequest;
+import com.ps.jury.api.response.VarResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
@@ -95,7 +95,7 @@ public class JudgeController extends BaseController implements JudgeApi {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
 
-        RiskDO audit = this.judgeService.getAuditByTenantIdAndApplyId(applyRequest.getTenantId(), applyRequest.getApplyId());
+        AuditTaskDO audit = this.judgeService.getAuditByTenantIdAndApplyId(applyRequest.getTenantId(), applyRequest.getApplyId());
         if (Objects.nonNull(audit)){
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
@@ -129,7 +129,7 @@ public class JudgeController extends BaseController implements JudgeApi {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
 
-        RiskDO audit = this.judgeService.getAuditByTenantIdAndApplyId(tenantId, applyId);
+        AuditTaskDO audit = this.judgeService.getAuditByTenantIdAndApplyId(tenantId, applyId);
         if (Objects.isNull(audit)){
             return ApiResponse.error(HttpStatus.NOT_FOUND.value(), "");
         }

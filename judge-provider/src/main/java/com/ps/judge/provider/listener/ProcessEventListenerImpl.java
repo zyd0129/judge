@@ -1,8 +1,6 @@
 package com.ps.judge.provider.listener;
 
-import com.ps.judge.dao.entity.RiskDO;
 import org.kie.api.event.process.*;
-import org.springframework.stereotype.Component;
 
 /**
  * Drools 业务流程（JBPM）监听器
@@ -12,11 +10,6 @@ import org.springframework.stereotype.Component;
  */
 //@Component
 public class ProcessEventListenerImpl implements ProcessEventListener {
-    private ThreadLocal<RiskDO> riskThreadLocal = new ThreadLocal();
-    public void setRiskThreadLocal(RiskDO risk) {
-        this.riskThreadLocal.set(risk);
-    }
-
     @Override
     public void beforeProcessStarted(ProcessStartedEvent processStartedEvent) {
         //System.out.println("beforeProcessStarted" + processStartedEvent);
@@ -33,7 +26,7 @@ public class ProcessEventListenerImpl implements ProcessEventListener {
     }
 
     public void afterProcessCompleted(ProcessCompletedEvent processCompletedEvent) {
-        System.out.println("afterProcessCompleted" + processCompletedEvent);
+        //System.out.println("afterProcessCompleted" + processCompletedEvent);
     }
 
     @Override

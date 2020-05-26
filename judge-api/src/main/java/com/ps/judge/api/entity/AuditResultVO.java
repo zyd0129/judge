@@ -1,7 +1,6 @@
 package com.ps.judge.api.entity;
 
-
-import com.ps.jury.api.objects.header.JuryHeader;
+import com.ps.jury.api.header.JuryHeader;
 import lombok.Data;
 
 import java.util.List;
