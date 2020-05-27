@@ -21,6 +21,10 @@ public interface ConfigFlowMapper {
     })
     ConfigFlowDO getByFlowCode(String flowCode);
 
+    @Select("select * from config_flow where id=#{id}")
+    @ResultMap(value = "flowResultMap")
+    ConfigFlowDO getById(int id);
+
 
     @Select("select * from config_flow")
     @ResultMap(value = "flowResultMap")

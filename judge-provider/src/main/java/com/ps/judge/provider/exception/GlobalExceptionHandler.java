@@ -19,4 +19,10 @@ public class GlobalExceptionHandler {
         log.error("handle nullPointerException exception: {}", e.getMessage());
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
     }
+
+    @ExceptionHandler(BizException.class)
+    public ApiResponse handleBizException(BizException e) {
+        log.error("handle BizException: {}", e.getMessage());
+        return ApiResponse.error(e.getCode(), e.getMessage());
+    }
 }

@@ -2,11 +2,13 @@ package com.ps.judge.provider.controller;
 
 import com.google.protobuf.Api;
 import com.ps.judge.provider.common.PageResult;
+import com.ps.judge.provider.drools.KSessionManager;
 import com.ps.judge.provider.models.ConfigFlowBO;
 import com.ps.judge.provider.models.ConfigPackageBO;
 import com.ps.judge.provider.models.ConfigProductBO;
 import com.ps.judge.provider.service.ConfigFlowService;
 import com.ps.jury.api.common.ApiResponse;
+import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,9 @@ import java.util.List;
 public class ManagerController {
     @Autowired
     private ConfigFlowService configFlowService;
+
+    @Autowired
+    private KSessionManager kSessionManager;
 
     /**
      * query list

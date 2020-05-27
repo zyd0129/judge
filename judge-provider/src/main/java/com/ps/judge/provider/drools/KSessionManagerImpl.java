@@ -1,8 +1,10 @@
 package com.ps.judge.provider.drools;
 
+import com.ps.judge.provider.exception.BizException;
 import com.ps.judge.provider.models.ConfigFlowBO;
 import com.ps.judge.provider.models.ConfigPackageBO;
 import com.ps.judge.provider.service.ConfigFlowService;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieRepository;
@@ -25,7 +27,7 @@ public class KSessionManagerImpl implements KSessionManager {
     @Autowired
     private ConfigFlowService configFlowService;
 
-    private KieServices kieServices;
+    private KieServices kieServices=KieServices.Factory.get();;
 
     private Map<String, KieContainer> kieContainerHashMap = new ConcurrentHashMap<>();
 
@@ -47,33 +49,30 @@ public class KSessionManagerImpl implements KSessionManager {
         return kieContainer.newStatelessKieSession();
     }
 
-    @PostConstruct
-    private void init() {
-        log.info("start initiating kieContainerHashMap ");
-        long startTime = System.currentTimeMillis();
-        kieServices = KieServices.Factory.get();
-        List<ConfigFlowBO> configFlowList = configFlowService.getAll();
-        for (ConfigFlowBO configFlow : configFlowList) {
-            addKieModule(configFlow);
-        }
-        long endTime = System.currentTimeMillis();
-        log.info("end initiating kieContainerHashMap, time cost: {}", endTime - startTime);
-    }
-
     @Override
-    public void addKieModule(ConfigFlowBO configFlow) {
+    public void addContainer(ConfigFlowBO configFlow) {
         ReleaseId releaseId = kieServices.newReleaseId(configFlow.getCurPackageGroup(), configFlow.getCurPackageArtifact(), configFlow.getCurPackageVersion());
-        KieContainer kieContainer = kieServices.newKieContainer(releaseId);
-        kieContainerHashMap.put(configFlow.getFlowCode(), kieContainer);
+        try {
+            KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+            kieContainerHashMap.put(configFlow.getFlowCode(), kieContainer);
+        } catch (Exception e) {
+            throw new BizException(BizException.BizExceptionEnum.CONTAINER_START_FAILURE);
+        }
 //        KieContainerSessionsPool pool = kieContainer.newKieSessionsPool(10);
     }
 
     @Override
-    public void removeKieModule(ConfigFlowBO configFlow) {
+    public void removeContainer(ConfigFlowBO configFlow) {
         KieContainer kieContainer = kieContainerHashMap.remove(configFlow.getFlowCode());
 //
 //        if (kieContainer != null) {
 //            kieContainer.dispose();
 //        }
+    }
+
+    @Override
+    public boolean existedContainer(ConfigFlowBO configFlow) {
+
+        return kieContainerHashMap.containsKey(configFlow.getFlowCode());
     }
 }

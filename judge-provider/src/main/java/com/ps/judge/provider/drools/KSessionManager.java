@@ -10,7 +10,9 @@ public interface KSessionManager {
 
     StatelessKieSession getStatelessKieSession(String flowCode);
 
-    void addKieModule(ConfigFlowBO configFlow);
+    void addContainer(ConfigFlowBO configFlow);
 
-    void removeKieModule(ConfigFlowBO configFlow);
+    void removeContainer(ConfigFlowBO configFlow);
+
+    boolean existedContainer(ConfigFlowBO configFlow);
 }
