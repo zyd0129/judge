@@ -11,7 +11,7 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class KieContainerInitiate {
+public class KieContainerInitialization {
     @Autowired
     ConfigFlowService configFlowService;
 
