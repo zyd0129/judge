@@ -19,7 +19,7 @@ public class KieContainerInitialization {
     KSessionManager kSessionManager;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         log.info("start initiating kieContainerHashMap ");
         long startTime = System.currentTimeMillis();
         List<ConfigFlowBO> configFlowList = configFlowService.getAll();

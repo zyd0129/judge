@@ -61,11 +61,11 @@ public class ConfigProductServiceImpl implements ConfigProductService {
     @Override
     @Transactional
     public void updateStatus(ConfigProductBO configProductBO) throws BizException {
-        ConfigProductDO ConfigProductDO = convertToDO(configProductBO);
-        ConfigProductDO.setGmtModified(LocalDateTime.now());
-        productMapper.updateStatus(ConfigProductDO);
+        ConfigProductDO configProductDO = convertToDO(configProductBO);
+        configProductDO.setGmtModified(LocalDateTime.now());
+        productMapper.updateStatus(configProductDO);
     }
-    
+
 
     private ConfigProductBO convertToBO(ConfigProductDO configProductDO) {
         if (configProductDO == null) {
@@ -92,8 +92,8 @@ public class ConfigProductServiceImpl implements ConfigProductService {
             return null;
         }
         List<ConfigProductBO> configProductBOList = new ArrayList<>();
-        for (ConfigProductDO ConfigProductDO : configProductDOList) {
-            ConfigProductBO configProductBO = convertToBO(ConfigProductDO);
+        for (ConfigProductDO configProductDO : configProductDOList) {
+            ConfigProductBO configProductBO = convertToBO(configProductDO);
             configProductBOList.add(configProductBO);
         }
         return configProductBOList;

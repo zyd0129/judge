@@ -14,6 +14,7 @@ public class GlobalExceptionHandler {
         log.error("handle runtime exception: {}", e.getMessage());
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
     }
+
     @ExceptionHandler(NullPointerException.class)
     public ApiResponse handleHttpMessageConversionException(NullPointerException e) {
         log.error("handle nullPointerException exception: {}", e.getMessage());

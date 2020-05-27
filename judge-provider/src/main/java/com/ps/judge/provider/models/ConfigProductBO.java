@@ -30,10 +30,11 @@ public class ConfigProductBO {
         }
 
         // 构造方法
-        private Status(String name, int value) {
+        Status(String name, int value) {
             this.name = name;
             this.value = value;
         }
+
         // 普通方法
         public static Status valueOf(int value) {
             for (Status c : Status.values()) {
@@ -43,10 +44,12 @@ public class ConfigProductBO {
             }
             return null;
         }
+
         // get set 方法
         public String getName() {
             return name;
         }
+
         public void setName(String name) {
             this.name = name;
         }

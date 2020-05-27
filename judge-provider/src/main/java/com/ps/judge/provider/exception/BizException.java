@@ -10,8 +10,8 @@ public class BizException extends RuntimeException {
     }
 
     public BizException(BizExceptionEnum status) {
-        this.code=status.getCode();
-        this.message=status.getMessage();
+        this.code = status.getCode();
+        this.message = status.getMessage();
     }
 
     public int getCode() {
@@ -39,7 +39,7 @@ public class BizException extends RuntimeException {
 
 
         // 构造方法
-        private BizExceptionEnum(int code, String message) {
+        BizExceptionEnum(int code, String message) {
             this.code = code;
             this.message = message;
         }
