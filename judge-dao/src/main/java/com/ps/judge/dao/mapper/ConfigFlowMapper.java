@@ -25,6 +25,10 @@ public interface ConfigFlowMapper {
     @ResultMap(value = "flowResultMap")
     ConfigFlowDO getById(int id);
 
+    @Select("select * from config_flow order by id limit #{from},#{size}")
+    @ResultMap(value = "flowResultMap")
+    List<ConfigFlowDO> query(int from, int size);
+
 
     @Select("select * from config_flow")
     @ResultMap(value = "flowResultMap")

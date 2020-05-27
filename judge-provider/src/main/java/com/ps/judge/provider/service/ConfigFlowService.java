@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ConfigFlowService {
     List<ConfigFlowBO> getAll();
+    List<ConfigFlowBO> query(int pageNo, int size);
 
     ConfigFlowBO getByFlowCode(String flowCode);
     ConfigFlowBO getById(int id);

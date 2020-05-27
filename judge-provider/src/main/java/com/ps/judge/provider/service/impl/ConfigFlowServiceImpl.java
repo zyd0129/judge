@@ -25,15 +25,17 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
     @Override
     public List<ConfigFlowBO> getAll() {
         List<ConfigFlowDO> configFlowDOList = flowMapper.getAll();
-        if (configFlowDOList == null) {
-            return null;
+        return convertToBOList(configFlowDOList);
+    }
+
+    @Override
+    public List<ConfigFlowBO> query(int pageNo, int size) {
+        if (pageNo < 1) {
+            pageNo = 1;
         }
-        List<ConfigFlowBO> configFlowBOList = new ArrayList<>();
-        for (ConfigFlowDO configFlowDO : configFlowDOList) {
-            ConfigFlowBO configFlowBO = convertToBO(configFlowDO);
-            configFlowBOList.add(configFlowBO);
-        }
-        return configFlowBOList;
+        List<ConfigFlowDO> configFlowDOList = flowMapper.query((pageNo - 1) * size, size);
+
+        return convertToBOList(configFlowDOList);
     }
 
     @Override
@@ -102,5 +104,17 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
         BeanUtils.copyProperties(configFlowBO, configFlowDO);
         configFlowDO.setStatus(configFlowBO.getStatus().getValue());
         return configFlowDO;
+    }
+
+    private List<ConfigFlowBO> convertToBOList(List<ConfigFlowDO> configFlowDOList) {
+        if (configFlowDOList == null) {
+            return null;
+        }
+        List<ConfigFlowBO> configFlowBOList = new ArrayList<>();
+        for (ConfigFlowDO configFlowDO : configFlowDOList) {
+            ConfigFlowBO configFlowBO = convertToBO(configFlowDO);
+            configFlowBOList.add(configFlowBO);
+        }
+        return configFlowBOList;
     }
 }
