@@ -63,7 +63,7 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
     }
 
     @Override
-//    @Transactional
+    @Transactional
     public void updateStatus(ConfigFlowBO configFlowBO) throws BizException {
         ConfigFlowDO configFlowDO = convertToDO(configFlowBO);
         configFlowDO.setGmtModified(LocalDateTime.now());
