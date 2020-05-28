@@ -17,6 +17,7 @@ public class AuditTaskTriggeredRuleDO {
     private String ruleCode;
     private String ruleName;
     private String ruleVersion;
+    private String expression;
     private String param;
     private LocalDateTime createTime;
 }

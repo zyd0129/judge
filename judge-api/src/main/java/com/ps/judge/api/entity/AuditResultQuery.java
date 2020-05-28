@@ -11,5 +11,5 @@ import lombok.Data;
 @Data
 public class AuditResultQuery {
     private String applyId;
-    private String tenantId;
+    private String tenantCode;
 }

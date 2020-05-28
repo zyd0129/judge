@@ -33,6 +33,6 @@ server:
 com:
   ps:
     judge:
-      cron-push: 0 0/1 * * * ?
-      cron-risk: 0 0/1 * * * ?
+      cron-callback-tenant: 0 0/30 * * * ?
+      cron-reapply-jury: 0 0/30 * * * ?
 

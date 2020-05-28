@@ -4,6 +4,8 @@ import com.ps.judge.dao.entity.AuditTaskDO;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 
+import java.util.List;
+
 public interface AuditTaskMapper {
     @Results(id = "auditTask", value={
         @Result(property = "id", column = "id", jdbcType = JdbcType.INTEGER, id = true),
@@ -29,7 +31,10 @@ public interface AuditTaskMapper {
     })
 
     @Select("select * from audit_task where tenant_code = #{tenantCode,jdbcType=VARCHAR} and apply_id = #{applyId,jdbcType=VARCHAR}")
-    AuditTaskDO getAuditTaskByTenantIdAndApplyId(@Param("tenantCode") String tenantCode, @Param("applyId") String applyId);
+    AuditTaskDO getAuditTask(@Param("tenantCode") String tenantCode, @Param("applyId") String applyId);
+
+    @Select("select * from audit_task where task_status = #{taskStatus, jdbcType=TINYINT}")
+    List<AuditTaskDO> listAuditTaskByTaskStatus(@Param("taskStatus") int taskStatus);
 
     @Insert("INSERT INTO audit_task (tenant_code, product_code, flow_code, apply_id, user_id, user_name, mobile, id_card,"
             + "order_id, ip, device_finger_print, transaction_time, task_status, callback_url, gmt_create, gmt_modified)"
@@ -37,4 +42,11 @@ public interface AuditTaskMapper {
             + "#{ip}, #{deviceFingerPrint}, #{transactionTime}, #{taskStatus}, #{callbackUrl}, #{gmtCreate}, #{gmtModified})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(AuditTaskDO auditTask);
+
+    @Update("update audit_task set task_status = #{taskStatus,jdbcType=TINYINT} where tenant_code = #{tenantCode,jdbcType=VARCHAR} and apply_id = #{applyId,jdbcType=VARCHAR}")
+    int updateTaskStatus(@Param("taskStatus") int taskStatus, @Param("tenantCode") String tenantCode, @Param("applyId") String applyId);
+
+    @Update("update audit_task set callback_count = #{callbackCount,jdbcType=TINYINT} where tenant_code = #{tenantCode,jdbcType=VARCHAR} and apply_id = #{applyId,jdbcType=VARCHAR}")
+    int updateCallbackCount(@Param("callbackCount") int callbackCount, @Param("tenantCode") String tenantCode, @Param("applyId") String applyId);
+
 }

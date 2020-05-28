@@ -20,3 +20,5 @@ spring:
 
 mybatis:
   type-aliases-package: com.ps.judge.dao.entity
+  configuration:
+    map-underscore-to-camel-case: true

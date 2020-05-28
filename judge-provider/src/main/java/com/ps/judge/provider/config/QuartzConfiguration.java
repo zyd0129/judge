@@ -1,7 +1,7 @@
 package com.ps.judge.provider.config;
 
-import com.ps.judge.provider.task.PushTask;
-import com.ps.judge.provider.task.RiskTask;
+import com.ps.judge.provider.job.ReapplyJuryJob;
+import com.ps.judge.provider.job.CallbackTenantJob;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,26 +13,26 @@ public class QuartzConfiguration {
 	private JudgeProperties properties;
 	
 	@Bean
-    public JobDetail riskTaskDetail() {
-		return JobBuilder.newJob(RiskTask.class).withIdentity("riskTask").storeDurably().build();
+    public JobDetail callbackTenantJobDetail() {
+		return JobBuilder.newJob(CallbackTenantJob.class).withIdentity("callbackTenantJob").storeDurably().build();
     }
 	
 	@Bean
-	public Trigger riskTaskTaskTrigger() {
-		CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(properties.getCronRisk());
-		return TriggerBuilder.newTrigger().forJob(riskTaskDetail()).withIdentity("riskTask")
+	public Trigger auditResultCallbackJobTrigger() {
+		CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(this.properties.getCronCallbackTenant());
+		return TriggerBuilder.newTrigger().forJob(callbackTenantJobDetail()).withIdentity("callbackTenantJob")
 				.withSchedule(scheduleBuilder).build();
 	}
 
 	@Bean
-	public JobDetail pushTaskDetail() {
-		return JobBuilder.newJob(PushTask.class).withIdentity("pushTask").storeDurably().build();
+	public JobDetail reapplyJuryJobDetail() {
+		return JobBuilder.newJob(ReapplyJuryJob.class).withIdentity("reapplyJuryJob").storeDurably().build();
 	}
 
 	@Bean
-	public Trigger pushTaskTrigger() {
-		CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(properties.getCronPush());
-		return TriggerBuilder.newTrigger().forJob(pushTaskDetail()).withIdentity("pushTask")
+	public Trigger reapplyJuryJobTrigger() {
+		CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(this.properties.getCronReapplyJury());
+		return TriggerBuilder.newTrigger().forJob(reapplyJuryJobDetail()).withIdentity("reapplyJuryJob")
 				.withSchedule(scheduleBuilder).build();
 	}
 

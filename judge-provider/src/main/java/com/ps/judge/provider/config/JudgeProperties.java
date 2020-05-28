@@ -6,6 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix="com.ps.judge")
 @Data
 public class JudgeProperties {
-	private String cronPush;
-	private String cronRisk;
+	private String cronCallbackTenant;
+	private String cronReapplyJury;
 }

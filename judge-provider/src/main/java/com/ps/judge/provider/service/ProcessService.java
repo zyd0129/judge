@@ -7,9 +7,12 @@ import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.request.ApplyRequest;
 import com.ps.jury.api.response.VarResult;
 
-public interface JudgeService {
-    AuditTaskDO getAuditByTenantIdAndApplyId(String tenantId, String applyId);
+public interface ProcessService {
+    AuditTaskDO getAuditTask(String tenantCode, String applyId);
     ApiResponse<ApplyResultVO> apply(ApplyRequest request);
-    void startProcess(VarResult varResult);
-    AuditResultVO getAuditResult(AuditTaskDO audit);
+    void startProcess(AuditTaskDO auditTask, VarResult varResult);
+    ApiResponse<AuditResultVO> getAuditResult(AuditTaskDO audit);
+
+    void reapplyJury();
+    void callbackTenant();
 }

@@ -17,10 +17,14 @@ public interface AuditTaskParamMapper {
     })
 
     @Select("select * from audit_task_param where tenant_code = #{tenantCode,jdbcType=VARCHAR} and apply_id = #{applyId,jdbcType=VARCHAR}")
-    AuditTaskParamDO getAuditTaskParamByTenantIdAndApplyId(@Param("tenantCode") String tenantCode, @Param("applyId") String applyId);
+    AuditTaskParamDO getAuditTaskParam(@Param("tenantCode") String tenantCode, @Param("applyId") String applyId);
 
     @Insert("INSERT INTO audit_task_param (tenant_code, task_id, apply_id, input_raw_param, output_raw_param, gmt_create, gmt_modified)"
             + "VALUES(#{tenantCode}, #{taskId}, #{applyId}, #{inputRawParam}, #{outputRawParam}, #{gmtCreate}, #{gmtModified})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(AuditTaskParamDO auditTaskParam);
+
+    @Update("update audit_task_param set output_raw_param = #{outputRawParam,jdbcType=VARCHAR} where tenant_code = #{tenantCode,jdbcType=VARCHAR} and apply_id = #{applyId,jdbcType=VARCHAR}")
+    int updateOutputRawParam(@Param("outputRawParam") String outputRawParam, @Param("tenantCode") String tenantCode, @Param("applyId") String applyId);
+
 }

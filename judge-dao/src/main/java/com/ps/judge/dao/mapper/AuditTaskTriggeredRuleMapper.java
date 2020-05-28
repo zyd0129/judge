@@ -19,17 +19,18 @@ public interface AuditTaskTriggeredRuleMapper {
             @Result(property = "ruleCode", column = "rule_code", jdbcType = JdbcType.VARCHAR),
             @Result(property = "ruleName", column = "rule_name", jdbcType = JdbcType.VARCHAR),
             @Result(property = "ruleVersion", column = "rule_version", jdbcType = JdbcType.VARCHAR),
+            @Result(property = "expression", column = "expression", jdbcType = JdbcType.VARCHAR),
             @Result(property = "param", column = "param", jdbcType = JdbcType.VARCHAR),
             @Result(property = "gmtCreate", column = "gmt_create", jdbcType = JdbcType.TIMESTAMP)
     })
 
     @Select("select * from audit_task_triggered_rule where tenant_code = #{tenantCode,jdbcType=VARCHAR} and apply_id = #{applyId,jdbcType=VARCHAR}")
-    List<AuditTaskTriggeredRuleDO> listTriggeredRuleLogByTenantIdAndApplyId(@Param("tenantCode") String tenantCode, @Param("applyId") String applyId);
+    List<AuditTaskTriggeredRuleDO> listTriggeredRuleLog(@Param("tenantCode") String tenantCode, @Param("applyId") String applyId);
 
-    @Insert("INSERT INTO audit_task_triggered_rule (tenant_code, task_id, apply_id, audit_flow, rule_package_code, "
-            + "rule_package_name, rule_package_version, rule_code, rule_name , rule_version, param , gmt_create)"
+    @Insert("INSERT INTO audit_task_triggered_rule (tenant_code, task_id, apply_id, audit_flow, rule_package_code,"
+            + "rule_package_name, rule_package_version, rule_code, rule_name , rule_version, expression, param , gmt_create)"
             + "VALUES(#{tenantCode}, #{taskId}, #{applyId}, #{auditFlow}, #{rulePackageCode}, #{rulePackageName}, "
-            + "#{rulePackageVersion}), #{ruleCode}, #{ruleName}, #{ruleVersion}, #{param}, #{gmtCreate}")
+            + "#{rulePackageVersion}), #{ruleCode}, #{ruleName}, #{ruleVersion}, #{expression}, #{param}, #{gmtCreate}")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(AuditTaskTriggeredRuleDO auditTaskTriggeredRule);
 }
