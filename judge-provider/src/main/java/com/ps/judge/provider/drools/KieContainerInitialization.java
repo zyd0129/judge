@@ -27,6 +27,7 @@ public class KieContainerInitialization {
             if (ConfigFlowBO.Status.STARTED.equals(configFlow.getStatus())) {
                 try {
                     kSessionManager.addContainer(configFlow);
+                    log.error("container for {}-{} start success", configFlow.getFlowCode(), configFlow.getReleaseId());
                 } catch (Exception e) {
                     log.error("container for {}-{} start failure", configFlow.getFlowCode(), configFlow.getReleaseId());
                     configFlow.setStatus(ConfigFlowBO.Status.STOPPED);

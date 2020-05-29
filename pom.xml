@@ -14,6 +14,7 @@
         <module>judge-dao</module>
         <module>judge-api</module>
         <module>judge-provider</module>
+        <module>judge-web</module>
     </modules>
     
     <groupId>com.ps.judge</groupId>
