@@ -25,62 +25,62 @@ public class ProcessController extends BaseController implements JudgeApi {
 
     @Override
     public ApiResponse<ApplyResultVO> applyAudit(ApplyRequest applyRequest) {
-        if(StringUtils.isEmpty(applyRequest.getApplyId())){
+        if(StringUtils.isEmpty(applyRequest.getApplyId())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(StringUtils.isEmpty(applyRequest.getFlowCode())){
+        if(StringUtils.isEmpty(applyRequest.getFlowCode())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(StringUtils.isEmpty(applyRequest.getTenantCode())){
+        if(StringUtils.isEmpty(applyRequest.getTenantCode())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(StringUtils.isEmpty(applyRequest.getProductCode())){
+        if(StringUtils.isEmpty(applyRequest.getProductCode())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(StringUtils.isEmpty(applyRequest.getCallbackUrl())){
+        if(StringUtils.isEmpty(applyRequest.getCallbackUrl())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(StringUtils.isEmpty(applyRequest.getUserId())){
+        if(StringUtils.isEmpty(applyRequest.getUserId())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(StringUtils.isEmpty(applyRequest.getUserName())){
+        if(StringUtils.isEmpty(applyRequest.getUserName())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(StringUtils.isEmpty(applyRequest.getMobile())){
+        if(StringUtils.isEmpty(applyRequest.getMobile())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(StringUtils.isEmpty(applyRequest.getUserName())){
+        if(StringUtils.isEmpty(applyRequest.getUserName())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(StringUtils.isEmpty(applyRequest.getUserName())){
+        if(StringUtils.isEmpty(applyRequest.getUserName())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(StringUtils.isEmpty(applyRequest.getUserName())){
+        if(StringUtils.isEmpty(applyRequest.getUserName())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(StringUtils.isEmpty(applyRequest.getUserName())){
+        if(StringUtils.isEmpty(applyRequest.getUserName())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(StringUtils.isEmpty(applyRequest.getIdCard())){
+        if(StringUtils.isEmpty(applyRequest.getIdCard())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(StringUtils.isEmpty(applyRequest.getOrderId())){
+        if(StringUtils.isEmpty(applyRequest.getOrderId())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(StringUtils.isEmpty(applyRequest.getOrderId())){
+        if(StringUtils.isEmpty(applyRequest.getOrderId())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(StringUtils.isEmpty(applyRequest.getIp())){
+        if(StringUtils.isEmpty(applyRequest.getIp())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(StringUtils.isEmpty(applyRequest.getDeviceFingerPrint())){
+        if(StringUtils.isEmpty(applyRequest.getDeviceFingerPrint())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(Objects.isNull(applyRequest.getTransactionTime())){
+        if(Objects.isNull(applyRequest.getTransactionTime())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
         AuditTaskDO audit = this.processService.getAuditTask(applyRequest.getTenantCode(), applyRequest.getApplyId());
-        if (Objects.nonNull(audit)){
+        if (Objects.nonNull(audit)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
         return this.processService.apply(applyRequest);
@@ -88,16 +88,16 @@ public class ProcessController extends BaseController implements JudgeApi {
 
     @Override
     public ApiResponse<String> submitVar(ApiResponse<VarResult> apiResponse) {
-        System.out.println("submitVar  " +apiResponse);
-        System.out.println("submitVar  " +apiResponse.getData().getApplyId());
-        System.out.println("submitVar  " +apiResponse.getData().getTenantCode());
-        if(!apiResponse.isSuccess()){
+        if(!apiResponse.isSuccess()) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
         VarResult varResult = apiResponse.getData();
-        String applyId = apiResponse.getData().getApplyId();
         String tenantCode = apiResponse.getData().getTenantCode();
-        AuditTaskDO auditTask = this.processService.getAuditTask(applyId, tenantCode);
+        String applyId = apiResponse.getData().getApplyId();
+        AuditTaskDO auditTask = this.processService.getAuditTask(tenantCode, applyId);
+        System.out.println("tenantCode  " + tenantCode);
+        System.out.println("applyId  " + applyId);
+        System.out.println("auditTask  " + auditTask);
         if(Objects.isNull(auditTask)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
@@ -109,14 +109,14 @@ public class ProcessController extends BaseController implements JudgeApi {
     public ApiResponse<AuditResultVO> getAuditResult(AuditResultQuery auditResultQuery) {
         String tenantCode = auditResultQuery.getTenantCode();
         String applyId = auditResultQuery.getApplyId();
-        if(StringUtils.isEmpty(tenantCode)){
+        if(StringUtils.isEmpty(tenantCode)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
-        if(StringUtils.isEmpty(applyId)){
+        if(StringUtils.isEmpty(applyId)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
         }
         AuditTaskDO auditTask = this.processService.getAuditTask(tenantCode, applyId);
-        if (Objects.isNull(auditTask)){
+        if (Objects.isNull(auditTask)) {
             return ApiResponse.error(HttpStatus.NOT_FOUND.value(), "");
         }
         return this.processService.getAuditResult(auditTask);
@@ -124,7 +124,7 @@ public class ProcessController extends BaseController implements JudgeApi {
 
     @PostMapping("/callback/accept")
     public ApiResponse accept(@RequestBody ApiResponse<AuditResultVO> apiResponse) {
-        System.out.println(apiResponse);
+        System.out.println("callback " + apiResponse);
         AuditResultVO auditResultVO = apiResponse.getData();
         System.out.println(auditResultVO);
         // TODO: 编写相应的业务逻辑即可

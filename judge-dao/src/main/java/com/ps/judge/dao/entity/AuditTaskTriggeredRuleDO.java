@@ -10,7 +10,7 @@ public class AuditTaskTriggeredRuleDO {
     private String tenantCode;
     private Integer taskId;
     private String applyId;
-    private String auditFlow;
+    private String flowCode;
     private String rulePackageCode;
     private String rulePackageName;
     private String rulePackageVersion;
@@ -19,5 +19,5 @@ public class AuditTaskTriggeredRuleDO {
     private String ruleVersion;
     private String expression;
     private String param;
-    private LocalDateTime createTime;
+    private LocalDateTime gmtCreate;
 }

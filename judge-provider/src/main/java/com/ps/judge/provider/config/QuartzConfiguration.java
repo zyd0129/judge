@@ -2,6 +2,7 @@ package com.ps.judge.provider.config;
 
 import com.ps.judge.provider.job.ReapplyJuryJob;
 import com.ps.judge.provider.job.CallbackTenantJob;
+import com.ps.judge.provider.job.VarResultQueryJob;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -36,4 +37,15 @@ public class QuartzConfiguration {
 				.withSchedule(scheduleBuilder).build();
 	}
 
+	@Bean
+	public JobDetail varResultQueryJobDetail() {
+		return JobBuilder.newJob(VarResultQueryJob.class).withIdentity("varResultQueryJob").storeDurably().build();
+	}
+
+	@Bean
+	public Trigger varResultQueryJobTrigger() {
+		CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(this.properties.getCronVarResultQuery());
+		return TriggerBuilder.newTrigger().forJob(varResultQueryJobDetail()).withIdentity("varResultQueryJob")
+				.withSchedule(scheduleBuilder).build();
+	}
 }

@@ -9,10 +9,16 @@ import com.ps.jury.api.response.VarResult;
 
 public interface ProcessService {
     AuditTaskDO getAuditTask(String tenantCode, String applyId);
+
     ApiResponse<ApplyResultVO> apply(ApplyRequest request);
+
     void startProcess(AuditTaskDO auditTask, VarResult varResult);
+
     ApiResponse<AuditResultVO> getAuditResult(AuditTaskDO audit);
 
     void reapplyJury();
+
+    void varResultQuery();
+
     void callbackTenant();
 }

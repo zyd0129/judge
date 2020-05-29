@@ -8,9 +8,6 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 @DisallowConcurrentExecution
 @Slf4j
 public class CallbackTenantJob extends QuartzJobBean {
