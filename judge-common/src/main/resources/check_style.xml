@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC
+        "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
+        "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+
+<!-- This is a checkstyle configuration file. For descriptions of
+what the following rules do, please see the checkstyle configuration
+page at http://checkstyle.sourceforge.net/config.html -->
+
+<!-- http://git.caimi-inc.com/credit-public/credit-dependencies/blob/master/checkstyle-config/src/main/resources/credit_checks.xml -->
+
+<module name="Checker">
+    <property name="charset" value="UTF-8" />
+    <property name="fileExtensions" value="java, properties, xml" />
+    <property name="cacheFile" value="target/checkstyleCache" />
+
+    <!-- 检查文件中是否含有 '\t' -->
+    <module name="FileTabCharacter">
+        <property name="eachLine" value="true" />
+    </module>
+
+    <!-- All Java AST specific tests live under TreeWalker module. -->
+    <module name="TreeWalker">
+
+        <!-- 检查注解位置  -->
+        <module name="AnnotationLocation">
+            <property name="tokens"
+                      value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF" />
+            <property name="allowSamelineMultipleAnnotations" value="false" />
+            <property name="allowSamelineSingleParameterlessAnnotation" value="false" />
+            <property name="allowSamelineParameterizedAnnotation" value="false" />
+        </module>
+        <module name="AnnotationLocation">
+            <property name="tokens" value="PARAMETER_DEF" />
+            <property name="allowSamelineMultipleAnnotations" value="true" />
+            <property name="allowSamelineSingleParameterlessAnnotation" value="true" />
+            <property name="allowSamelineParameterizedAnnotation" value="true" />
+        </module>
+
+        <!-- 检查注解样式 -->
+        <module name="AnnotationUseStyle" />
+
+        <!-- 检查 @Deprecated 注解 -->
+        <module name="MissingDeprecated">
+            <property name="skipNoJavadoc" value="true" />
+        </module>
+
+        <!-- 检查 @Override 注解 -->
+        <module name="MissingOverride" />
+
+        <!-- Make the @SuppressWarnings annotations available to Checkstyle -->
+        <module name="SuppressWarningsHolder" />
+
+        <!-- 检查是否有嵌套代码块 -->
+        <module name="AvoidNestedBlocks" />
+
+        <!-- 检查空代码块 -->
+        <module name="EmptyBlock">
+            <property name="option" value="text" />
+        </module>
+
+        <!-- 检查 catch 部分的空代码块 -->
+        <module name="EmptyCatchBlock">
+            <property name="exceptionVariableName" value="expected|ignore" />
+        </module>
+
+        <!-- 检查左大括号位置 -->
+        <module name="LeftCurly">
+            <property name="ignoreEnums" value="false" />
+        </module>
+
+        <!-- 检查代码块是否缺失 {} -->
+        <module name="NeedBraces" />
+
+        <!-- 检查右大括号位置 -->
+        <module name="RightCurly" />
+
+        <!-- 检查是否有参数类型不合法的 equals 方法 -->
+        <module name="CovariantEquals" />
+
+        <!-- 检查 switch 语句的 default 是否在最后 -->
+        <module name="DefaultComesLast" />
+
+        <!-- 检查只有一个分号的空语句 -->
+        <module name="EmptyStatement" />
+
+        <!-- 检查可能出现 NPE 的 equals 方法 -->
+        <module name="EqualsAvoidNull" />
+
+        <!-- 检查在重写 equals 方法后是否重写 hashCode 方法 -->
+        <module name="EqualsHashCode" />
+
+        <!-- 检查 switch case 语句是否有穿越 -->
+        <module name="FallThrough" />
+
+        <!-- 检查局部变量是否隐藏了类中的变量 -->
+        <module name="HiddenField">
+            <property name="tokens" value="VARIABLE_DEF" />
+        </module>
+
+        <!-- 检查是否使用工厂方法实例化 -->
+        <module name="IllegalInstantiation" />
+
+        <!-- 检查是否有用 Unicode 编码表示 \b、\t、\n、\f、\r、\"、\'、\\ 等字符 -->
+        <module name="IllegalTokenText">
+            <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL" />
+            <property name="format"
+                      value="\\u00(09|0(a|A)|0(c|C)|0(d|D)|22|27|5(C|c))|\\(0(10|11|12|14
+                    |15|42|47)|134)" />
+            <property name="message"
+                      value="Consider using special escape sequence instead of octal value
+                    or Unicode escaped value." />
+        </module>
+
+        <!-- 检查 switch 语句是否有 default -->
+        <module name="MissingSwitchDefault" />
+
+        <!-- 检查是否对控制变量进行修改 -->
+        <module name="ModifiedControlVariable">
+            <property name="skipEnhancedForLoopVariable" value="true" />
+        </module>
+
+        <!-- 检查是否一行有多个变量定义 -->
+        <module name="MultipleVariableDeclarations" />
+
+        <!-- 检查是否覆写 Object.clone() -->
+        <module name="NoClone" />
+
+        <!-- 检查是否覆写 Object.finalizer() -->
+        <module name="NoFinalizer" />
+
+        <!-- 检查是否一行只有一个语句 -->
+        <module name="OneStatementPerLine" />
+
+        <!-- 检查重载的方法是否按照顺序定义 -->
+        <module name="OverloadMethodsDeclarationOrder" />
+
+        <!-- 检查包声明是否和路径一致 -->
+        <module name="PackageDeclaration" />
+
+        <!-- 检查是否需要 this 前缀 -->
+        <module name="RequireThis">
+            <property name="checkMethods" value="false" />
+        </module>
+
+        <!-- 检查是否有过度复杂的布尔表达式 -->
+        <module name="SimplifyBooleanExpression" />
+
+        <!-- 检查是否有用 == 比较字符串相等 -->
+        <module name="StringLiteralEquality" />
+
+        <!-- 检查是否导入了多余的包 -->
+        <module name="RedundantImport" />
+
+        <!-- 没用的 import 检查，比如：
+          1. 没有被用到类
+          2. 重复的类
+          3. java.lang 的类
+          4. 与该类在同一个 package 的类 -->
+        <module name="UnusedImports" />
+
+        <!-- 检查 public 类名和文件名是否一致 -->
+        <module name="OuterTypeFilename" />
+
+        <!-- 检查 long 型定义是否有大写的 “L” -->
+        <module name="UpperEll" />
+
+        <!-- 检查修饰符的顺序是否遵照 java 语言规范，默认：
+          public、protected、private、abstract、static、final、
+          transient、volatile、synchronized、native、strictfp -->
+        <module name="ModifierOrder" />
+
+        <!-- 检查接口和 annotation 中是否有多余修饰符，如接口方法不必使用 public -->
+        <module name="RedundantModifier" />
+
+        <!-- 检查异常参数命名 -->
+        <module name="CatchParameterName">
+            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$" />
+        </module>
+
+        <!-- 检查 Class 类型参数命名 -->
+        <module name="ClassTypeParameterName">
+            <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)" />
+        </module>
+
+        <!-- 检查常量名（只允许大写）-->
+        <module name="ConstantName">
+            <property name="applyToPrivate" value="false" />
+        </module>
+
+        <!-- 检查 Interface 类型参数命名 -->
+        <module name="InterfaceTypeParameterName">
+            <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)" />
+        </module>
+
+        <!-- 局部的 final 变量，包括 catch 中的参数检查 -->
+        <module name="LocalFinalVariableName" />
+
+        <!-- 局部的非 final 型的变量，包括 catch 中的参数检查 -->
+        <module name="LocalVariableName" />
+
+        <!-- 非 static 型变量检查 -->
+        <module name="MemberName" />
+
+        <!-- 检查方法名 -->
+        <module name="MethodName">
+            <property name="format" value="^([a-z][a-z0-9][a-zA-Z0-9]*|\$[a-z][a-zA-Z]+)$" />
+        </module>
+
+        <!-- 检查包名（只允许小写字母） -->
+        <module name="PackageName" />
+
+        <!-- 检查方法参数名 -->
+        <module name="ParameterName" />
+
+        <!-- 检查 static 型的变量（不包括 static final） -->
+        <module name="StaticVariableName" />
+
+        <!-- 检查 Class 或 Interface 名 -->
+        <module name="TypeName" />
+
+        <!-- 检查 Iterator 相关的空格 -->
+        <module name="EmptyForInitializerPad" />
+        <module name="EmptyForIteratorPad" />
+
+        <!-- 检查换行设置 -->
+        <module name="EmptyLineSeparator">
+            <property name="allowNoEmptyLineBetweenFields" value="true" />
+            <property name="allowMultipleEmptyLines" value="true" />
+            <property name="allowMultipleEmptyLinesInsideClassMembers" value="true" />
+        </module>
+
+        <!-- 检查方法名后是否跟左圆括号 "(" -->
+        <module name="MethodParamPad" />
+
+        <!-- 检查是否对 package、import 语句换行 -->
+        <module name="NoLineWrap" />
+
+        <!-- 检查圆括号空白 -->
+        <module name="ParenPad" />
+
+        <!-- 检查在类型转换时括号两边是否有空格 -->
+        <module name="TypecastParenPad" />
+
+        <!-- 检查分隔符是否在空白之后 -->
+        <module name="WhitespaceAfter" />
+
+        <!-- 检查分隔符周围是否有空白 -->
+        <module name="WhitespaceAround">
+            <property name="ignoreEnhancedForColon" value="false" />
+        </module>
+    </module>
+</module>
