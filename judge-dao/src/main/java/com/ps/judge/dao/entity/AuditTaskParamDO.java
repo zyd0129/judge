@@ -12,6 +12,7 @@ public class AuditTaskParamDO {
     private String applyId;
     private String inputRawParam;
     private String outputRawParam;
+    private String varResult;
     private LocalDateTime gmtCreate;
     private LocalDateTime gmtModified;
 }

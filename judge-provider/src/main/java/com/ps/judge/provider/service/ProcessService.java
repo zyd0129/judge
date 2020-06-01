@@ -12,7 +12,7 @@ public interface ProcessService {
 
     ApiResponse<ApplyResultVO> apply(ApplyRequest request);
 
-    void startProcess(AuditTaskDO auditTask, VarResult varResult);
+    ApiResponse saveVarResult(AuditTaskDO auditTask, VarResult varResult);
 
     ApiResponse<AuditResultVO> getAuditResult(AuditTaskDO audit);
 
@@ -20,5 +20,9 @@ public interface ProcessService {
 
     void varResultQuery();
 
+    void auditVariable();
+
     void callbackTenant();
+
+    void sendAuditResult(AuditTaskDO auditTask, ApiResponse<AuditResultVO> apiResponse);
 }

@@ -43,10 +43,10 @@ public interface AuditTaskMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(AuditTaskDO auditTask);
 
-    @Update("update audit_task set task_status = #{taskStatus,jdbcType=TINYINT} where tenant_code = #{tenantCode,jdbcType=VARCHAR} and apply_id = #{applyId,jdbcType=VARCHAR}")
-    int updateTaskStatus(@Param("taskStatus") int taskStatus, @Param("tenantCode") String tenantCode, @Param("applyId") String applyId);
+    @Update("update audit_task set task_status = #{taskStatus,jdbcType=TINYINT}, gmt_modified = now() where id = #{id,jdbcType=INTEGER}")
+    int updateTaskStatus(@Param("taskStatus") int taskStatus, @Param("id") int id);
 
-    @Update("update audit_task set callback_count = #{callbackCount,jdbcType=TINYINT} where tenant_code = #{tenantCode,jdbcType=VARCHAR} and apply_id = #{applyId,jdbcType=VARCHAR}")
-    int updateCallbackCount(@Param("callbackCount") int callbackCount, @Param("tenantCode") String tenantCode, @Param("applyId") String applyId);
+    @Update("update audit_task set callback_count = #{callbackCount,jdbcType=TINYINT}, gmt_modified = now() where id = #{id,jdbcType=INTEGER}")
+    int updateCallbackCount(@Param("callbackCount") int callbackCount, @Param("id") int id);
 
 }
