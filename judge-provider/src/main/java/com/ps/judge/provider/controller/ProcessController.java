@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Objects;
 
 @RestController
-public class ProcessController extends BaseController implements JudgeApi {
+public class ProcessController implements JudgeApi {
     @Autowired
     ProcessService processService;
     @Autowired
@@ -80,6 +80,21 @@ public class ProcessController extends BaseController implements JudgeApi {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不存在");
         }
         return this.processService.apply(applyRequest);
+    }
+
+    @Override
+    public ApiResponse<ApplyResultVO> retryAudit(Integer taskId) {
+        if (Objects.isNull(taskId)) {
+            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
+        }
+        if (taskId <= 0) {
+            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
+        }
+        AuditTaskDO auditTask = this.processService.getAuditTask(taskId);
+        if (Objects.isNull(auditTask)) {
+            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单不存在");
+        }
+        return this.processService.retryAudit(auditTask);
     }
 
     @Override

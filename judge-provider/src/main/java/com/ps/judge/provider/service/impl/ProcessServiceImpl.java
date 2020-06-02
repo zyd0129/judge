@@ -44,6 +44,11 @@ public class ProcessServiceImpl implements ProcessService {
     AsyncProcessTask asyncProcessTask;
 
     @Override
+    public AuditTaskDO getAuditTask(int id) {
+        return this.auditTaskMapper.getAuditTask(id);
+    }
+
+    @Override
     public AuditTaskDO getAuditTask(String tenantCode, String applyId) {
         return this.auditTaskMapper.getAuditTask(tenantCode, applyId);
     }
@@ -81,6 +86,19 @@ public class ProcessServiceImpl implements ProcessService {
         auditTaskParam.setGmtModified(LocalDateTime.now());
         this.auditTaskParamMapper.insert(auditTaskParam);
 
+        return this.applyJuryury(auditId, request);
+    }
+
+    @Override
+    public ApiResponse<ApplyResultVO> retryAudit(AuditTaskDO auditTask) {
+        int auditId = auditTask.getId();
+        this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode(), auditId);
+        AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditId);
+        ApplyRequest request = JSON.parseObject(auditTaskParam.getInputRawParam(), ApplyRequest.class);
+        return this.applyJuryury(auditId, request);
+    }
+
+    private ApiResponse<ApplyResultVO> applyJuryury(int auditId, ApplyRequest request){
         ApiResponse<String> applyResponse = this.juryApi.apply(request);
         if (!applyResponse.isSuccess()) {
             this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.FORWARDED_FAIL.getCode(), auditId);

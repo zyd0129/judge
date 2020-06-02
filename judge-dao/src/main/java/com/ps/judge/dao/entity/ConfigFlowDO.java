@@ -11,10 +11,9 @@ public class ConfigFlowDO {
     private String flowName;
     private String tenantCode;
     private String productCode;
-    private Integer curPackageId;
-    private String curPackageGroup;
-    private String curPackageArtifact;
-    private String curPackageVersion;
+    private Integer packageId;
+    private String packageUrl;
+
     private String operator;
     private Integer status;
     private LocalDateTime gmtCreated;

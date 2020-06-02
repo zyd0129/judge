@@ -9,6 +9,7 @@ import com.ps.judge.dao.mapper.AuditTaskMapper;
 import com.ps.judge.dao.mapper.AuditTaskParamMapper;
 import com.ps.judge.dao.mapper.AuditTaskTriggeredRuleMapper;
 import com.ps.judge.provider.drools.KSessionManager;
+import com.ps.judge.provider.enums.AuditCodeEnum;
 import com.ps.judge.provider.enums.AuditTaskStatusEnum;
 import com.ps.judge.provider.service.ProcessService;
 import com.ps.jury.api.common.ApiResponse;
@@ -98,8 +99,11 @@ public class AsyncProcessTask {
         auditResult.setTransactionTime(varResult.getTransactionTime());
         auditResult.setCallbackUrl(varResult.getCallbackUrl());
         auditResult.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE.getCode());
-        //auditResult.setAuditCode();
-        //auditResult.setAuditScore();
+        if (triggeredRuleList.size() > 0) {
+            auditResult.setAuditCode(AuditCodeEnum.REJECT.toString());
+        } else {
+            auditResult.setAuditCode(AuditCodeEnum.PASS.toString());
+        }
         auditResult.setTriggeredRules(triggeredRuleVOList);
 
         ApiResponse<AuditResultVO> apiResponse = ApiResponse.success(auditResult);

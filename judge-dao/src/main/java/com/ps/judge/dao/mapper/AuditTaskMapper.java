@@ -30,6 +30,9 @@ public interface AuditTaskMapper {
         @Result(property = "gmtModified", column = "gmt_modified", jdbcType = JdbcType.TIMESTAMP)
     })
 
+    @Select("select * from audit_task where id = #{id,jdbcType=INTEGER}")
+    AuditTaskDO getAuditTask(@Param("id") int id);
+
     @Select("select * from audit_task where tenant_code = #{tenantCode,jdbcType=VARCHAR} and apply_id = #{applyId,jdbcType=VARCHAR}")
     AuditTaskDO getAuditTask(@Param("tenantCode") String tenantCode, @Param("applyId") String applyId);
 

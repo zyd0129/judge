@@ -22,3 +22,19 @@ mybatis:
   type-aliases-package: com.ps.judge.dao.entity
   configuration:
     map-underscore-to-camel-case: true
+
+spring:
+  cloud:
+    alicloud:
+      access-key: LTAI4Ftbiuu38HBpvMeikex1
+      secret-key: CjNZQLbZuoKdsTkfg4sS0RefKOXm3V
+      oss:
+        endpoint: oss-cn-hangzhou.aliyuncs.com
+
+com:
+  ps:
+    judge:
+      web:
+          bucket-name: factoryfilestore
+          base-url: http://${com.ps.judge.web.bucket-name}.oss-cn-hangzhou.aliyuncs.com/
+          expiration: 31104000000  #60*60*24*30*12*1000
