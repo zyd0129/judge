@@ -8,11 +8,15 @@ import com.ps.jury.api.request.ApplyRequest;
 import com.ps.jury.api.response.VarResult;
 
 public interface ProcessService {
+    AuditTaskDO getAuditTask(int id);
+
     AuditTaskDO getAuditTask(String tenantCode, String applyId);
 
     ApiResponse<ApplyResultVO> apply(ApplyRequest request);
 
-    void startProcess(AuditTaskDO auditTask, VarResult varResult);
+    ApiResponse<ApplyResultVO> retryAudit(AuditTaskDO auditTask);
+
+    ApiResponse saveVarResult(AuditTaskDO auditTask, VarResult varResult);
 
     ApiResponse<AuditResultVO> getAuditResult(AuditTaskDO audit);
 
@@ -20,5 +24,9 @@ public interface ProcessService {
 
     void varResultQuery();
 
+    void auditVariable();
+
     void callbackTenant();
+
+    void sendAuditResult(AuditTaskDO auditTask, ApiResponse<AuditResultVO> apiResponse);
 }

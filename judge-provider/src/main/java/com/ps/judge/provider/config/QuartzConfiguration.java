@@ -1,5 +1,6 @@
 package com.ps.judge.provider.config;
 
+import com.ps.judge.provider.job.AuditVariableJob;
 import com.ps.judge.provider.job.ReapplyJuryJob;
 import com.ps.judge.provider.job.CallbackTenantJob;
 import com.ps.judge.provider.job.VarResultQueryJob;
@@ -34,6 +35,18 @@ public class QuartzConfiguration {
 	public Trigger reapplyJuryJobTrigger() {
 		CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(this.properties.getCronReapplyJury());
 		return TriggerBuilder.newTrigger().forJob(reapplyJuryJobDetail()).withIdentity("reapplyJuryJob")
+				.withSchedule(scheduleBuilder).build();
+	}
+
+	@Bean
+	public JobDetail auditVariableJobDetail() {
+		return JobBuilder.newJob(AuditVariableJob.class).withIdentity("auditVariableJob").storeDurably().build();
+	}
+
+	@Bean
+	public Trigger auditVariableJobTrigger() {
+		CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(this.properties.getCronAuditVariable());
+		return TriggerBuilder.newTrigger().forJob(auditVariableJobDetail()).withIdentity("auditVariableJob")
 				.withSchedule(scheduleBuilder).build();
 	}
 

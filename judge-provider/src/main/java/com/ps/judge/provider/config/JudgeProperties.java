@@ -8,5 +8,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class JudgeProperties {
 	private String cronCallbackTenant;
 	private String cronReapplyJury;
+	private String cronAuditVariable;
 	private String cronVarResultQuery;
 }
