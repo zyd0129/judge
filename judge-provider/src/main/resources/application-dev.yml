@@ -33,7 +33,8 @@ server:
 com:
   ps:
     judge:
-      cron-callback-tenant: 0 0/30 * * * ?
-      cron-reapply-jury: 0 0/30 * * * ?
-      cron-audit-variable: 0 0/30 * * * ?
-      cron-var-result-query: 0 0/30 * * * ?
+      provider:
+        cron-callback-tenant: 0 0/1 * * * ?
+        cron-reapply-jury: 0 0/1 * * * ?
+        cron-audit-variable: 0 0/1 * * * ?
+        cron-var-result-query: 0 0/1 * * * ?

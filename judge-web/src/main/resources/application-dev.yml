@@ -28,4 +28,12 @@ spring:
 mybatis:
   type-aliases-package: com.ps.judge.dao.entity
 server:
-  port: 8081
+  port: 8082
+
+com:
+  ps:
+    judge:
+      web:
+          bucket-name: factoryfilestore
+          base-url: http://${com.ps.judge.web.bucket-name}.oss-cn-hangzhou.aliyuncs.com/
+          expiration: 31104000000  #60*60*24*30*12*1000

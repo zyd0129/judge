@@ -6,9 +6,11 @@ import com.ps.judge.api.entity.ApplyResultVO;
 import com.ps.judge.api.entity.AuditResultVO;
 import com.ps.judge.dao.entity.AuditTaskDO;
 import com.ps.judge.dao.entity.AuditTaskParamDO;
+import com.ps.judge.dao.entity.ConfigFlowDO;
 import com.ps.judge.dao.mapper.AuditTaskMapper;
 import com.ps.judge.dao.mapper.AuditTaskParamMapper;
 import com.ps.judge.dao.mapper.AuditTaskTriggeredRuleMapper;
+import com.ps.judge.provider.drools.KSessionManager;
 import com.ps.judge.provider.enums.AuditTaskStatusEnum;
 import com.ps.judge.provider.service.ProcessService;
 import com.ps.judge.provider.task.AsyncProcessTask;
@@ -37,6 +39,8 @@ public class ProcessServiceImpl implements ProcessService {
     @Autowired
     AuditTaskTriggeredRuleMapper auditTaskTriggeredRuleMapper;
     @Autowired
+    KSessionManager kSessionManager;
+    @Autowired
     RestTemplate restTemplate;
     @Autowired
     HttpHeaders httpHeaders;
@@ -45,7 +49,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public AuditTaskDO getAuditTask(int id) {
-        return this.auditTaskMapper.getAuditTask(id);
+        return this.auditTaskMapper.getAuditTaskById(id);
     }
 
     @Override
@@ -111,14 +115,14 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public ApiResponse saveVarResult(AuditTaskDO auditTask, VarResult varResult) {
+    public ApiResponse<String> saveVarResult(AuditTaskDO auditTask, VarResult varResult) {
         if (auditTask.getTaskStatus() != AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode()) {
             return ApiResponse.success();
         }
         Integer auditId = auditTask.getId();
-        this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED.getCode(), auditId);
+        auditTask.setTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode());
+        this.auditTaskMapper.updateTaskStatus(auditTask.getTaskStatus(), auditId);
         this.auditTaskParamMapper.updateVarResult(JSON.toJSONString(varResult), auditId);
-        auditTask.setTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED.getCode());
         this.asyncProcessTask.startProcess(auditTask, varResult);
         return ApiResponse.success();
     }
@@ -145,6 +149,16 @@ public class ProcessServiceImpl implements ProcessService {
         auditResult.setCallbackUrl(auditTask.getCallbackUrl());
         auditResult.setTaskStatus(auditTask.getTaskStatus());
         return ApiResponse.success(auditResult);
+    }
+
+    @Override
+    public boolean updateAuditStatus(int taskId, int status) {
+        return this.auditTaskMapper.updateTaskStatus(status, taskId) > 0;
+    }
+
+    @Override
+    public boolean loadFlow(ConfigFlowDO configFlow) {
+        return this.kSessionManager.addContainer(configFlow);
     }
 
     @Override
@@ -181,7 +195,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public void auditVariable() {
-        List<AuditTaskDO> auditTaskList = this.auditTaskMapper.listAuditTaskByTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED.getCode());
+        List<AuditTaskDO> auditTaskList = this.auditTaskMapper.listAuditTaskByTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode());
         if (auditTaskList.isEmpty()) {
             return;
         }
@@ -210,25 +224,34 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public void sendAuditResult(AuditTaskDO auditTask, ApiResponse<AuditResultVO> apiResponse) {
+        Integer auditId = auditTask.getId();
         int callbackCount = auditTask.getCallbackCount();
-        if (callbackCount > 3) {
+        if (callbackCount >= 3) {
+            this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.CALLBACK_FAIL.getCode(), auditId);
             return;
         }
         callbackCount++;
-        Integer auditId = auditTask.getId();
         this.auditTaskMapper.updateCallbackCount(callbackCount, auditId);
         if (this.sendPost(auditTask.getCallbackUrl(), apiResponse)) {
             this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.CALLBACK_SUCCESS.getCode(), auditId);
             return;
         }
-        if (callbackCount == 3) {
+        if (callbackCount >= 3) {
             this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.CALLBACK_FAIL.getCode(), auditId);
         }
     }
 
     private boolean sendPost(String url, ApiResponse<AuditResultVO> apiResponse) {
-        HttpEntity<ApiResponse<AuditResultVO>> requestEntity = new HttpEntity(apiResponse, httpHeaders);
-        ResponseEntity<JSONObject> result = this.restTemplate.exchange(url, HttpMethod.POST, requestEntity, JSONObject.class);
+        HttpEntity<ApiResponse<AuditResultVO>> requestEntity = new HttpEntity<>(apiResponse, httpHeaders);
+        ResponseEntity<JSONObject> result = null;
+        try {
+            result = this.restTemplate.exchange(url, HttpMethod.POST, requestEntity, JSONObject.class);
+        } catch (Exception e) {
+            return false;
+        }
+        if (Objects.isNull(result)) {
+            return false;
+        }
         if (result.getStatusCode() == HttpStatus.OK) {
             JSONObject body = result.getBody();
             if (Objects.isNull(body)) {

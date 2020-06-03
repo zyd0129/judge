@@ -37,6 +37,10 @@ public interface ConfigFlowMapper {
     @ResultMap(value = "flowResultMap")
     List<ConfigFlowDO> getAll();
 
+    @Select("select * from config_flow where status = 1")
+    @ResultMap(value = "flowResultMap")
+    List<ConfigFlowDO> getAllEnable();
+
     @Insert("insert into config_flow (flow_code, flow_name, tenant_code, product_code,"
             + "package_id, package_url, status, operator, gmt_created, gmt_modified)"
             + "values (#{flowCode}, #{flowName},#{tenantCode}, #{productCode}, #{packageId},"

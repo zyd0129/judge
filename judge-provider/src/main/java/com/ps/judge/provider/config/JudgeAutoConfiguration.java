@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-@EnableConfigurationProperties(JudgeProperties.class)
+@EnableConfigurationProperties(JudgeProviderProperties.class)
 public class JudgeAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(RestTemplate.class)
@@ -24,4 +24,5 @@ public class JudgeAutoConfiguration {
         headers.setContentType(MediaType.APPLICATION_JSON);
         return headers;
     }
+
 }

@@ -20,6 +20,9 @@ public interface JudgeApi {
     @PostMapping("/judge/audit/retry/{taskId:\\d+}")
     ApiResponse<ApplyResultVO> retryAudit(@PathVariable("taskId") Integer taskId);
 
+    @PostMapping("/judge/audit/flow/load/{flowCode}")
+    ApiResponse<String> loadFlow(@PathVariable("flowCode") String flowCode);
+
     @PostMapping("/judge/var/submit")
     ApiResponse<String> submitVar(@RequestBody ApiResponse<VarResult> apiResponse);
 

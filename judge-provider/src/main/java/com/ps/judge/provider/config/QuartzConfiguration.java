@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class QuartzConfiguration {
 	@Autowired
-	private JudgeProperties properties;
+	private JudgeProviderProperties properties;
 	
 	@Bean
     public JobDetail callbackTenantJobDetail() {
