@@ -90,7 +90,7 @@ public class ProcessServiceImpl implements ProcessService {
         auditTaskParam.setGmtModified(LocalDateTime.now());
         this.auditTaskParamMapper.insert(auditTaskParam);
 
-        return this.applyJuryury(auditId, request);
+        return this.applyJury(auditId, request);
     }
 
     @Override
@@ -99,10 +99,10 @@ public class ProcessServiceImpl implements ProcessService {
         this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode(), auditId);
         AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditId);
         ApplyRequest request = JSON.parseObject(auditTaskParam.getInputRawParam(), ApplyRequest.class);
-        return this.applyJuryury(auditId, request);
+        return this.applyJury(auditId, request);
     }
 
-    private ApiResponse<ApplyResultVO> applyJuryury(int auditId, ApplyRequest request){
+    private ApiResponse<ApplyResultVO> applyJury(int auditId, ApplyRequest request) {
         ApiResponse<String> applyResponse = this.juryApi.apply(request);
         if (!applyResponse.isSuccess()) {
             this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.FORWARDED_FAIL.getCode(), auditId);

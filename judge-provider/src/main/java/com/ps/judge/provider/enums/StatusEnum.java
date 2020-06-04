@@ -12,7 +12,7 @@ public enum StatusEnum {
         this.name = name;
     }
 
-    public int status(){
+    public int status() {
         return this.status;
     }
 }

@@ -26,7 +26,7 @@ public class KieContainerInitialization {
         for (ConfigFlowDO configFlow : configFlowList) {
             try {
                 this.kSessionManager.addContainer(configFlow);
-                log.error("container for {} start success", configFlow.getFlowCode());
+                log.info("container for {} start success", configFlow.getFlowCode());
             } catch (Exception e) {
                 log.error("container for {} start failure", configFlow.getFlowCode());
             }

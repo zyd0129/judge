@@ -22,6 +22,4 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
     public List<ConfigFlowDO> getAllEnable() {
         return  this.configFlowMapper.getAllEnable();
     }
-
-
 }

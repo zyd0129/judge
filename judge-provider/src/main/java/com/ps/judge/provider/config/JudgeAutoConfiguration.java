@@ -24,5 +24,4 @@ public class JudgeAutoConfiguration {
         headers.setContentType(MediaType.APPLICATION_JSON);
         return headers;
     }
-
 }

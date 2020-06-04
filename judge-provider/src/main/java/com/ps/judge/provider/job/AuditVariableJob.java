@@ -11,15 +11,15 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 @DisallowConcurrentExecution
 @Slf4j
 public class AuditVariableJob extends QuartzJobBean {
-	@Autowired
+    @Autowired
     ProcessService processService;
 
-	@Override
-	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-		log.info("start auditVariable job ");
-		long startTime = System.currentTimeMillis();
-		this.processService.auditVariable();
-		long endTime = System.currentTimeMillis();
-		log.info("end auditVariable job, time cost: {}", endTime - startTime);
-	}
+    @Override
+    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+        log.info("start auditVariable job ");
+        long startTime = System.currentTimeMillis();
+        this.processService.auditVariable();
+        long endTime = System.currentTimeMillis();
+        log.info("end auditVariable job, time cost: {}", endTime - startTime);
+    }
 }

@@ -7,7 +7,7 @@ import org.apache.ibatis.type.JdbcType;
 import java.util.List;
 
 public interface AuditTaskMapper {
-    @Results(id = "auditTask", value={
+    @Results(id = "auditTask", value = {
         @Result(property = "id", column = "id", jdbcType = JdbcType.INTEGER, id = true),
         @Result(property = "tenantCode", column = "tenant_code", jdbcType = JdbcType.VARCHAR),
         @Result(property = "productCode", column = "product_code", jdbcType = JdbcType.VARCHAR),

@@ -79,7 +79,7 @@ public class ProcessController implements JudgeApi {
         if (Objects.isNull(configFlow)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不存在");
         }
-        if(configFlow.getStatus() != StatusEnum.ENABLE.status()){
+        if (configFlow.getStatus() != StatusEnum.ENABLE.status()) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流未启用");
         }
         return this.processService.apply(applyRequest);
@@ -97,8 +97,8 @@ public class ProcessController implements JudgeApi {
         if (Objects.isNull(auditTask)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单不存在");
         }
-        if(auditTask.getTaskStatus() != AuditTaskStatusEnum.VAR_COMPUTE_FAIL.getCode()
-                && auditTask.getTaskStatus() != AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode()){
+        if (auditTask.getTaskStatus() != AuditTaskStatusEnum.VAR_COMPUTE_FAIL.getCode()
+                && auditTask.getTaskStatus() != AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode()) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单未失败，不能重试");
         }
         return this.processService.retryAudit(auditTask);
@@ -122,7 +122,7 @@ public class ProcessController implements JudgeApi {
     @Override
     public ApiResponse<String> submitVar(ApiResponse<VarResult> apiResponse) {
         VarResult varResult = apiResponse.getData();
-        if(Objects.isNull(varResult)){
+        if (Objects.isNull(varResult)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "信息不存在");
         }
         String tenantCode = varResult.getTenantCode();

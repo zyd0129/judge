@@ -1,7 +1,6 @@
 package com.ps.judge.provider.drools;
 
 import com.ps.judge.dao.entity.ConfigFlowDO;
-import com.ps.judge.provider.service.ConfigFlowService;
 import lombok.extern.slf4j.Slf4j;
 import org.drools.core.io.impl.UrlResource;
 import org.kie.api.KieServices;
@@ -11,7 +10,6 @@ import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

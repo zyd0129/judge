@@ -5,16 +5,16 @@ import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 
 public interface AuditTaskParamMapper {
-    @Results(id = "auditTaskParam", value={
-            @Result(property = "id", column = "id", jdbcType = JdbcType.INTEGER, id = true),
-            @Result(property = "tenantCode", column = "tenant_code", jdbcType = JdbcType.VARCHAR),
-            @Result(property = "taskId", column = "task_id", jdbcType = JdbcType.INTEGER),
-            @Result(property = "applyId", column = "apply_id", jdbcType = JdbcType.VARCHAR),
-            @Result(property = "inputRawParam", column = "input_raw_param", jdbcType = JdbcType.VARCHAR),
-            @Result(property = "outputRawParam", column = "output_raw_param", jdbcType = JdbcType.VARCHAR),
-            @Result(property = "varResult", column = "var_result", jdbcType = JdbcType.VARCHAR),
-            @Result(property = "gmtCreate", column = "gmt_create", jdbcType = JdbcType.TIMESTAMP),
-            @Result(property = "gmtModified", column = "gmt_modified", jdbcType = JdbcType.TIMESTAMP)
+    @Results(id = "auditTaskParam", value = {
+        @Result(property = "id", column = "id", jdbcType = JdbcType.INTEGER, id = true),
+        @Result(property = "tenantCode", column = "tenant_code", jdbcType = JdbcType.VARCHAR),
+        @Result(property = "taskId", column = "task_id", jdbcType = JdbcType.INTEGER),
+        @Result(property = "applyId", column = "apply_id", jdbcType = JdbcType.VARCHAR),
+        @Result(property = "inputRawParam", column = "input_raw_param", jdbcType = JdbcType.VARCHAR),
+        @Result(property = "outputRawParam", column = "output_raw_param", jdbcType = JdbcType.VARCHAR),
+        @Result(property = "varResult", column = "var_result", jdbcType = JdbcType.VARCHAR),
+        @Result(property = "gmtCreate", column = "gmt_create", jdbcType = JdbcType.TIMESTAMP),
+        @Result(property = "gmtModified", column = "gmt_modified", jdbcType = JdbcType.TIMESTAMP)
     })
 
     @Select("select * from audit_task_param where task_id = #{taskId,jdbcType=INTEGER}")
