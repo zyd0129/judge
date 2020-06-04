@@ -26,5 +26,17 @@ public interface RoleMapper {
     void update(AuthRoleDO authRoleDO);
 
     @Delete("delete from auth_role where id=#{id}")
-    void delete(String id);
+    void delete(int id);
+
+    @Select({
+            "<script>",
+            "select * from auth_role",
+            "where name in",
+            "<foreach collection='names' item='name' open='(' separator=',' close=')'>",
+            "#{name}",
+            "</foreach>",
+            "</script>"
+    })
+    @ResultMap(value = "ruleResultMap")
+    List<AuthRoleDO> queryByNames(@Param("names") String [] names);
 }

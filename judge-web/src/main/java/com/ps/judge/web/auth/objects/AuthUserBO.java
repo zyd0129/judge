@@ -1,11 +1,15 @@
-package com.ps.judge.web.models;
+package com.ps.judge.web.auth.objects;
 
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 @Data
-public class AuthUserBO {
+public class AuthUserBO  implements UserDetails {
     private Integer id;
     /**
      * 登录名
@@ -17,7 +21,8 @@ public class AuthUserBO {
     private String name;
     private String password;
     private String roles;
-    private String authorities;
+    private Set<GrantedAuthority> authorities;
+
     private boolean expired;
     private boolean locked;
     private boolean credentialsExpired;
@@ -32,4 +37,18 @@ public class AuthUserBO {
     private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 }

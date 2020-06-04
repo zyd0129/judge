@@ -10,6 +10,6 @@ public class SecurityConfigTest {
     @Test
     public void password() {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        System.out.println(bCryptPasswordEncoder.encode("123"));
+        System.out.println(bCryptPasswordEncoder.encode("admin"));
     }
 }

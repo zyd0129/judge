@@ -1,20 +1,17 @@
-package com.ps.judge.web.models;
+package com.ps.judge.web.auth.objects;
 
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-public class AuthTenantBO {
+public class AuthDepartmentBO {
     private Integer id;
     private String name;
-    private String code;
-    private String secretKey;
-    /**
-     * 0 禁用
-     * 1 启用
-     */
-    private Boolean status;
+    //person in charge
+    private String pic;
+    private String members;
+
     private String operator;
     private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;
