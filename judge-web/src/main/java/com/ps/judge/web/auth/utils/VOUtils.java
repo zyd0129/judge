@@ -35,7 +35,7 @@ public class VOUtils {
                 firstMenus.add(firstMenu);
             }
 
-            List<SecondMenu> secondMenus = firstMenu.getSecondMenus();
+            List<SecondMenu> secondMenus = firstMenu.getChildren();
             SecondMenu secondMenu = null;
 
             for (SecondMenu temp : secondMenus) {
@@ -48,7 +48,7 @@ public class VOUtils {
                 secondMenu = new SecondMenu(secondMenuName);
                 secondMenus.add(secondMenu);
             }
-            secondMenu.getThirdMenus().add(authAuthorityBO);
+            secondMenu.getChildren().add(authAuthorityBO);
 
         }
 

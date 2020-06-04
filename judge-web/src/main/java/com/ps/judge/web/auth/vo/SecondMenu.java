@@ -10,7 +10,7 @@ import java.util.Set;
 @Data
 public class SecondMenu{
     private String name;
-    private Set<AuthAuthorityBO> thirdMenus=new HashSet<>();
+    private Set<AuthAuthorityBO> children=new HashSet<>();
 
     public SecondMenu(String name) {
         this.name = name;
