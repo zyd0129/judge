@@ -18,6 +18,7 @@ import com.ps.jury.api.JuryApi;
 import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.request.ApplyRequest;
 import com.ps.jury.api.response.VarResult;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Slf4j
 public class ProcessServiceImpl implements ProcessService {
     @Autowired
     JuryApi juryApi;
@@ -243,15 +245,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     private boolean sendPost(String url, ApiResponse<AuditResultVO> apiResponse) {
         HttpEntity<ApiResponse<AuditResultVO>> requestEntity = new HttpEntity<>(apiResponse, httpHeaders);
-        ResponseEntity<JSONObject> result = null;
-        try {
-            result = this.restTemplate.exchange(url, HttpMethod.POST, requestEntity, JSONObject.class);
-        } catch (Exception e) {
-            return false;
-        }
-        if (Objects.isNull(result)) {
-            return false;
-        }
+        ResponseEntity<JSONObject> result = this.restTemplate.exchange(url , HttpMethod.POST, requestEntity, JSONObject.class);
         if (result.getStatusCode() == HttpStatus.OK) {
             JSONObject body = result.getBody();
             if (Objects.isNull(body)) {

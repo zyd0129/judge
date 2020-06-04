@@ -21,7 +21,6 @@ public class QuartzConfiguration {
 
     @Bean
     public Trigger callbackTenantJobTrigger() {
-        System.out.println(this.properties.getCronCallbackTenant());
         CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(this.properties.getCronCallbackTenant());
         return TriggerBuilder.newTrigger().forJob(callbackTenantJobDetail()).withIdentity("callbackTenantJob")
                 .withSchedule(scheduleBuilder).build();

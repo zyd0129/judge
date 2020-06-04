@@ -6,18 +6,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ApiResponse handleRuntimeException(RuntimeException e) {
-        log.error("handle runtime exception: {}", e.getMessage());
+        log.error("handle RuntimeException: {}", e.getMessage());
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
     }
 
     @ExceptionHandler(NullPointerException.class)
-    public ApiResponse handleHttpMessageConversionException(NullPointerException e) {
-        log.error("handle nullPointerException exception: {}", e.getMessage());
+    public ApiResponse handleNullPointerException(NullPointerException e) {
+        log.error("handle NullPointerException: {}", e.getMessage());
+        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ApiResponse handleIOException(IOException e) {
+        log.error("handle IOException: {}", e.getMessage());
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
     }
 }
