@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 public class AuthUserDO {
     private Integer id;
     private String username;
+    private String name;
     private String password;
     private String roles;
-    private String authorities;
     private boolean expired;
     private boolean locked;
     private boolean credentialsExpired;

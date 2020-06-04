@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 public class AuthDepartmentDO {
     private Integer id;
     private String name;
+    //person in charge
+    private String pic;
     private String members;
 
     private String operator;
