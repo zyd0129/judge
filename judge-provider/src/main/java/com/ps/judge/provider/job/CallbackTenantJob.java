@@ -11,15 +11,15 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 @DisallowConcurrentExecution
 @Slf4j
 public class CallbackTenantJob extends QuartzJobBean {
-	@Autowired
+    @Autowired
     ProcessService processService;
 
-	@Override
-	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-		log.info("start callbackTenant job ");
-		long startTime = System.currentTimeMillis();
-		this.processService.callbackTenant();
-		long endTime = System.currentTimeMillis();
-		log.info("end callbackTenant job, time cost: {}", endTime - startTime);
-	}
+    @Override
+    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+        log.info("start callbackTenant job ");
+        long startTime = System.currentTimeMillis();
+        this.processService.callbackTenant();
+        long endTime = System.currentTimeMillis();
+        log.info("end callbackTenant job, time cost: {}", endTime - startTime);
+    }
 }

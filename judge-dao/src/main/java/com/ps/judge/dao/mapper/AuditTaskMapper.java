@@ -7,7 +7,7 @@ import org.apache.ibatis.type.JdbcType;
 import java.util.List;
 
 public interface AuditTaskMapper {
-    @Results(id = "auditTask", value={
+    @Results(id = "auditTask", value = {
         @Result(property = "id", column = "id", jdbcType = JdbcType.INTEGER, id = true),
         @Result(property = "tenantCode", column = "tenant_code", jdbcType = JdbcType.VARCHAR),
         @Result(property = "productCode", column = "product_code", jdbcType = JdbcType.VARCHAR),
@@ -31,7 +31,7 @@ public interface AuditTaskMapper {
     })
 
     @Select("select * from audit_task where id = #{id,jdbcType=INTEGER}")
-    AuditTaskDO getAuditTask(@Param("id") int id);
+    AuditTaskDO getAuditTaskById(@Param("id") int id);
 
     @Select("select * from audit_task where tenant_code = #{tenantCode,jdbcType=VARCHAR} and apply_id = #{applyId,jdbcType=VARCHAR}")
     AuditTaskDO getAuditTask(@Param("tenantCode") String tenantCode, @Param("applyId") String applyId);
@@ -49,7 +49,9 @@ public interface AuditTaskMapper {
     @Update("update audit_task set task_status = #{taskStatus,jdbcType=TINYINT}, gmt_modified = now() where id = #{id,jdbcType=INTEGER}")
     int updateTaskStatus(@Param("taskStatus") int taskStatus, @Param("id") int id);
 
+    @Update("update audit_task set audit_code = #{auditCode,jdbcType=VARCHAR}, gmt_modified = now() where id = #{id,jdbcType=INTEGER}")
+    int updateAuditCode(@Param("auditCode") String auditCode, @Param("id") int id);
+
     @Update("update audit_task set callback_count = #{callbackCount,jdbcType=TINYINT}, gmt_modified = now() where id = #{id,jdbcType=INTEGER}")
     int updateCallbackCount(@Param("callbackCount") int callbackCount, @Param("id") int id);
-
 }

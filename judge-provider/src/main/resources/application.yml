@@ -1,3 +1,4 @@
+
 logging:
   level:
     root:
@@ -5,6 +6,7 @@ logging:
 spring:
   application:
     name: judge-provider
+
   redis:
     host: 192.168.40.151
     port: 6379
@@ -22,3 +24,7 @@ mybatis:
   type-aliases-package: com.ps.judge.dao.entity
   configuration:
     map-underscore-to-camel-case: true
+
+
+
+

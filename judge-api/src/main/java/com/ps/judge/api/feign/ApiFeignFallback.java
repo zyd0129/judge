@@ -22,6 +22,16 @@ public class ApiFeignFallback implements JudgeApi {
     }
 
     @Override
+    public ApiResponse<ApplyResultVO> retryAudit(Integer taskId) {
+        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), throwable.getMessage());
+    }
+
+    @Override
+    public ApiResponse<String> loadFlow(String flowCode) {
+        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), throwable.getMessage());
+    }
+
+    @Override
     public ApiResponse<String> submitVar(ApiResponse<VarResult> apiResponse) {
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), throwable.getMessage());
     }

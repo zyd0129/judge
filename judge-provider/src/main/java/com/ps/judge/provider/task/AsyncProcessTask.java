@@ -5,12 +5,15 @@ import com.ps.judge.api.entity.AuditResultVO;
 import com.ps.judge.api.entity.TriggeredRuleVO;
 import com.ps.judge.dao.entity.AuditTaskDO;
 import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;
+import com.ps.judge.dao.entity.ConfigFlowDO;
 import com.ps.judge.dao.mapper.AuditTaskMapper;
 import com.ps.judge.dao.mapper.AuditTaskParamMapper;
 import com.ps.judge.dao.mapper.AuditTaskTriggeredRuleMapper;
+import com.ps.judge.dao.mapper.ConfigFlowMapper;
 import com.ps.judge.provider.drools.KSessionManager;
 import com.ps.judge.provider.enums.AuditCodeEnum;
 import com.ps.judge.provider.enums.AuditTaskStatusEnum;
+import com.ps.judge.provider.enums.StatusEnum;
 import com.ps.judge.provider.service.ProcessService;
 import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.response.VarResult;
@@ -20,10 +23,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class AsyncProcessTask {
@@ -34,17 +34,33 @@ public class AsyncProcessTask {
     @Autowired
     AuditTaskTriggeredRuleMapper auditTaskTriggeredRuleMapper;
     @Autowired
+    ConfigFlowMapper configFlowMapper;
+    @Autowired
     KSessionManager kSessionManager;
     @Autowired
     ProcessService processService;
 
     @Async
     public void startProcess(AuditTaskDO auditTask, VarResult varResult) {
-        if (auditTask.getTaskStatus() != AuditTaskStatusEnum.VAR_ACCEPTED.getCode()) {
+        if (auditTask.getTaskStatus() != AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode()) {
             return;
         }
-        Integer auditId = auditTask.getId();
-        KieSession kieSession = this.kSessionManager.getKieSession(auditTask.getFlowCode());
+        Integer taskId = auditTask.getId();
+        String flowCode = auditTask.getFlowCode();
+        ConfigFlowDO configFlow = this.configFlowMapper.getByFlowCode(flowCode);
+        if (Objects.isNull(configFlow)) {
+            this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode(), taskId);
+            return;
+        }
+        if (configFlow.getStatus() != StatusEnum.ENABLE.status()) {
+            this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode(), taskId);
+            return;
+        }
+        KieSession kieSession = this.kSessionManager.getKieSession(flowCode);
+        if (Objects.isNull(kieSession)) {
+            this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode(), taskId);
+            return;
+        }
 
         Map<String, Object> map = new HashMap<>();
         List<AuditTaskTriggeredRuleDO> triggeredRuleList = new ArrayList<>();
@@ -52,20 +68,24 @@ public class AsyncProcessTask {
         map.put("merchant", varResult.getMerchant());
         map.put("product", varResult.getProduct());
         map.put("triggeredRuleList", triggeredRuleList);
-
-        kieSession.startProcess(auditTask.getFlowCode(), map);
+        kieSession.startProcess(flowCode, map);
         kieSession.dispose();
-        this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE.getCode(), auditId);
-        //todo 更新 AuditCode AuditScore
 
         triggeredRuleList = (List<AuditTaskTriggeredRuleDO>) map.get("triggeredRuleList");
-
+        if (triggeredRuleList.size() > 0) {
+            auditTask.setAuditCode(AuditCodeEnum.REJECT.toString());
+        } else {
+            auditTask.setAuditCode(AuditCodeEnum.PASS.toString());
+        }
+        auditTask.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_SUCCESS.getCode());
+        this.auditTaskMapper.updateTaskStatus(auditTask.getTaskStatus(), taskId);
+        this.auditTaskMapper.updateAuditCode(auditTask.getAuditCode(), taskId);
         List<TriggeredRuleVO> triggeredRuleVOList = new ArrayList<>();
         for (AuditTaskTriggeredRuleDO triggeredRule : triggeredRuleList) {
-            triggeredRule.setTaskId(auditTask.getId());
+            triggeredRule.setTaskId(taskId);
             triggeredRule.setTenantCode(auditTask.getTenantCode());
             triggeredRule.setApplyId(auditTask.getApplyId());
-            triggeredRule.setFlowCode(auditTask.getFlowCode());
+            triggeredRule.setFlowCode(flowCode);
             triggeredRule.setRuleName("");
             triggeredRule.setRuleVersion("");
             triggeredRule.setRulePackageCode("");
@@ -75,6 +95,7 @@ public class AsyncProcessTask {
             triggeredRule.setExpression("");
             triggeredRule.setGmtCreate(LocalDateTime.now());
             this.auditTaskTriggeredRuleMapper.insert(triggeredRule);
+
             TriggeredRuleVO triggeredRuleVO = new TriggeredRuleVO();
             triggeredRuleVO.setRulePackageCode(triggeredRule.getRulePackageCode());
             triggeredRuleVO.setRuleCode(triggeredRule.getRuleCode());
@@ -98,19 +119,14 @@ public class AsyncProcessTask {
         auditResult.setDeviceFingerPrint(varResult.getDeviceFingerPrint());
         auditResult.setTransactionTime(varResult.getTransactionTime());
         auditResult.setCallbackUrl(varResult.getCallbackUrl());
-        auditResult.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE.getCode());
-        if (triggeredRuleList.size() > 0) {
-            auditResult.setAuditCode(AuditCodeEnum.REJECT.toString());
-        } else {
-            auditResult.setAuditCode(AuditCodeEnum.PASS.toString());
-        }
+        auditResult.setTaskStatus(auditTask.getTaskStatus());
+        auditResult.setAuditCode(auditResult.getAuditCode());
         auditResult.setTriggeredRules(triggeredRuleVOList);
 
         ApiResponse<AuditResultVO> apiResponse = ApiResponse.success(auditResult);
-        this.auditTaskParamMapper.updateOutputRawParam(JSON.toJSONString(apiResponse), auditId);
-        this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.CALLBACK.getCode(), auditId);
+        this.auditTaskParamMapper.updateOutputRawParam(JSON.toJSONString(apiResponse), taskId);
+        this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.CALLBACK.getCode(), taskId);
         this.processService.sendAuditResult(auditTask, apiResponse);
     }
-
 
 }

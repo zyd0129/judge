@@ -1,6 +1,6 @@
 package com.ps.judge.provider.drools;
 
-import com.ps.judge.provider.models.ConfigFlowBO;
+import com.ps.judge.dao.entity.ConfigFlowDO;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 
@@ -10,9 +10,9 @@ public interface KSessionManager {
 
     StatelessKieSession getStatelessKieSession(String flowCode);
 
-    void addContainer(ConfigFlowBO configFlow);
+    boolean addContainer(ConfigFlowDO configFlow);
 
-    void removeContainer(ConfigFlowBO configFlow);
+    boolean removeContainer(ConfigFlowDO configFlow);
 
-    boolean existedContainer(ConfigFlowBO configFlow);
+    boolean existedContainer(ConfigFlowDO configFlow);
 }

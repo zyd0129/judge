@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Configuration
 @EnableAsync
@@ -23,11 +24,10 @@ public class TreadPoolConfiguration implements AsyncConfigurer {
         //线程池的队列容量
         executor.setQueueCapacity(Runtime.getRuntime().availableProcessors() * 500);
         //线程名称的前缀
-        executor.setThreadNamePrefix("this-executor-");
-
+        executor.setThreadNamePrefix("this-async-");
         // setRejectedExecutionHandler：当pool已经达到max size的时候，如何处理新任务
         // CallerRunsPolicy：不在新线程中执行任务，而是由调用者所在的线程来执行
-        //executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executor.initialize();
         return executor;
     }
