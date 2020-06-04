@@ -5,7 +5,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class AuthUserChangePassReq {
+public class AuthUserResetPassReq {
     private int id;
     private String rawPassword;
     private String password;

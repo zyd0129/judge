@@ -2,13 +2,13 @@ package com.ps.judge.web.auth.utils;
 
 import com.ps.judge.web.auth.objects.AuthAuthorityBO;
 import com.ps.judge.web.auth.objects.AuthRoleBO;
-import com.ps.judge.web.auth.vo.AuthRoleVO;
-import com.ps.judge.web.auth.vo.FirstMenu;
-import com.ps.judge.web.auth.vo.SecondMenu;
+import com.ps.judge.web.auth.objects.AuthUserBO;
+import com.ps.judge.web.auth.vo.*;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VOUtils {
     public static List<FirstMenu> convertToMenuTree(List<AuthAuthorityBO> authAuthorityBOList) {
@@ -65,5 +65,48 @@ public class VOUtils {
             authRoleVO.setAuthorities(convertToMenuTree(authRoleBO.getAuthorities()));
         }
         return authRoleVO;
+    }
+
+    public static AuthUserVO convertToAuthUserVO(AuthUserBO authUserBO) {
+        if (authUserBO == null) {
+            return null;
+        }
+        AuthUserVO authUserVO = new AuthUserVO();
+        BeanUtils.copyProperties(authUserBO, authUserVO);
+        return authUserVO;
+    }
+
+    public static List<AuthUserVO> convertToAuthUserVOs(List<AuthUserBO> authUserBOList) {
+        if (authUserBOList == null) {
+            return null;
+        }
+        return authUserBOList.stream().map(VOUtils::convertToAuthUserVO).collect(Collectors.toList());
+    }
+
+    public static AuthUserBO convertToAuthUserBO(AuthUserVO authUserVO) {
+        if (authUserVO == null) {
+            return null;
+        }
+        AuthUserBO authUserBO = new AuthUserBO();
+        BeanUtils.copyProperties(authUserVO, authUserBO);
+        return authUserBO;
+    }
+
+    public static AuthUserBO convertToAuthUserBO(AuthUserModifyReq authUserVO) {
+        if (authUserVO == null) {
+            return null;
+        }
+        AuthUserBO authUserBO = new AuthUserBO();
+        BeanUtils.copyProperties(authUserVO, authUserBO);
+        return authUserBO;
+    }
+
+    public static AuthUserBO convertToAuthUserBO(AuthUserResetPassReq authUserVO) {
+        if (authUserVO == null) {
+            return null;
+        }
+        AuthUserBO authUserBO = new AuthUserBO();
+        BeanUtils.copyProperties(authUserVO, authUserBO);
+        return authUserBO;
     }
 }

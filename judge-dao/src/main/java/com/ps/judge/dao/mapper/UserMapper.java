@@ -37,12 +37,12 @@ public interface UserMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insert(AuthUserDO authUserDO);
 
-    @Update("UPDATE auth_user SET username = #{username},name = #{name},roles = #{roles}, operator = #{operator}, gmt_modified = #{gmtModified} where id=#{id}")
+    @Update("UPDATE auth_user SET username = #{username},name = #{name},mobile=#{mobile},roles = #{roles}, operator = #{operator}, gmt_modified = #{gmtModified} where id=#{id}")
     void update(AuthUserDO authUserDO);
 
     @Update("UPDATE auth_user SET password = #{password}, operator = #{operator}, gmt_modified = #{gmtModified} where id=#{id}")
     void changePassword(AuthUserDO authUserDO);
 
     @Delete("delete from auth_user where id=#{id}")
-    void delete(String id);
+    void delete(int id);
 }

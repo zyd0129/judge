@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
-public class UserController {
+public class RoleController {
 
     @Autowired
     RoleService roleService;
