@@ -1,5 +1,6 @@
 package com.ps.judge.provider.config;
 
+import com.ps.judge.provider.handler.RestResponseErrorHandler;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +15,9 @@ public class JudgeAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(RestTemplate.class)
     public RestTemplate restTemplate() {
-        return new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setErrorHandler(new RestResponseErrorHandler());
+        return restTemplate;
     }
 
     @Bean
