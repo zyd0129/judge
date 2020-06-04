@@ -1,13 +1,16 @@
 package com.ps.judge.web.auth.utils;
 
 import com.ps.judge.web.auth.objects.AuthAuthorityBO;
+import com.ps.judge.web.auth.objects.AuthRoleBO;
+import com.ps.judge.web.auth.vo.AuthRoleVO;
 import com.ps.judge.web.auth.vo.FirstMenu;
 import com.ps.judge.web.auth.vo.SecondMenu;
+import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuthorityVOUtils {
+public class VOUtils {
     public static List<FirstMenu> convertToMenuTree(List<AuthAuthorityBO> authAuthorityBOList) {
         if (authAuthorityBOList == null) {
             return null;
@@ -50,5 +53,17 @@ public class AuthorityVOUtils {
         }
 
         return firstMenus;
+    }
+
+    public static AuthRoleVO convertToAuthRoleVO(AuthRoleBO authRoleBO) {
+        if (authRoleBO == null) {
+            return null;
+        }
+        AuthRoleVO authRoleVO = new AuthRoleVO();
+        BeanUtils.copyProperties(authRoleBO, authRoleVO);
+        if (authRoleBO.getAuthorities() != null) {
+            authRoleVO.setAuthorities(convertToMenuTree(authRoleBO.getAuthorities()));
+        }
+        return authRoleVO;
     }
 }

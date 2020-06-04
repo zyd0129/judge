@@ -6,7 +6,8 @@ import com.ps.judge.web.auth.RoleService;
 import com.ps.judge.web.auth.objects.AuthAuthorityBO;
 import com.ps.judge.web.auth.objects.AuthRoleBO;
 import com.ps.judge.web.auth.objects.AuthUserBO;
-import com.ps.judge.web.auth.utils.AuthorityVOUtils;
+import com.ps.judge.web.auth.utils.VOUtils;
+import com.ps.judge.web.auth.vo.AuthRoleVO;
 import com.ps.judge.web.auth.vo.FirstMenu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,7 +36,7 @@ public class UserController {
 //    @PreAuthorize("hasAuthority('authority_list')")
     public ApiResponse<List<FirstMenu>> authorities() {
         List<AuthAuthorityBO> authRoleBOList = authorityService.queryAll();
-        List<FirstMenu> firstMenus = AuthorityVOUtils.convertToMenuTree(authRoleBOList);
+        List<FirstMenu> firstMenus = VOUtils.convertToMenuTree(authRoleBOList);
         return ApiResponse.success(firstMenus);
     }
 
@@ -44,6 +45,14 @@ public class UserController {
     public ApiResponse<List<AuthRoleBO>> roles() {
        List<AuthRoleBO> authRoleBOList = roleService.queryAll();
         return ApiResponse.success(authRoleBOList);
+    }
+
+    @GetMapping("/roles/get")
+    @PreAuthorize("hasAuthority('role_list')")
+    public ApiResponse<AuthRoleVO> role(@RequestParam int id) {
+        AuthRoleBO authRoleBO = roleService.getById(id);
+        AuthRoleVO authRoleVO = VOUtils.convertToAuthRoleVO(authRoleBO);
+        return ApiResponse.success(authRoleVO);
     }
 
     @PostMapping("/roles/add")

@@ -19,4 +19,6 @@ public interface RoleService {
     void modifyRule(AuthRoleBO authRoleBO);
 
     List<AuthRoleBO> queryAll();
+
+    AuthRoleBO getById(int id);
 }

@@ -81,6 +81,11 @@ public class RoleServiceImpl implements RoleService {
 
     }
 
+    @Override
+    public AuthRoleBO getById(int id) {
+        return convertToBO(roleMapper.getById(id));
+    }
+
     private AuthRoleDO convertToDO(AuthRoleBO authRoleBO) {
         if (authRoleBO == null) {
             return null;

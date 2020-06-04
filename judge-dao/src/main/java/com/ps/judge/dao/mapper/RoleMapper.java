@@ -13,6 +13,10 @@ public interface RoleMapper {
     })
     List<AuthRoleDO> queryAll();
 
+    @Select("select * from auth_role where id=#{id}")
+    @ResultMap(value = "ruleResultMap")
+    AuthRoleDO getById(int id);
+
     @Insert("insert into auth_role (name, authorities," +
             "operator,gmt_created,gmt_modified)" +
             " values " +
