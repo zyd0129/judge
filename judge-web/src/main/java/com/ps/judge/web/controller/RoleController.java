@@ -1,6 +1,8 @@
 package com.ps.judge.web.controller;
 
 import com.ps.common.ApiResponse;
+import com.ps.common.PageResult;
+import com.ps.common.query.QueryVo;
 import com.ps.judge.web.auth.AuthorityService;
 import com.ps.judge.web.auth.RoleService;
 import com.ps.judge.web.auth.objects.AuthAuthorityBO;
@@ -26,33 +28,29 @@ public class RoleController {
 
     @Autowired
     AuthorityService authorityService;
-    @GetMapping("/hello")
-    public String hello() {
-        AuthUserBO authUserBO = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return "hello" + authUserBO.getName();
-    }
 
-    @GetMapping("/authorities")
-//    @PreAuthorize("hasAuthority('authority_list')")
+    @GetMapping("/authorities/list")
+    @PreAuthorize("hasAnyAuthority('role_add','role_modify')")
     public ApiResponse<List<FirstMenu>> authorities() {
         List<AuthAuthorityBO> authRoleBOList = authorityService.queryAll();
         List<FirstMenu> firstMenus = VOUtils.convertToMenuTree(authRoleBOList);
         return ApiResponse.success(firstMenus);
     }
 
-    @GetMapping("/roles")
+    @PostMapping("/roles/list")
     @PreAuthorize("hasAuthority('role_list')")
-    public ApiResponse<List<AuthRoleBO>> roles() {
-       List<AuthRoleBO> authRoleBOList = roleService.queryAll();
-        return ApiResponse.success(authRoleBOList);
+    public ApiResponse<PageResult<AuthRoleVO>> roles(@RequestBody QueryVo<AuthRoleBO> queryVo) {
+        queryVo.setQuery(null);
+        return queryRoles(queryVo);
     }
 
-    @GetMapping("/roles/get")
-    @PreAuthorize("hasAuthority('role_list')")
-    public ApiResponse<AuthRoleVO> role(@RequestParam int id) {
-        AuthRoleBO authRoleBO = roleService.getById(id);
-        AuthRoleVO authRoleVO = VOUtils.convertToAuthRoleVO(authRoleBO);
-        return ApiResponse.success(authRoleVO);
+    @PostMapping("/roles/query")
+    @PreAuthorize("hasAuthority('role_query')")
+    public ApiResponse<PageResult<AuthRoleVO>> queryRoles(@RequestBody QueryVo<AuthRoleBO> queryVo) {
+        List<AuthRoleBO> roleBOList = roleService.query(queryVo.convertToQueryParam());
+        List<AuthRoleVO> authRoleVOS = VOUtils.convertToAuthRoleVOs(roleBOList);
+        PageResult<AuthRoleVO> pageResult = new PageResult<>(queryVo.getCurPage(), queryVo.getPageSize(), authRoleVOS);
+        return ApiResponse.success(pageResult);
     }
 
     @PostMapping("/roles/add")
@@ -73,6 +71,13 @@ public class RoleController {
         authRoleBO.setGmtModified(LocalDateTime.now());
         roleService.modifyRule(authRoleBO);
         return ApiResponse.success();
+    }
+    @GetMapping("/roles/get")
+    @PreAuthorize("hasAnyAuthority('role_add','role_modify')")
+    public ApiResponse<AuthRoleVO> role(@RequestParam int id) {
+        AuthRoleBO authRoleBO = roleService.getById(id);
+        AuthRoleVO authRoleVO = VOUtils.convertToAuthRoleVO(authRoleBO);
+        return ApiResponse.success(authRoleVO);
     }
 
     @PostMapping("/roles/delete")

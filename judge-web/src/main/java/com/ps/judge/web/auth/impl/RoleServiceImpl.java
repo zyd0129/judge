@@ -2,6 +2,7 @@ package com.ps.judge.web.auth.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ps.common.query.QueryParams;
 import com.ps.judge.dao.entity.AuthRoleDO;
 import com.ps.judge.dao.mapper.RoleMapper;
 import com.ps.judge.web.auth.RoleService;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ public class RoleServiceImpl implements RoleService {
     RoleMapper roleMapper;
 
     @Override
-    public List<AuthAuthorityBO> getAuthoritieBOsByRoleNames(String[] names) {
+    public Set<AuthAuthorityBO> getAuthorityBOsByRoleNames(String[] names) {
         if (names == null) {
             return null;
         }
@@ -42,15 +43,15 @@ public class RoleServiceImpl implements RoleService {
             }
         }
         if (authAuthorityBOList.size() == 0) {
-            authAuthorityBOList = null;
+            return null;
         }
 
-        return authAuthorityBOList;
+        return new HashSet<>(authAuthorityBOList);
     }
 
     @Override
     public Set<GrantedAuthority> getAuthoritiesByRoleNames(String[] split) {
-        List<AuthAuthorityBO> authAuthorityBOList = getAuthoritieBOsByRoleNames(split);
+        Set<AuthAuthorityBO> authAuthorityBOList = getAuthorityBOsByRoleNames(split);
         if (authAuthorityBOList == null) {
             return null;
         }
@@ -76,14 +77,19 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<AuthRoleBO> queryAll() {
-        List<AuthRoleDO> authRoleDOList = roleMapper.queryAll();
+        List<AuthRoleDO> authRoleDOList = roleMapper.listAll();
         return convertToBOs(authRoleDOList);
-
     }
 
     @Override
     public AuthRoleBO getById(int id) {
         return convertToBO(roleMapper.getById(id));
+    }
+
+    @Override
+    public List<AuthRoleBO> query(QueryParams<AuthRoleBO> queryParams) {
+        QueryParams<AuthRoleDO> queryReq = convertParam(queryParams);
+        return convertToBOs(roleMapper.query(queryReq));
     }
 
     private AuthRoleDO convertToDO(AuthRoleBO authRoleBO) {
@@ -119,5 +125,12 @@ public class RoleServiceImpl implements RoleService {
         }
 
         return roleDOList.stream().map(this::convertToBO).collect(Collectors.toList());
+    }
+
+    private QueryParams<AuthRoleDO> convertParam(QueryParams<AuthRoleBO> queryParams) {
+        QueryParams<AuthRoleDO> queryParams1 = new QueryParams<>();
+        BeanUtils.copyProperties(queryParams, queryParams1);
+        queryParams1.setQuery(convertToDO(queryParams.getQuery()));
+        return queryParams1;
     }
 }

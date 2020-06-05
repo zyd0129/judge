@@ -68,6 +68,12 @@ public class VOUtils {
         }
         return authRoleVO;
     }
+    public static List<AuthRoleVO> convertToAuthRoleVOs(List<AuthRoleBO> authRoleBOList) {
+        if (authRoleBOList == null) {
+            return null;
+        }
+        return authRoleBOList.stream().map(VOUtils::convertToAuthRoleVO).collect(Collectors.toList());
+    }
 
     public static AuthUserVO convertToAuthUserVO(AuthUserBO authUserBO) {
         if (authUserBO == null) {

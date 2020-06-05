@@ -1,5 +1,6 @@
 package com.ps.judge.dao.mapper;
 
+import com.ps.common.query.QueryParams;
 import com.ps.judge.dao.entity.AuthRoleDO;
 import org.apache.ibatis.annotations.*;
 
@@ -11,7 +12,23 @@ public interface RoleMapper {
             @Result(column = "gmt_created", property = "gmtCreated"),
             @Result(column = "gmt_modified", property = "gmtModified")
     })
-    List<AuthRoleDO> queryAll();
+    List<AuthRoleDO> listAll();
+
+    @Select({"<script>",
+            "select * from auth_role",
+            "where",
+            "1=1",
+            "<if test='query!=null'>",
+            "<if test='query.name!=null'>",
+            "and",
+            "name=#{query.name}",
+            "</if>",
+            "</if>",
+            "limit #{startNo},#{pageSize}",
+            "</script>"
+    })
+    @ResultMap(value = "ruleResultMap")
+    List<AuthRoleDO> query(QueryParams<AuthRoleDO> queryReq);
 
     @Select("select * from auth_role where id=#{id}")
     @ResultMap(value = "ruleResultMap")
@@ -43,4 +60,6 @@ public interface RoleMapper {
     })
     @ResultMap(value = "ruleResultMap")
     List<AuthRoleDO> queryByNames(@Param("names") String [] names);
+
+
 }
