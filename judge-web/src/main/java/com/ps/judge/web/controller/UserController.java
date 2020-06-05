@@ -5,8 +5,8 @@ import com.ps.common.exception.BizException;
 import com.ps.judge.web.auth.UserService;
 import com.ps.judge.web.auth.objects.AuthUserBO;
 import com.ps.judge.web.auth.utils.VOUtils;
-import com.ps.judge.web.auth.vo.AuthUserResetPassReq;
-import com.ps.judge.web.auth.vo.AuthUserModifyReq;
+import com.ps.judge.web.auth.req.AuthUserResetPassReq;
+import com.ps.judge.web.auth.req.AuthUserModifyReq;
 import com.ps.judge.web.auth.vo.AuthUserVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,6 +31,14 @@ public class UserController {
         List<AuthUserBO> authUserBOList = userService.query();
 
         return ApiResponse.success(VOUtils.convertToAuthUserVOs(authUserBOList));
+    }
+
+    @GetMapping("/users/current/get")
+    public ApiResponse<AuthUserVO> getUser() {
+
+        AuthUserBO  currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return ApiResponse.success(VOUtils.convertToAuthUserVO(currentUser));
     }
 
     @PostMapping("/users/add")

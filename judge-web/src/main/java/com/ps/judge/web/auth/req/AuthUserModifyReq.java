@@ -1,4 +1,4 @@
-package com.ps.judge.web.auth.vo;
+package com.ps.judge.web.auth.req;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

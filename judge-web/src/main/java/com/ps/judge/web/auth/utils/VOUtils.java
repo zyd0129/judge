@@ -3,6 +3,8 @@ package com.ps.judge.web.auth.utils;
 import com.ps.judge.web.auth.objects.AuthAuthorityBO;
 import com.ps.judge.web.auth.objects.AuthRoleBO;
 import com.ps.judge.web.auth.objects.AuthUserBO;
+import com.ps.judge.web.auth.req.AuthUserModifyReq;
+import com.ps.judge.web.auth.req.AuthUserResetPassReq;
 import com.ps.judge.web.auth.vo.*;
 import org.springframework.beans.BeanUtils;
 
