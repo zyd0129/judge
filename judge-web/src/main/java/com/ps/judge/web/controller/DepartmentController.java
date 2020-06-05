@@ -34,4 +34,20 @@ public class DepartmentController {
         return ApiResponse.success();
     }
 
+    @PostMapping("/departments/add")
+    public ApiResponse addDepartment(@RequestBody AuthDepartmentBO departmentBO) {
+        AuthUserBO currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        departmentBO.setGmtCreated(LocalDateTime.now());
+        departmentBO.setGmtModified(LocalDateTime.now());
+        departmentBO.setOperator(currentUser.getUsername());
+        departmentService.add(departmentBO);
+        return ApiResponse.success();
+    }
+
+    @PostMapping("/departments/delete")
+    public ApiResponse deleteDepartment(@RequestParam int id) {
+       departmentService.deleteById(id);
+        return ApiResponse.success();
+    }
+
 }

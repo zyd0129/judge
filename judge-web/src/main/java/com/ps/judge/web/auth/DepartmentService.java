@@ -9,4 +9,10 @@ public interface DepartmentService {
     List<AuthDepartmentBO> query(QueryParams<AuthDepartmentBO> queryParams);
 
     void update(AuthDepartmentBO departmentBO);
+
+    AuthDepartmentBO getById(int id);
+
+    void deleteById(int id);
+
+    void add(AuthDepartmentBO departmentBO);
 }

@@ -26,6 +26,10 @@ public interface DepartmentMapper {
     })
     List<AuthDepartmentDO> query(QueryParams q);
 
+    @Select("select * from auth_department where id=#{id}")
+    @ResultMap(value = "departmentResultMap")
+    AuthDepartmentDO getById(int id);
+
     @Insert("insert into auth_department (name, pic,members," +
             "operator,gmt_created,gmt_modified)" +
             " values " +
@@ -39,5 +43,5 @@ public interface DepartmentMapper {
     void update(AuthDepartmentDO authDepartmentDO);
 
     @Delete("delete from auth_department where id=#{id}")
-    void delete(String id);
+    void delete(int id);
 }

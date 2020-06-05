@@ -2,6 +2,7 @@ package com.ps.judge.web.auth.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.internal.$Gson$Preconditions;
 import com.ps.common.query.QueryParams;
 import com.ps.judge.dao.entity.AuthDepartmentDO;
 import com.ps.judge.dao.mapper.DepartmentMapper;
@@ -27,6 +28,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Autowired
     UserMapper userMapper;
+
     @Override
     public List<AuthDepartmentBO> query(QueryParams<AuthDepartmentBO> queryParams) {
 
@@ -34,20 +36,80 @@ public class DepartmentServiceImpl implements DepartmentService {
         return convertToBOs(departmentMapper.query(queryReq));
     }
 
+    private Set<String> getUsernameSet(AuthDepartmentBO departmentBO) {
+        Set<String> curUsernameSet;
+        if (departmentBO.getMembers() != null) {
+            curUsernameSet = departmentBO.getMembers().stream().map(AuthUserBO::getUsername).distinct().collect(Collectors.toSet());
+        } else {
+            curUsernameSet = new HashSet<>();
+        }
+        if (!StringUtils.isEmpty(departmentBO.getPic())) {
+            curUsernameSet.add(departmentBO.getPic());
+        }
+        return curUsernameSet;
+    }
+
+    /*
+     *
+     * @param departmentBO
+     */
     @Override
     @Transactional
     public void update(AuthDepartmentBO departmentBO) {
         if (departmentBO == null) {
             return;
         }
+        AuthDepartmentBO preDepartmentBO = getById(departmentBO.getId());
+        Set<String> preUsernameSet = getUsernameSet(preDepartmentBO);
+
         departmentMapper.update(convertToDO(departmentBO));
-        if(departmentBO.getMembers().size()>0 || !StringUtils.isEmpty(departmentBO.getPic())){
-            Set<String> usernameSet =  departmentBO.getMembers().stream().map(AuthUserBO::getUsername).collect(Collectors.toSet());
-            usernameSet.add(departmentBO.getPic());
-            userMapper.batchUpdateDepartment(usernameSet,departmentBO.getName());
+
+        Set<String> curUsernameSet = getUsernameSet(departmentBO);
+
+        Set<String> incSet = new HashSet<>(curUsernameSet);
+        incSet.removeAll(preUsernameSet);
+        if (incSet.size() > 0)
+            userMapper.batchUpdateDepartment(incSet, departmentBO.getName());
+        Set<String> decSet = new HashSet<>(preUsernameSet);
+        decSet.removeAll(curUsernameSet);
+        if (decSet.size() > 0)
+            userMapper.batchUpdateDepartment(decSet, "");
+
+    }
+
+
+    @Override
+    public AuthDepartmentBO getById(int id) {
+        return convertToBO(departmentMapper.getById(id));
+    }
+
+    @Transactional
+    @Override
+    public void deleteById(int id) {
+        AuthDepartmentBO preDepartmentBO = getById(id);
+        Set<String> preUsernameSet = getUsernameSet(preDepartmentBO);
+        departmentMapper.delete(id);
+        if(preUsernameSet.size()>0){
+            userMapper.batchUpdateDepartment(preUsernameSet, "");
+        }
+    }
+
+    @Override
+    public void add(AuthDepartmentBO departmentBO) {
+        if (departmentBO == null) {
+            return;
+        }
+
+        departmentMapper.insert(convertToDO(departmentBO));
+
+        Set<String> curUsernameSet = getUsernameSet(departmentBO);
+
+        if (curUsernameSet.size() > 0) {
+            userMapper.batchUpdateDepartment(curUsernameSet,departmentBO.getName());
         }
 
     }
+
 
     private AuthDepartmentDO convertToDO(AuthDepartmentBO authDepartmentBO) {
         if (authDepartmentBO == null) {
@@ -55,7 +117,12 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
         AuthDepartmentDO authDepartmentDO = new AuthDepartmentDO();
         BeanUtils.copyProperties(authDepartmentBO, authDepartmentDO);
-        authDepartmentDO.setMembers(JSON.toJSONString(authDepartmentBO.getMembers()));
+        if(authDepartmentBO.getMembers()!=null){
+            /**
+             * 如果不加条件, null会变为字符串
+             */
+            authDepartmentDO.setMembers(JSON.toJSONString(authDepartmentBO.getMembers()));
+        }
         return authDepartmentDO;
     }
 
