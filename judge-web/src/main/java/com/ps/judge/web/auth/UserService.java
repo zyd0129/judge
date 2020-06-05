@@ -16,4 +16,6 @@ public interface UserService {
     void deleteUser(int id);
 
     void changePassword(AuthUserBO authUserBO);
+
+    List<AuthUserBO> queryDepartmentIsEmpty();
 }

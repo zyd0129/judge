@@ -1,5 +1,7 @@
 package com.ps.judge.web.auth.objects;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,9 +25,17 @@ public class AuthUserBO  implements UserDetails {
     private String roles;
     private Set<GrantedAuthority> authorities;
 
+    @JsonIgnore
+    @JSONField(serialize = false)
     private boolean expired;
+    @JsonIgnore
+    @JSONField(serialize = false)
     private boolean locked;
+    @JsonIgnore
+    @JSONField(serialize = false)
     private boolean credentialsExpired;
+    @JsonIgnore
+    @JSONField(serialize = false)
     private boolean enabled;
 
     private String mobile;
@@ -33,20 +43,26 @@ public class AuthUserBO  implements UserDetails {
     private String department;
     private String operator;
 
-
+    @JsonIgnore
     private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;
 
+    @JsonIgnore
+    @JSONField(serialize = false)
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
+    @JSONField(serialize = false)
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
+    @JSONField(serialize = false)
     @Override
     public boolean isCredentialsNonExpired() {
         return true;

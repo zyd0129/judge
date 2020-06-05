@@ -55,6 +55,11 @@ public class UserServiceImpl implements UserService {
         userMapper.changePassword(authUserDO);
     }
 
+    @Override
+    public List<AuthUserBO> queryDepartmentIsEmpty() {
+        return convertToBOs(userMapper.queryDepartmentIsEmpty());
+    }
+
     private AuthUserDO convertToDO(AuthUserBO authUserBO) {
         if (authUserBO == null) {
             return null;

@@ -119,4 +119,11 @@ public class UserController {
 
         return ApiResponse.success();
     }
+
+    @GetMapping("/users/noDepartment/list")
+    public ApiResponse<List<AuthUserVO>> queryDepartmentIsNull() {
+        List<AuthUserBO> authUserBOList = userService.queryDepartmentIsEmpty();
+
+        return ApiResponse.success(VOUtils.convertToAuthUserVOs(authUserBOList));
+    }
 }

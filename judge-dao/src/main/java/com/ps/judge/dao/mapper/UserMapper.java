@@ -4,6 +4,7 @@ import com.ps.judge.dao.entity.AuthUserDO;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserMapper {
     @Select("select * from auth_user where username=#{username}")
@@ -18,9 +19,9 @@ public interface UserMapper {
     @ResultMap(value = "userResultMap")
     List<AuthUserDO> queryAll();
 
-    @Select("select * from auth_user where department=null")
+    @Select("select * from auth_user where department=''")
     @ResultMap(value = "userResultMap")
-    List<AuthUserDO> queryNullDepartment();
+    List<AuthUserDO> queryDepartmentIsEmpty();
 
     @Select("select * from auth_user where department")
     @ResultMap(value = "userResultMap")
@@ -45,4 +46,16 @@ public interface UserMapper {
 
     @Delete("delete from auth_user where id=#{id}")
     void delete(int id);
+
+
+    @Update({
+            "<script>",
+            "UPDATE auth_user SET department=#{department}",
+            "where username in",
+            "<foreach collection='usernames' item='username' open='(' separator=',' close=')'>",
+            "#{username}",
+            "</foreach>",
+            "</script>"
+    })
+    void batchUpdateDepartment(@Param("usernames") Set<String> usernames, @Param("department") String department);
 }
