@@ -16,7 +16,7 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: ${CONFIG_SERVER}
+        server-addr: ${CONFIG_SERVER:192.168.40.150:8848}
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     password: Dev@123456
