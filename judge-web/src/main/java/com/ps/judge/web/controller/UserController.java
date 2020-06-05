@@ -121,6 +121,7 @@ public class UserController {
     }
 
     @GetMapping("/users/noDepartment/list")
+    @PreAuthorize("hasAnyAuthority('department_add','department_modify')")
     public ApiResponse<List<AuthUserVO>> queryDepartmentIsNull() {
         List<AuthUserBO> authUserBOList = userService.queryDepartmentIsEmpty();
 
