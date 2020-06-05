@@ -58,4 +58,21 @@ public interface UserMapper {
             "</script>"
     })
     void batchUpdateDepartment(@Param("usernames") Set<String> usernames, @Param("department") String department);
+
+    @Select({"<script>",
+            "select * from auth_user",
+            "where",
+            "1=1",
+            "<if test='role!=null'>",
+            "and roles like #{role}",
+            "</if>",
+            "<if test='fuzzyValue!=null'>",
+            "and (username like #{fuzzyValue}",
+            "or name like #{fuzzyValue}",
+            "or mobile like #{fuzzyValue})",
+            "</if>",
+            "limit #{startNo},#{pageSize}",
+            "</script>"
+    })
+    List<AuthUserDO> query(int startNo, int pageSize, String fuzzyValue, String role);
 }

@@ -44,6 +44,13 @@ public class RoleController {
         return queryRoles(queryVo);
     }
 
+    @PostMapping("/roles/all")
+    @PreAuthorize("hasAuthority('user_add')")
+    public ApiResponse<List<AuthRoleBO>> allRoles() {
+        List<AuthRoleBO> roleBOList = roleService.queryAll();
+        return ApiResponse.success(roleBOList);
+    }
+
     @PostMapping("/roles/query")
     @PreAuthorize("hasAuthority('role_query')")
     public ApiResponse<PageResult<AuthRoleVO>> queryRoles(@RequestBody QueryVo<AuthRoleBO> queryVo) {

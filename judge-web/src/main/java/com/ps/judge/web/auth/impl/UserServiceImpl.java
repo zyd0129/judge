@@ -1,11 +1,12 @@
 package com.ps.judge.web.auth.impl;
 
-import com.ps.judge.dao.entity.AuthRoleDO;
+import com.ps.common.query.QueryParams;
+import com.ps.common.query.QueryVo;
 import com.ps.judge.dao.entity.AuthUserDO;
 import com.ps.judge.dao.mapper.UserMapper;
 import com.ps.judge.web.auth.UserService;
-import com.ps.judge.web.auth.objects.AuthRoleBO;
 import com.ps.judge.web.auth.objects.AuthUserBO;
+import com.ps.judge.web.auth.req.AuthUserQueryReq;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,20 +26,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<AuthUserBO> query() {
-        return convertToBOs(userMapper.queryAll());
+    public List<AuthUserBO> query(QueryParams<AuthUserQueryReq> query) {
+        String fuzzyValue=null;
+        String role=null;
+        if (query.getQuery()!=null) {
+            if(query.getQuery().getFuzzyValue()!=null){
+                fuzzyValue="%"+query.getQuery().getFuzzyValue()+"%";
+            }
+            if(query.getQuery().getRole()!=null) {
+                role="%"+query.getQuery().getRole()+"%";
+            }
+        }
+        return convertToBOs(userMapper.query(query.getStartNo(),query.getPageSize(),fuzzyValue,role));
     }
 
     @Override
     public void addUser(AuthUserBO authUserBO) {
-        if(authUserBO==null) return;
+        if (authUserBO == null) return;
         AuthUserDO authUserDO = convertToDO(authUserBO);
         userMapper.insert(authUserDO);
     }
 
     @Override
     public void modifyUser(AuthUserBO authUserBO) {
-        if(authUserBO==null) return;
+        if (authUserBO == null) return;
         AuthUserDO authUserDO = convertToDO(authUserBO);
         userMapper.update(authUserDO);
     }
@@ -50,7 +61,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePassword(AuthUserBO authUserBO) {
-        if(authUserBO==null) return;
+        if (authUserBO == null) return;
         AuthUserDO authUserDO = convertToDO(authUserBO);
         userMapper.changePassword(authUserDO);
     }

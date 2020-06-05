@@ -1,9 +1,13 @@
 package com.ps.judge.web.controller;
 
 import com.ps.common.ApiResponse;
+import com.ps.common.PageResult;
 import com.ps.common.exception.BizException;
+import com.ps.common.query.QueryVo;
 import com.ps.judge.web.auth.UserService;
+import com.ps.judge.web.auth.objects.AuthDepartmentBO;
 import com.ps.judge.web.auth.objects.AuthUserBO;
+import com.ps.judge.web.auth.req.AuthUserQueryReq;
 import com.ps.judge.web.auth.utils.VOUtils;
 import com.ps.judge.web.auth.req.AuthUserResetPassReq;
 import com.ps.judge.web.auth.req.AuthUserModifyReq;
@@ -26,20 +30,21 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping("/users/list")
-    public ApiResponse<List<AuthUserVO>> users() {
-        List<AuthUserBO> authUserBOList = userService.query();
-
-        return ApiResponse.success(VOUtils.convertToAuthUserVOs(authUserBOList));
+    @PostMapping("/users/list")
+    public ApiResponse<PageResult<AuthUserVO>> users(@RequestBody QueryVo<AuthUserQueryReq> queryVo ) {
+        queryVo.setQuery(null);
+        return queryUsers(queryVo);
     }
 
-    @GetMapping("/users/current/get")
-    public ApiResponse<AuthUserVO> getUser() {
+    @PostMapping("/users/query")
+    @PreAuthorize("hasAuthority('user_query')")
+    public ApiResponse<PageResult<AuthUserVO>> queryUsers(@RequestBody QueryVo<AuthUserQueryReq> queryVo) {
+        List<AuthUserBO> authUserBOList = userService.query(queryVo.convertToQueryParam());
 
-        AuthUserBO  currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        return ApiResponse.success(VOUtils.convertToAuthUserVO(currentUser));
+        PageResult<AuthUserVO> pageResult = new PageResult<>(queryVo.getCurPage(), queryVo.getPageSize(), VOUtils.convertToAuthUserVOs(authUserBOList));
+        return ApiResponse.success(pageResult);
     }
+
 
     @PostMapping("/users/add")
     @PreAuthorize("hasAuthority('user_add')")
@@ -56,7 +61,7 @@ public class UserController {
     }
 
     @PostMapping("/users/modify")
-    @PreAuthorize("hasAuthority('user_add')")
+    @PreAuthorize("hasAuthority('user_modify')")
     public ApiResponse modifyUser(@RequestBody AuthUserModifyReq authUserVO) {
         AuthUserBO  currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         authUserVO.setGmtModified(LocalDateTime.now());
@@ -68,7 +73,7 @@ public class UserController {
     }
 
     @PostMapping("/users/delete")
-    @PreAuthorize("hasAuthority('user_add')")
+    @PreAuthorize("hasAuthority('user_delete')")
     public ApiResponse deleteUser(@RequestParam int id) {
 
         userService.deleteUser(id);
@@ -82,7 +87,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/users/password/reset")
-    @PreAuthorize("hasAuthority('user_add')")
+    @PreAuthorize("hasAuthority('user_password_reset')")
     public ApiResponse resetPassword(@RequestBody AuthUserResetPassReq authUserVO) {
 
         AuthUserBO  currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -96,13 +101,20 @@ public class UserController {
         return ApiResponse.success();
     }
 
+    @GetMapping("/users/currentUser/info")
+    public ApiResponse<AuthUserVO> getUser() {
+
+        AuthUserBO  currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return ApiResponse.success(VOUtils.convertToAuthUserVO(currentUser));
+    }
+
     /**
      * 用户修改密码
      * @param authUserVO
      * @return
      */
-    @PostMapping("/users/password/change")
-    @PreAuthorize("hasAuthority('user_add')")
+    @PostMapping("/users/currentUser/changePassword")
     public ApiResponse changePassword(@RequestBody AuthUserResetPassReq authUserVO) {
 
         AuthUserBO  currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

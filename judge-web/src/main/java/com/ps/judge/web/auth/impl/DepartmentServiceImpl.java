@@ -89,7 +89,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         AuthDepartmentBO preDepartmentBO = getById(id);
         Set<String> preUsernameSet = getUsernameSet(preDepartmentBO);
         departmentMapper.delete(id);
-        if(preUsernameSet.size()>0){
+        if (preUsernameSet.size() > 0) {
             userMapper.batchUpdateDepartment(preUsernameSet, "");
         }
     }
@@ -105,7 +105,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         Set<String> curUsernameSet = getUsernameSet(departmentBO);
 
         if (curUsernameSet.size() > 0) {
-            userMapper.batchUpdateDepartment(curUsernameSet,departmentBO.getName());
+            userMapper.batchUpdateDepartment(curUsernameSet, departmentBO.getName());
         }
 
     }
@@ -117,7 +117,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
         AuthDepartmentDO authDepartmentDO = new AuthDepartmentDO();
         BeanUtils.copyProperties(authDepartmentBO, authDepartmentDO);
-        if(authDepartmentBO.getMembers()!=null){
+        if (authDepartmentBO.getMembers() != null) {
             /**
              * 如果不加条件, null会变为字符串
              */
