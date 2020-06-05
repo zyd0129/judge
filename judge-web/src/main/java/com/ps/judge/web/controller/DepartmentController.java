@@ -1,6 +1,8 @@
 package com.ps.judge.web.controller;
 
 import com.ps.common.ApiResponse;
+import com.ps.common.PageResult;
+import com.ps.common.query.QueryVo;
 import com.ps.judge.web.auth.DepartmentService;
 import com.ps.judge.web.auth.objects.AuthDepartmentBO;
 import com.ps.judge.web.auth.objects.AuthUserBO;
@@ -17,11 +19,11 @@ public class DepartmentController {
     @Autowired
     DepartmentService departmentService;
     @GetMapping("/departments/list")
-    public ApiResponse<List<AuthDepartmentBO>> departmentList() {
-       List<AuthDepartmentBO> departmentBOList = departmentService.query();
-        return ApiResponse.success(departmentBOList);
+    public ApiResponse<PageResult<AuthDepartmentBO>> departmentList(@RequestBody QueryVo<AuthDepartmentBO> queryVo) {
+       List<AuthDepartmentBO> departmentBOList = departmentService.query(queryVo.convertToQueryParam());
+        PageResult<AuthDepartmentBO> pageResult = new PageResult<>(queryVo.getCurPage(), queryVo.getPageSize(), departmentBOList);
+        return ApiResponse.success(pageResult);
     }
-
 
     @PostMapping("/departments/modify")
     public ApiResponse departmentList(@RequestBody AuthDepartmentBO departmentBO) {

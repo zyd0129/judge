@@ -1,17 +1,30 @@
 package com.ps.judge.dao.mapper;
 
+import com.ps.common.query.QueryParams;
 import com.ps.judge.dao.entity.AuthDepartmentDO;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
 public interface DepartmentMapper {
-    @Select("select * from auth_department limit #{startNo},#{pageSize}")
+    @Select({"<script>",
+            "select * from auth_department",
+            "where",
+            "1=1",
+            "<if test='query!=null'>",
+            "<if test='query.name!=null'>",
+            "and",
+            "name=#{query.name}",
+            "</if>",
+            "</if>",
+            "limit #{startNo},#{pageSize}",
+            "</script>"
+    })
     @Results(id = "departmentResultMap", value = {
             @Result(column = "gmt_created", property = "gmtCreated"),
             @Result(column = "gmt_modified", property = "gmtModified")
     })
-    List<AuthDepartmentDO> queryAll(QueryReq q);
+    List<AuthDepartmentDO> query(QueryParams q);
 
     @Insert("insert into auth_department (name, pic,members," +
             "operator,gmt_created,gmt_modified)" +
