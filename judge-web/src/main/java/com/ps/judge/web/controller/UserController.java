@@ -139,4 +139,10 @@ public class UserController {
 
         return ApiResponse.success(VOUtils.convertToAuthUserVOs(authUserBOList));
     }
+
+
+    @PostMapping("/login")
+    public String login() {
+        return null;
+    }
 }
