@@ -1,4 +1,4 @@
-package com.ps.judge.web.controller;
+package com.ps.judge.web.auth.controller;
 
 import com.ps.common.ApiResponse;
 import com.ps.common.PageResult;
