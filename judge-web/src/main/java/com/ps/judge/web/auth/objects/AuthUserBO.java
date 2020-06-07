@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -21,9 +22,11 @@ public class AuthUserBO  implements UserDetails {
      * 用户名称
      */
     private String name;
+    @JsonIgnore
+    @JSONField(serialize = false)
     private String password;
     private String roles;
-    private Set<GrantedAuthority> authorities;
+    private Set<SimpleGrantedAuthority> authorities;
 
     @JsonIgnore
     @JSONField(serialize = false)
@@ -44,6 +47,7 @@ public class AuthUserBO  implements UserDetails {
     private String operator;
 
     @JsonIgnore
+    @JSONField(serialize = false)
     private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;
 

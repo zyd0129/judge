@@ -1,16 +1,12 @@
-package com.ps.judge.web.auth.impl;
+package com.ps.judge.web.auth.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
-import com.ps.judge.dao.entity.AuthAuthorityDO;
 import com.ps.judge.dao.entity.AuthAuthorityDO;
 import com.ps.judge.dao.mapper.AuthorityMapper;
-import com.ps.judge.web.auth.AuthorityService;
 import com.ps.judge.web.auth.objects.AuthAuthorityBO;
-import com.ps.judge.web.auth.objects.AuthAuthorityBO;
+import com.ps.judge.web.auth.service.AuthorityService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;

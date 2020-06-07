@@ -1,16 +1,21 @@
-package com.ps.judge.web.auth.impl;
+package com.ps.judge.web.auth.service.impl;
 
 import com.ps.common.query.QueryParams;
-import com.ps.common.query.QueryVo;
 import com.ps.judge.dao.entity.AuthUserDO;
 import com.ps.judge.dao.mapper.UserMapper;
-import com.ps.judge.web.auth.UserService;
+import com.ps.judge.web.auth.service.UserService;
 import com.ps.judge.web.auth.objects.AuthUserBO;
+import com.ps.judge.web.auth.req.AuthUserLogin;
 import com.ps.judge.web.auth.req.AuthUserQueryReq;
+import com.ps.judge.web.auth.utils.JWTHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.security.KeyPair;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +23,13 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    KeyPair keyPair;
+
 
     @Override
     public AuthUserBO getByUsername(String username) {
@@ -27,17 +39,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<AuthUserBO> query(QueryParams<AuthUserQueryReq> query) {
-        String fuzzyValue=null;
-        String role=null;
-        if (query.getQuery()!=null) {
-            if(query.getQuery().getFuzzyValue()!=null){
-                fuzzyValue="%"+query.getQuery().getFuzzyValue()+"%";
+        String fuzzyValue = null;
+        String role = null;
+        if (query.getQuery() != null) {
+            if (query.getQuery().getFuzzyValue() != null) {
+                fuzzyValue = "%" + query.getQuery().getFuzzyValue() + "%";
             }
-            if(query.getQuery().getRole()!=null) {
-                role="%"+query.getQuery().getRole()+"%";
+            if (query.getQuery().getRole() != null) {
+                role = "%" + query.getQuery().getRole() + "%";
             }
         }
-        return convertToBOs(userMapper.query(query.getStartNo(),query.getPageSize(),fuzzyValue,role));
+        return convertToBOs(userMapper.query(query.getStartNo(), query.getPageSize(), fuzzyValue, role));
     }
 
     @Override
@@ -69,6 +81,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<AuthUserBO> queryDepartmentIsEmpty() {
         return convertToBOs(userMapper.queryDepartmentIsEmpty());
+    }
+
+    @Override
+    public String login(AuthUserLogin credential) {
+
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(credential.getUsername(), credential.getPassword()));
+        AuthUserBO authUserBO = (AuthUserBO) authentication.getPrincipal();
+        return JWTHelper.generateToken(authUserBO, keyPair.getPrivate(), 600);
     }
 
     private AuthUserDO convertToDO(AuthUserBO authUserBO) {

@@ -4,9 +4,9 @@ import com.ps.common.ApiResponse;
 import com.ps.common.PageResult;
 import com.ps.common.exception.BizException;
 import com.ps.common.query.QueryVo;
-import com.ps.judge.web.auth.UserService;
-import com.ps.judge.web.auth.objects.AuthDepartmentBO;
+import com.ps.judge.web.auth.service.UserService;
 import com.ps.judge.web.auth.objects.AuthUserBO;
+import com.ps.judge.web.auth.req.AuthUserLogin;
 import com.ps.judge.web.auth.req.AuthUserQueryReq;
 import com.ps.judge.web.auth.utils.VOUtils;
 import com.ps.judge.web.auth.req.AuthUserResetPassReq;
@@ -31,6 +31,7 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/users/list")
+    @PreAuthorize("hasAuthority('user_list')")
     public ApiResponse<PageResult<AuthUserVO>> users(@RequestBody QueryVo<AuthUserQueryReq> queryVo ) {
         queryVo.setQuery(null);
         return queryUsers(queryVo);
@@ -142,7 +143,8 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public String login() {
-        return null;
+    public ApiResponse<String> login(@RequestBody AuthUserLogin credential) {
+        String jwtToken = userService.login(credential);
+        return ApiResponse.success(jwtToken);
     }
 }

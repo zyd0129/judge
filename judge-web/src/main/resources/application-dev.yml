@@ -30,6 +30,7 @@ mybatis:
 server:
   port: 8082
 
+
 com:
   ps:
     judge:
@@ -37,3 +38,11 @@ com:
           bucket-name: factoryfilestore
           base-url: http://${com.ps.judge.web.bucket-name}.oss-cn-hangzhou.aliyuncs.com/
           expiration: 31104000000  #60*60*24*30*12*1000
+encrypt:
+  key-store:
+    location: xc.keystore
+    alias: ps
+    password: admin123
+    secret: admin123
+    type: jks
+  key: 12345

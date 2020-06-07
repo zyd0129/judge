@@ -1,16 +1,15 @@
-package com.ps.judge.web.auth.impl;
+package com.ps.judge.web.auth.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ps.common.query.QueryParams;
 import com.ps.judge.dao.entity.AuthRoleDO;
 import com.ps.judge.dao.mapper.RoleMapper;
-import com.ps.judge.web.auth.RoleService;
+import com.ps.judge.web.auth.service.RoleService;
 import com.ps.judge.web.auth.objects.AuthAuthorityBO;
 import com.ps.judge.web.auth.objects.AuthRoleBO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -50,7 +49,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Set<GrantedAuthority> getAuthoritiesByRoleNames(String[] split) {
+    public Set<SimpleGrantedAuthority> getAuthoritiesByRoleNames(String[] split) {
         Set<AuthAuthorityBO> authAuthorityBOList = getAuthorityBOsByRoleNames(split);
         if (authAuthorityBOList == null) {
             return null;

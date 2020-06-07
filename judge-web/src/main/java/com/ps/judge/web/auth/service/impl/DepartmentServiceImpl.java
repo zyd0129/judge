@@ -1,13 +1,12 @@
-package com.ps.judge.web.auth.impl;
+package com.ps.judge.web.auth.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.internal.$Gson$Preconditions;
 import com.ps.common.query.QueryParams;
 import com.ps.judge.dao.entity.AuthDepartmentDO;
 import com.ps.judge.dao.mapper.DepartmentMapper;
 import com.ps.judge.dao.mapper.UserMapper;
-import com.ps.judge.web.auth.DepartmentService;
+import com.ps.judge.web.auth.service.DepartmentService;
 import com.ps.judge.web.auth.objects.AuthDepartmentBO;
 import com.ps.judge.web.auth.objects.AuthUserBO;
 import org.springframework.beans.BeanUtils;

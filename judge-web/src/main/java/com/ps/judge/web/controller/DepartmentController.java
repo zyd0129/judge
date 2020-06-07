@@ -3,7 +3,7 @@ package com.ps.judge.web.controller;
 import com.ps.common.ApiResponse;
 import com.ps.common.PageResult;
 import com.ps.common.query.QueryVo;
-import com.ps.judge.web.auth.DepartmentService;
+import com.ps.judge.web.auth.service.DepartmentService;
 import com.ps.judge.web.auth.objects.AuthDepartmentBO;
 import com.ps.judge.web.auth.objects.AuthUserBO;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,8 @@
-package com.ps.judge.web.auth;
+package com.ps.judge.web.auth.service;
 
 import com.ps.common.query.QueryParams;
 import com.ps.judge.web.auth.objects.AuthUserBO;
+import com.ps.judge.web.auth.req.AuthUserLogin;
 import com.ps.judge.web.auth.req.AuthUserQueryReq;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface UserService {
     void changePassword(AuthUserBO authUserBO);
 
     List<AuthUserBO> queryDepartmentIsEmpty();
+
+    String login(AuthUserLogin credential);
 }

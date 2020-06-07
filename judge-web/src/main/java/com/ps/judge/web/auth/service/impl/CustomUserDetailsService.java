@@ -1,10 +1,11 @@
-package com.ps.judge.web.auth.impl;
+package com.ps.judge.web.auth.service.impl;
 
-import com.ps.judge.web.auth.RoleService;
-import com.ps.judge.web.auth.UserService;
+import com.ps.judge.web.auth.service.RoleService;
+import com.ps.judge.web.auth.service.UserService;
 import com.ps.judge.web.auth.objects.AuthUserBO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,7 +29,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("username not found");
         }
         String roles = authUserBO.getRoles();
-        Set<GrantedAuthority> authoritySet = null;
+        Set<SimpleGrantedAuthority> authoritySet = null;
         if (!StringUtils.isEmpty(roles)) {
 
             authoritySet = roleService.getAuthoritiesByRoleNames(roles.split(","));

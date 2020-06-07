@@ -1,8 +1,6 @@
-package com.ps.judge.web.auth;
+package com.ps.judge.web.auth.service;
 
-import com.ps.common.query.QueryParams;
 import com.ps.judge.web.auth.objects.AuthAuthorityBO;
-import com.ps.judge.web.auth.objects.AuthRoleBO;
 
 import java.util.List;
 

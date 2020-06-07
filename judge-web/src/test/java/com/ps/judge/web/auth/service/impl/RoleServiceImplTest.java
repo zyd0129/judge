@@ -1,4 +1,4 @@
-package com.ps.judge.web.auth.impl;
+package com.ps.judge.web.auth.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ps.judge.web.auth.objects.AuthAuthorityBO;
@@ -7,8 +7,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class RoleServiceImplTest {
 
