@@ -92,10 +92,10 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         kieSession.dispose();
 
         triggeredRuleList = (List<AuditTaskTriggeredRuleDO>) map.get("triggeredRuleList");
-        if (triggeredRuleList.size() > 0) {
-            auditTask.setAuditCode(AuditCodeEnum.REJECT.toString());
-        } else {
+        if (triggeredRuleList.isEmpty()) {
             auditTask.setAuditCode(AuditCodeEnum.PASS.toString());
+        } else {
+            auditTask.setAuditCode(AuditCodeEnum.REJECT.toString());
         }
         auditTask.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_SUCCESS.getCode());
         auditTask.setCompleteTime(LocalDateTime.now());
