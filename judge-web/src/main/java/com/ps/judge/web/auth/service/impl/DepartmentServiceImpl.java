@@ -114,6 +114,11 @@ public class DepartmentServiceImpl implements DepartmentService {
         return departmentMapper.count(convertToQueryParam);
     }
 
+    @Override
+    public List<AuthDepartmentBO> all() {
+        return convertToBOs(departmentMapper.all());
+    }
+
 
     private AuthDepartmentDO convertToDO(AuthDepartmentBO authDepartmentBO) {
         if (authDepartmentBO == null) {

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.io.IOException;
 
 @Slf4j
-@RestControllerAdvice
+//@RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ApiResponse handleRuntimeException(RuntimeException e) {

@@ -42,7 +42,7 @@ public class AuthUserBO  implements UserDetails {
     private boolean enabled;
 
     private String mobile;
-    private String tenants;
+    private List<AuthTenantBO> tenants;
     private String department;
     private String operator;
 

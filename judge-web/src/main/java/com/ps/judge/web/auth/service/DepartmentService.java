@@ -18,4 +18,6 @@ public interface DepartmentService {
     void add(AuthDepartmentBO departmentBO);
 
     int total(QueryParams<DepartmentQuery> convertToQueryParam);
+
+    List<AuthDepartmentBO> all();
 }

@@ -21,12 +21,20 @@ public class DepartmentController {
     @Autowired
     DepartmentService departmentService;
 
+    @GetMapping("/departments/all")
+    @PreAuthorize("hasAuthority('department_query')")
+    public ApiResponse<List<AuthDepartmentBO>> departmentAll() {
+        List<AuthDepartmentBO> departmentBOList =departmentService.all();
+        return ApiResponse.success(departmentBOList);
+    }
+
     @PostMapping(value = "/departments/query",params = "query=false")
     @PreAuthorize("hasAuthority('department_list')")
     public ApiResponse<PageResult<AuthDepartmentBO>> departmentList(@RequestBody QueryVo<DepartmentQuery> queryVo) {
         queryVo.setQuery(null);
         return departmentQuery(queryVo);
     }
+
 
     @PostMapping(value = "/departments/query",params = "query=true")
     @PreAuthorize("hasAuthority('department_query')")

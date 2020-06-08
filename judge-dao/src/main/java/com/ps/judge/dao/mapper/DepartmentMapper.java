@@ -60,4 +60,7 @@ public interface DepartmentMapper {
             "</script>"
     })
     int count(QueryParams<DepartmentQuery> q);
+
+    @Select("select * from auth_department")
+    List<AuthDepartmentDO> all();
 }

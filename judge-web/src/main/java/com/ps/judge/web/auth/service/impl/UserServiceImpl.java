@@ -1,9 +1,11 @@
 package com.ps.judge.web.auth.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ps.common.query.QueryParams;
 import com.ps.common.query.QueryVo;
 import com.ps.judge.dao.entity.AuthUserDO;
 import com.ps.judge.dao.mapper.UserMapper;
+import com.ps.judge.web.auth.objects.AuthTenantBO;
 import com.ps.judge.web.auth.service.UserService;
 import com.ps.judge.web.auth.objects.AuthUserBO;
 import com.ps.judge.web.auth.req.AuthUserLogin;
@@ -15,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.security.KeyPair;
 import java.util.List;
@@ -105,6 +108,9 @@ public class UserServiceImpl implements UserService {
         }
         AuthUserDO authUserDO = new AuthUserDO();
         BeanUtils.copyProperties(authUserBO, authUserDO);
+        if (authUserBO.getTenants() != null) {
+            authUserDO.setTenants(JSONObject.toJSONString(authUserBO.getTenants()));
+        }
         return authUserDO;
     }
 
@@ -114,6 +120,9 @@ public class UserServiceImpl implements UserService {
         }
         AuthUserBO authUserBO = new AuthUserBO();
         BeanUtils.copyProperties(authUserDO, authUserBO);
+        if (!StringUtils.isEmpty(authUserDO.getTenants())) {
+            authUserBO.setTenants(JSONObject.parseArray(authUserDO.getTenants(), AuthTenantBO.class));
+        }
         return authUserBO;
     }
 

@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 @Data
 public class AuthTenantBO {
     private Integer id;
-    private String name;
-    private String code;
+    private String tenantName;
+    private String tenantCode;
     private String secretKey;
     /**
      * 0 禁用
