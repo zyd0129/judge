@@ -18,6 +18,9 @@ public class AuditTaskTriggeredRuleDO {
     private String ruleName;
     private String ruleVersion;
     private String expression;
+    private String condition;
     private String param;
+    private String result;
     private LocalDateTime gmtCreate;
+
 }

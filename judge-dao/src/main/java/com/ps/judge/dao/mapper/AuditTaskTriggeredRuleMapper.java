@@ -20,17 +20,19 @@ public interface AuditTaskTriggeredRuleMapper {
         @Result(property = "ruleName", column = "rule_name", jdbcType = JdbcType.VARCHAR),
         @Result(property = "ruleVersion", column = "rule_version", jdbcType = JdbcType.VARCHAR),
         @Result(property = "expression", column = "expression", jdbcType = JdbcType.VARCHAR),
+        @Result(property = "condition", column = "condition", jdbcType = JdbcType.VARCHAR),
         @Result(property = "param", column = "param", jdbcType = JdbcType.VARCHAR),
+        @Result(property = "result", column = "result", jdbcType = JdbcType.VARCHAR),
         @Result(property = "gmtCreate", column = "gmt_create", jdbcType = JdbcType.TIMESTAMP)
     })
 
     @Select("select * from audit_task_triggered_rule where tenant_code = #{tenantCode,jdbcType=VARCHAR} and apply_id = #{applyId,jdbcType=VARCHAR}")
     List<AuditTaskTriggeredRuleDO> listTriggeredRuleLog(@Param("tenantCode") String tenantCode, @Param("applyId") String applyId);
 
-    @Insert("INSERT INTO audit_task_triggered_rule (tenant_code, task_id, apply_id, flow_code, rule_package_code,"
-            + "rule_package_name, rule_package_version, rule_code, rule_name , rule_version, expression, param , gmt_create)"
-            + "VALUES(#{tenantCode}, #{taskId}, #{applyId}, #{flowCode}, #{rulePackageCode}, #{rulePackageName}, "
-            + "#{rulePackageVersion}, #{ruleCode}, #{ruleName}, #{ruleVersion}, #{expression}, #{param}, #{gmtCreate})")
+    @Insert("INSERT INTO audit_task_triggered_rule (tenant_code, task_id, apply_id, flow_code, rule_package_code, rule_package_name,"
+            + "rule_package_version, rule_code, rule_name, rule_version, expression, `condition`, param, result, gmt_create)"
+            + "VALUES(#{tenantCode}, #{taskId}, #{applyId}, #{flowCode}, #{rulePackageCode}, #{rulePackageName}, #{rulePackageVersion},"
+            + "#{ruleCode}, #{ruleName}, #{ruleVersion}, #{expression}, #{condition}, #{param}, #{result}, #{gmtCreate})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(AuditTaskTriggeredRuleDO auditTaskTriggeredRule);
 }

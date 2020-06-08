@@ -14,6 +14,6 @@ public class TriggeredRuleVO {
     private String ruleCode;
     private String ruleName;
     private String expression;
-    private Object param;
+    private String param;
     private String triggeredResult;
 }

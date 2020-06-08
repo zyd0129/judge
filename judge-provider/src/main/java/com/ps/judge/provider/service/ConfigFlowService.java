@@ -8,4 +8,6 @@ public interface ConfigFlowService {
     ConfigFlowDO getByFlowCode(String flowCode);
 
     List<ConfigFlowDO> getAllEnable();
+
+    boolean loadFlow(ConfigFlowDO configFlow);
 }

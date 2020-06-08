@@ -24,6 +24,7 @@ public class AuditTaskDO {
     private String auditCode;
     private String callbackUrl;
     private Integer callbackCount;
+    private LocalDateTime completeTime;
     private LocalDateTime gmtCreate;
     private LocalDateTime gmtModified;
 }

@@ -6,11 +6,9 @@ import com.ps.judge.api.entity.ApplyResultVO;
 import com.ps.judge.api.entity.AuditResultVO;
 import com.ps.judge.dao.entity.AuditTaskDO;
 import com.ps.judge.dao.entity.AuditTaskParamDO;
-import com.ps.judge.dao.entity.ConfigFlowDO;
 import com.ps.judge.dao.mapper.AuditTaskMapper;
 import com.ps.judge.dao.mapper.AuditTaskParamMapper;
 import com.ps.judge.dao.mapper.AuditTaskTriggeredRuleMapper;
-import com.ps.judge.provider.drools.KSessionManager;
 import com.ps.judge.provider.enums.AuditTaskStatusEnum;
 import com.ps.judge.provider.service.ProcessService;
 import com.ps.judge.provider.task.AsyncProcessTask;
@@ -21,14 +19,10 @@ import com.ps.jury.api.response.VarResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Slf4j
@@ -42,13 +36,6 @@ public class ProcessServiceImpl implements ProcessService {
     @Autowired
     AuditTaskTriggeredRuleMapper auditTaskTriggeredRuleMapper;
     @Autowired
-    KSessionManager kSessionManager;
-    @Autowired
-    RestTemplate restTemplate;
-    @Autowired
-    HttpHeaders httpHeaders;
-    @Autowired
-    @Lazy
     AsyncProcessTask asyncProcessTask;
 
     @Override
@@ -94,7 +81,9 @@ public class ProcessServiceImpl implements ProcessService {
         auditTaskParam.setGmtModified(LocalDateTime.now());
         this.auditTaskParamMapper.insert(auditTaskParam);
 
-        return this.applyJury(auditId, request);
+        ApplyResultVO applyResultVO = new ApplyResultVO();
+        applyResultVO.setApplyId(request.getApplyId());
+        return ApiResponse.success(applyResultVO);
     }
 
     @Override
@@ -103,16 +92,7 @@ public class ProcessServiceImpl implements ProcessService {
         this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode(), auditId);
         AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditId);
         ApplyRequest request = JSON.parseObject(auditTaskParam.getInputRawParam(), ApplyRequest.class);
-        return this.applyJury(auditId, request);
-    }
-
-    private ApiResponse<ApplyResultVO> applyJury(int auditId, ApplyRequest request) {
-        ApiResponse<String> applyResponse = this.juryApi.apply(request);
-        if (!applyResponse.isSuccess()) {
-            this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.FORWARDED_FAIL.getCode(), auditId);
-            return ApiResponse.error(applyResponse.getCode(), applyResponse.getMessage());
-        }
-        this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode(), auditId);
+        this.asyncProcessTask.applyJury(auditId, request);
         ApplyResultVO applyResultVO = new ApplyResultVO();
         applyResultVO.setApplyId(request.getApplyId());
         return ApiResponse.success(applyResultVO);
@@ -120,7 +100,9 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public ApiResponse<String> saveVarResult(AuditTaskDO auditTask, VarResult varResult) {
-        if (auditTask.getTaskStatus() != AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode()) {
+        if (auditTask.getTaskStatus() != AuditTaskStatusEnum.REQUEST_RECEIVED.getCode()
+                && auditTask.getTaskStatus() != AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode()
+                && auditTask.getTaskStatus() != AuditTaskStatusEnum.FORWARDED_FAIL.getCode()) {
             return ApiResponse.success();
         }
         Integer auditId = auditTask.getId();
@@ -158,11 +140,6 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     public boolean updateAuditStatus(int taskId, int status) {
         return this.auditTaskMapper.updateTaskStatus(status, taskId) > 0;
-    }
-
-    @Override
-    public boolean loadFlow(ConfigFlowDO configFlow) {
-        return this.kSessionManager.addContainer(configFlow);
     }
 
     @Override
@@ -222,46 +199,7 @@ public class ProcessServiceImpl implements ProcessService {
             String outputRawParam = auditTaskParam.getOutputRawParam();
             ApiResponse<JSONObject> apiResponse = JSON.parseObject(outputRawParam, ApiResponse.class);
             AuditResultVO auditResultVO = JSON.toJavaObject(apiResponse.getData(), AuditResultVO.class);
-            this.sendAuditResult(auditTask, ApiResponse.success(auditResultVO));
+            this.asyncProcessTask.sendAuditResult(auditTask, ApiResponse.success(auditResultVO));
         }
     }
-
-    @Override
-    public void sendAuditResult(AuditTaskDO auditTask, ApiResponse<AuditResultVO> apiResponse) {
-        Integer auditId = auditTask.getId();
-        int callbackCount = auditTask.getCallbackCount();
-        if (callbackCount >= 3) {
-            this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.CALLBACK_FAIL.getCode(), auditId);
-            return;
-        }
-        callbackCount++;
-        this.auditTaskMapper.updateCallbackCount(callbackCount, auditId);
-        if (this.sendPost(auditTask.getCallbackUrl(), apiResponse)) {
-            this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.CALLBACK_SUCCESS.getCode(), auditId);
-            return;
-        }
-        if (callbackCount >= 3) {
-            this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.CALLBACK_FAIL.getCode(), auditId);
-        }
-    }
-
-    private boolean sendPost(String url, ApiResponse<AuditResultVO> apiResponse) {
-        HttpEntity<ApiResponse<AuditResultVO>> requestEntity = new HttpEntity<>(apiResponse, httpHeaders);
-        ResponseEntity<JSONObject> result = this.restTemplate.exchange(url , HttpMethod.POST, requestEntity, JSONObject.class);
-        if (result.getStatusCode() == HttpStatus.OK) {
-            JSONObject body = result.getBody();
-            if (Objects.isNull(body)) {
-                return false;
-            }
-            Integer resultCode = body.getInteger("code");
-            if (Objects.isNull(resultCode)) {
-                return false;
-            }
-            if (resultCode == ApiResponse.success().getCode()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 }

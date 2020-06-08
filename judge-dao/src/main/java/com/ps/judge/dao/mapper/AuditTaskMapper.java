@@ -4,6 +4,7 @@ import com.ps.judge.dao.entity.AuditTaskDO;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AuditTaskMapper {
@@ -26,6 +27,7 @@ public interface AuditTaskMapper {
         @Result(property = "auditCode", column = "audit_code", jdbcType = JdbcType.VARCHAR),
         @Result(property = "callbackUrl", column = "callback_url", jdbcType = JdbcType.VARCHAR),
         @Result(property = "callbackCount", column = "callback_count", jdbcType = JdbcType.TINYINT),
+        @Result(property = "completeTime", column = "complete_time", jdbcType = JdbcType.TIMESTAMP),
         @Result(property = "gmtCreate", column = "gmt_create", jdbcType = JdbcType.TIMESTAMP),
         @Result(property = "gmtModified", column = "gmt_modified", jdbcType = JdbcType.TIMESTAMP)
     })
@@ -49,9 +51,8 @@ public interface AuditTaskMapper {
     @Update("update audit_task set task_status = #{taskStatus,jdbcType=TINYINT}, gmt_modified = now() where id = #{id,jdbcType=INTEGER}")
     int updateTaskStatus(@Param("taskStatus") int taskStatus, @Param("id") int id);
 
-    @Update("update audit_task set audit_code = #{auditCode,jdbcType=VARCHAR}, gmt_modified = now() where id = #{id,jdbcType=INTEGER}")
-    int updateAuditCode(@Param("auditCode") String auditCode, @Param("id") int id);
-
-    @Update("update audit_task set callback_count = #{callbackCount,jdbcType=TINYINT}, gmt_modified = now() where id = #{id,jdbcType=INTEGER}")
-    int updateCallbackCount(@Param("callbackCount") int callbackCount, @Param("id") int id);
+    @Update("UPDATE audit_task SET task_status = #{taskStatus,jdbcType=TINYINT}, audit_code = #{auditCode,jdbcType=VARCHAR},"
+            + "callback_count = #{callbackCount,jdbcType=TINYINT}, complete_time = #{completeTime, jdbcType=TIMESTAMP},"
+            + "gmt_modified = now() where id=#{id}")
+    void update(AuditTaskDO auditTask);
 }
