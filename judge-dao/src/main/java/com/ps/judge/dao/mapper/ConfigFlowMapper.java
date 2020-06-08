@@ -54,4 +54,7 @@ public interface ConfigFlowMapper {
     @Update("UPDATE config_flow SET package_id = #{packageId},package_url=#{packageUrl},"
             + "operator = #{operator}, gmt_modified = #{gmtModified} where id = #{id}")
     void changePackage(ConfigFlowDO configFlowDO);
+
+    @Update("UPDATE config_flow SET status = #{status}, operator = #{operator}, gmt_modified = #{gmtModified} where product_code=#{productCode}")
+    void batchUpdateStatus(ConfigFlowDO configFlowDO);
 }

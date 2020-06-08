@@ -1,6 +1,7 @@
 package com.ps.judge.web.service;
 
 
+import com.ps.common.ApiResponse;
 import com.ps.common.exception.BizException;
 import com.ps.judge.web.models.ConfigFlowBO;
 
@@ -20,4 +21,6 @@ public interface ConfigFlowService {
     void updateStatus(ConfigFlowBO configFlowBO) throws BizException;
 
     void changePackage(ConfigFlowBO configFlowBO);
+
+    ApiResponse<String> delete(int id);
 }

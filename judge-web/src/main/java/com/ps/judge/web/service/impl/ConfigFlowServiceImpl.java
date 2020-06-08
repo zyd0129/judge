@@ -1,6 +1,7 @@
 package com.ps.judge.web.service.impl;
 
 
+import com.ps.common.ApiResponse;
 import com.ps.common.exception.BizException;
 import com.ps.judge.dao.entity.ConfigFlowDO;
 import com.ps.judge.dao.mapper.ConfigFlowMapper;
@@ -74,6 +75,11 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
         ConfigFlowDO configFlowDO = convertToDO(configFlowBO);
         configFlowDO.setGmtModified(LocalDateTime.now());
         flowMapper.changePackage(configFlowDO);
+    }
+
+    @Override
+    public ApiResponse<String> delete(int id) {
+        return null;
     }
 
     private ConfigFlowBO convertToBO(ConfigFlowDO configFlowDO) {

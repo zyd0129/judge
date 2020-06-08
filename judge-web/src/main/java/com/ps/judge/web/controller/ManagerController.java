@@ -83,7 +83,7 @@ public class ManagerController {
 
 
 
-    @GetMapping("products/query")
+    @PostMapping(value = "products/query",params = "query=true")
     public ApiResponse<PageResult<ConfigProductBO>> queryProduct(@RequestBody QueryVo<ProductQuery> reqQueryVo) {
         List<ConfigProductBO> all = configProductService.query(reqQueryVo.convertToQueryParam());
         int total = configProductService.count(reqQueryVo.convertToQueryParam());
@@ -95,16 +95,22 @@ public class ManagerController {
         return ApiResponse.success(pageResult);
     }
 
+    @PostMapping(value = "products/query",params = "query=false")
+    public ApiResponse<PageResult<ConfigProductBO>> listProduct(@RequestBody QueryVo<ProductQuery> reqQueryVo) {
+       reqQueryVo.setQuery(null);
+        return queryProduct(reqQueryVo);
+    }
+
     @PostMapping("products/add")
-    public ApiResponse<ConfigProductBO> addProduct(@RequestBody ConfigProductBO configProductBO) {
+    public ApiResponse addProduct(@RequestBody ConfigProductBO configProductBO) {
         configProductService.insert(configProductBO);
-        ApiResponse apiResponse = ApiResponse.success(configProductBO);
-        return apiResponse;
+        return ApiResponse.success(configProductBO);
     }
 
     @PostMapping("products/delete")
-    public ApiResponse<String> deleteProduct() {
-        return null;
+    public ApiResponse deleteProduct(int id) {
+         configProductService.delete(id);
+        return ApiResponse.success();
     }
 
     @PostMapping("products/changeStatus")

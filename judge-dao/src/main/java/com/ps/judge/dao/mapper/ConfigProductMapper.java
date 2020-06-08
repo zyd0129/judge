@@ -13,6 +13,7 @@ public interface ConfigProductMapper {
             @Result(column = "product_code", property = "productCode"),
             @Result(column = "product_name", property = "productName"),
             @Result(column = "tenant_code", property = "tenantCode"),
+            @Result(column = "tenant_name", property = "tenantName"),
             @Result(column = "gmt_created", property = "gmtCreated"),
             @Result(column = "gmt_modified", property = "gmtModified")
     })
@@ -52,11 +53,20 @@ public interface ConfigProductMapper {
             "gmt_modified<![CDATA[<=]]>#{query.gmtModifiedTo}",
             "</if>",
 
-            "<if test='query.fuzzyValue!=null'>",
-            "and (tenant_name like #{query.fuzzyValue}",
-            "or product_name like #{query.fuzzyValue}",
-            "or product_code like #{query.fuzzyValue})",
+            "and ( 1<![CDATA[<>]]>1 " ,
+            "<if test='query.tenantName!=null'>",
+            "or tenant_name like #{query.tenantName}",
             "</if>",
+
+            "<if test='query.productName!=null'>",
+            "or product_name like #{query.productName}",
+            "</if>",
+
+            "<if test='query.productCode!=null'>",
+            "or product_code like #{query.productCode}",
+            "</if>",
+            ")",
+
             "</if>",
             "limit #{startNo},#{pageSize}",
             "</script>"
@@ -94,11 +104,19 @@ public interface ConfigProductMapper {
             "gmt_modified<![CDATA[<=]]>#{query.gmtModifiedTo}",
             "</if>",
 
-            "<if test='query.fuzzyValue!=null'>",
-            "and (tenant_name like #{query.fuzzyValue}",
-            "or product_name like #{query.fuzzyValue}",
-            "or product_code like #{query.fuzzyValue})",
+            "and ( 1<![CDATA[<>]]>1 " ,
+            "<if test='query.tenantName!=null'>",
+            "or tenant_name like #{query.tenantName}",
             "</if>",
+
+            "<if test='query.productName!=null'>",
+            "or product_name like #{query.productName}",
+            "</if>",
+
+            "<if test='query.productCode!=null'>",
+            "or product_code like #{query.productCode}",
+            "</if>",
+            ")",
             "</if>",
             "limit #{startNo},#{pageSize}",
             "</script>"
@@ -107,14 +125,17 @@ public interface ConfigProductMapper {
     List<ConfigProductDO> query(QueryParams<ProductQuery> q);
 
 
-    @Insert("insert into config_product (product_code, product_name,tenant_code," +
+    @Insert("insert into config_product (product_code, product_name,tenant_code,tenant_name," +
             "status,operator,gmt_created,gmt_modified)" +
             " values " +
-            "(#{productCode}, #{productName},#{tenantCode}, " +
+            "(#{productCode}, #{productName},#{tenantCode},#{tenantName}, " +
             "#{status},#{operator}, #{gmtCreated},#{gmtModified})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insert(ConfigProductDO productDO);
 
     @Update("UPDATE config_product SET status = #{status},operator=#{operator}, gmt_modified=#{gmtModified} where id=#{id}")
     void updateStatus(ConfigProductDO productDO);
+
+    @Delete("delete from config_product where id=#{id}")
+    void delete(int id);
 }

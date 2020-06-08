@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public class ConfigProductBO {
     private Integer id;
     private String tenantCode;
+    private String tenantName;
     private String productName;
     private String productCode;
     private Status status;

@@ -6,10 +6,9 @@ import java.time.LocalDateTime;
 
 @Data
 public class ProductQuery {
-    /**
-     * 商户名称，产品编号，产品名称
-     */
-    private String fuzzyValue;
+    private String tenantName;
+    private String productName;
+    private String productCode;
     private LocalDateTime gmtCreatedFrom;
     private LocalDateTime gmtCreatedTo;
     private LocalDateTime gmtModifiedFrom;
