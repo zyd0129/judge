@@ -80,7 +80,7 @@ public class ProcessServiceImpl implements ProcessService {
         auditTaskParam.setGmtCreate(LocalDateTime.now());
         auditTaskParam.setGmtModified(LocalDateTime.now());
         this.auditTaskParamMapper.insert(auditTaskParam);
-
+        this.asyncProcessTask.applyJury(auditId, request);
         ApplyResultVO applyResultVO = new ApplyResultVO();
         applyResultVO.setApplyId(request.getApplyId());
         return ApiResponse.success(applyResultVO);
