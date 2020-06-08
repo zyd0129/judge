@@ -1,5 +1,6 @@
 package com.ps.judge.dao.mapper;
 
+import com.ps.common.query.DepartmentQuery;
 import com.ps.common.query.QueryParams;
 import com.ps.judge.dao.entity.AuthDepartmentDO;
 import org.apache.ibatis.annotations.*;
@@ -24,7 +25,7 @@ public interface DepartmentMapper {
             @Result(column = "gmt_created", property = "gmtCreated"),
             @Result(column = "gmt_modified", property = "gmtModified")
     })
-    List<AuthDepartmentDO> query(QueryParams q);
+    List<AuthDepartmentDO> query(QueryParams<DepartmentQuery> q);
 
     @Select("select * from auth_department where id=#{id}")
     @ResultMap(value = "departmentResultMap")
@@ -44,4 +45,19 @@ public interface DepartmentMapper {
 
     @Delete("delete from auth_department where id=#{id}")
     void delete(int id);
+
+    @Select({"<script>",
+            "select count(*) from auth_department",
+            "where",
+            "1=1",
+            "<if test='query!=null'>",
+            "<if test='query.name!=null'>",
+            "and",
+            "name=#{query.name}",
+            "</if>",
+            "</if>",
+            "limit #{startNo},#{pageSize}",
+            "</script>"
+    })
+    int count(QueryParams<DepartmentQuery> q);
 }

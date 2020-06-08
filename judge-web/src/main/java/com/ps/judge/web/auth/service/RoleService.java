@@ -1,6 +1,8 @@
 package com.ps.judge.web.auth.service;
 
 import com.ps.common.query.QueryParams;
+import com.ps.common.query.QueryVo;
+import com.ps.common.query.RoleQuery;
 import com.ps.judge.web.auth.objects.AuthAuthorityBO;
 import com.ps.judge.web.auth.objects.AuthRoleBO;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,5 +25,7 @@ public interface RoleService {
 
     AuthRoleBO getById(int id);
 
-    List<AuthRoleBO> query(QueryParams<AuthRoleBO> queryParams);
+    List<AuthRoleBO> query(QueryParams<RoleQuery> queryParams);
+
+    int total(QueryParams<RoleQuery> queryVo);
 }

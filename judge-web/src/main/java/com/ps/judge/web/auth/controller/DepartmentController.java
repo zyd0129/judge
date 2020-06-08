@@ -2,6 +2,7 @@ package com.ps.judge.web.auth.controller;
 
 import com.ps.common.ApiResponse;
 import com.ps.common.PageResult;
+import com.ps.common.query.DepartmentQuery;
 import com.ps.common.query.QueryVo;
 import com.ps.judge.web.auth.service.DepartmentService;
 import com.ps.judge.web.auth.objects.AuthDepartmentBO;
@@ -20,20 +21,19 @@ public class DepartmentController {
     @Autowired
     DepartmentService departmentService;
 
-    @PostMapping("/departments/list")
+    @PostMapping(value = "/departments/query",params = "query=false")
     @PreAuthorize("hasAuthority('department_list')")
-    public ApiResponse<PageResult<AuthDepartmentBO>> departmentList(@RequestBody QueryVo<AuthDepartmentBO> queryVo) {
+    public ApiResponse<PageResult<AuthDepartmentBO>> departmentList(@RequestBody QueryVo<DepartmentQuery> queryVo) {
         queryVo.setQuery(null);
-        List<AuthDepartmentBO> departmentBOList = departmentService.query(queryVo.convertToQueryParam());
-        PageResult<AuthDepartmentBO> pageResult = new PageResult<>(queryVo.getCurPage(), queryVo.getPageSize(), departmentBOList);
-        return ApiResponse.success(pageResult);
+        return departmentQuery(queryVo);
     }
 
-    @PostMapping("/departments/query")
+    @PostMapping(value = "/departments/query",params = "query=true")
     @PreAuthorize("hasAuthority('department_query')")
-    public ApiResponse<PageResult<AuthDepartmentBO>> departmentQuery(@RequestBody QueryVo<AuthDepartmentBO> queryVo) {
+    public ApiResponse<PageResult<AuthDepartmentBO>> departmentQuery(@RequestBody QueryVo<DepartmentQuery> queryVo) {
         List<AuthDepartmentBO> departmentBOList = departmentService.query(queryVo.convertToQueryParam());
-        PageResult<AuthDepartmentBO> pageResult = new PageResult<>(queryVo.getCurPage(), queryVo.getPageSize(), departmentBOList);
+        int total = departmentService.total(queryVo.convertToQueryParam());
+        PageResult<AuthDepartmentBO> pageResult = new PageResult<>(queryVo.getCurPage(), queryVo.getPageSize(), total,departmentBOList);
         return ApiResponse.success(pageResult);
     }
 

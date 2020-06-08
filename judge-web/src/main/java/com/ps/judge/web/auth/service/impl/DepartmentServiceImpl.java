@@ -2,6 +2,7 @@ package com.ps.judge.web.auth.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.ps.common.query.DepartmentQuery;
 import com.ps.common.query.QueryParams;
 import com.ps.judge.dao.entity.AuthDepartmentDO;
 import com.ps.judge.dao.mapper.DepartmentMapper;
@@ -29,10 +30,9 @@ public class DepartmentServiceImpl implements DepartmentService {
     UserMapper userMapper;
 
     @Override
-    public List<AuthDepartmentBO> query(QueryParams<AuthDepartmentBO> queryParams) {
+    public List<AuthDepartmentBO> query(QueryParams<DepartmentQuery> queryParams) {
 
-        QueryParams<AuthDepartmentDO> queryReq = convertParam(queryParams);
-        return convertToBOs(departmentMapper.query(queryReq));
+        return convertToBOs(departmentMapper.query(queryParams));
     }
 
     private Set<String> getUsernameSet(AuthDepartmentBO departmentBO) {
@@ -109,6 +109,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     }
 
+    @Override
+    public int total(QueryParams<DepartmentQuery> convertToQueryParam) {
+        return departmentMapper.count(convertToQueryParam);
+    }
+
 
     private AuthDepartmentDO convertToDO(AuthDepartmentBO authDepartmentBO) {
         if (authDepartmentBO == null) {
@@ -143,12 +148,5 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
 
         return authDepartmentDOList.stream().map(this::convertToBO).collect(Collectors.toList());
-    }
-
-    private QueryParams<AuthDepartmentDO> convertParam(QueryParams<AuthDepartmentBO> queryParams) {
-        QueryParams<AuthDepartmentDO> queryParams1 = new QueryParams<>();
-        BeanUtils.copyProperties(queryParams, queryParams1);
-        queryParams1.setQuery(convertToDO(queryParams.getQuery()));
-        return queryParams1;
     }
 }

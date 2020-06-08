@@ -3,6 +3,8 @@ package com.ps.judge.web.auth.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ps.common.query.QueryParams;
+import com.ps.common.query.QueryVo;
+import com.ps.common.query.RoleQuery;
 import com.ps.judge.dao.entity.AuthRoleDO;
 import com.ps.judge.dao.mapper.RoleMapper;
 import com.ps.judge.web.auth.service.RoleService;
@@ -86,9 +88,13 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<AuthRoleBO> query(QueryParams<AuthRoleBO> queryParams) {
-        QueryParams<AuthRoleDO> queryReq = convertParam(queryParams);
-        return convertToBOs(roleMapper.query(queryReq));
+    public List<AuthRoleBO> query(QueryParams<RoleQuery> queryParams) {
+        return convertToBOs(roleMapper.query(queryParams));
+    }
+
+    @Override
+    public int total(QueryParams<RoleQuery> query) {
+        return roleMapper.total(query);
     }
 
     private AuthRoleDO convertToDO(AuthRoleBO authRoleBO) {

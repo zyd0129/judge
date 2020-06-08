@@ -1,6 +1,8 @@
 package com.ps.judge.dao.mapper;
 
 import com.ps.common.query.QueryParams;
+import com.ps.common.query.QueryVo;
+import com.ps.common.query.RoleQuery;
 import com.ps.judge.dao.entity.AuthRoleDO;
 import org.apache.ibatis.annotations.*;
 
@@ -28,7 +30,7 @@ public interface RoleMapper {
             "</script>"
     })
     @ResultMap(value = "ruleResultMap")
-    List<AuthRoleDO> query(QueryParams<AuthRoleDO> queryReq);
+    List<AuthRoleDO> query(QueryParams<RoleQuery> queryReq);
 
     @Select("select * from auth_role where id=#{id}")
     @ResultMap(value = "ruleResultMap")
@@ -62,4 +64,18 @@ public interface RoleMapper {
     List<AuthRoleDO> queryByNames(@Param("names") String [] names);
 
 
+    @Select({"<script>",
+            "select count(*) from auth_role",
+            "where",
+            "1=1",
+            "<if test='query!=null'>",
+            "<if test='query.name!=null'>",
+            "and",
+            "name=#{query.name}",
+            "</if>",
+            "</if>",
+            "limit #{startNo},#{pageSize}",
+            "</script>"
+    })
+    int total(QueryParams<RoleQuery> query);
 }

@@ -7,7 +7,7 @@ import com.ps.common.query.QueryVo;
 import com.ps.judge.web.auth.service.UserService;
 import com.ps.judge.web.auth.objects.AuthUserBO;
 import com.ps.judge.web.auth.req.AuthUserLogin;
-import com.ps.judge.web.auth.req.AuthUserQueryReq;
+import com.ps.common.query.UserQuery;
 import com.ps.judge.web.auth.utils.VOUtils;
 import com.ps.judge.web.auth.req.AuthUserResetPassReq;
 import com.ps.judge.web.auth.req.AuthUserModifyReq;
@@ -30,19 +30,19 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @PostMapping("/users/list")
+    @PostMapping(value = "/users/query",params = "query=false")
     @PreAuthorize("hasAuthority('user_list')")
-    public ApiResponse<PageResult<AuthUserVO>> users(@RequestBody QueryVo<AuthUserQueryReq> queryVo ) {
+    public ApiResponse<PageResult<AuthUserVO>> users(@RequestBody QueryVo<UserQuery> queryVo ) {
         queryVo.setQuery(null);
         return queryUsers(queryVo);
     }
 
-    @PostMapping("/users/query")
+    @PostMapping(value = "/users/query",params = "query=true")
     @PreAuthorize("hasAuthority('user_query')")
-    public ApiResponse<PageResult<AuthUserVO>> queryUsers(@RequestBody QueryVo<AuthUserQueryReq> queryVo) {
+    public ApiResponse<PageResult<AuthUserVO>> queryUsers(@RequestBody QueryVo<UserQuery> queryVo) {
         List<AuthUserBO> authUserBOList = userService.query(queryVo.convertToQueryParam());
-
-        PageResult<AuthUserVO> pageResult = new PageResult<>(queryVo.getCurPage(), queryVo.getPageSize(), VOUtils.convertToAuthUserVOs(authUserBOList));
+        int count = userService.total(queryVo.convertToQueryParam());
+        PageResult<AuthUserVO> pageResult = new PageResult<>(queryVo.getCurPage(), queryVo.getPageSize(),count, VOUtils.convertToAuthUserVOs(authUserBOList));
         return ApiResponse.success(pageResult);
     }
 

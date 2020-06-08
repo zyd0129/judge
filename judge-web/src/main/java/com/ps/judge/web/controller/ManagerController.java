@@ -1,11 +1,13 @@
-package com.ps.judge.web.auth.controller;
+package com.ps.judge.web.controller;
 
 import com.ps.common.ApiResponse;
 import com.ps.common.PageResult;
+import com.ps.common.query.QueryVo;
 import com.ps.judge.web.models.ConfigFlowBO;
 import com.ps.judge.web.models.ConfigPackageBO;
 import com.ps.judge.web.models.ConfigProductBO;
 import com.ps.judge.web.models.StoragePath;
+import com.ps.common.query.ProductQuery;
 import com.ps.judge.web.service.ConfigFlowService;
 import com.ps.judge.web.service.ConfigProductService;
 import com.ps.judge.web.service.StorageService;
@@ -82,15 +84,15 @@ public class ManagerController {
 
 
     @GetMapping("products/query")
-    public ApiResponse<PageResult<ConfigProductBO>> queryProduct(@RequestParam int pageNo, @RequestParam(defaultValue = "10") int size) {
-        List<ConfigProductBO> all = configProductService.query(pageNo, size);
+    public ApiResponse<PageResult<ConfigProductBO>> queryProduct(@RequestBody QueryVo<ProductQuery> reqQueryVo) {
+        List<ConfigProductBO> all = configProductService.query(reqQueryVo.convertToQueryParam());
+        int total = configProductService.count(reqQueryVo.convertToQueryParam());
         PageResult<ConfigProductBO> pageResult = new PageResult<>();
-        pageResult.setCurPage(pageNo);
-        pageResult.setPageSize(size);
-
+        pageResult.setCurPage(reqQueryVo.getCurPage());
+        pageResult.setPageSize(reqQueryVo.getPageSize());
+        pageResult.setTotal(total);
         pageResult.setData(all);
-        ApiResponse<PageResult<ConfigProductBO>> apiResponse = ApiResponse.success(pageResult);
-        return apiResponse;
+        return ApiResponse.success(pageResult);
     }
 
     @PostMapping("products/add")

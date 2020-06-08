@@ -1,16 +1,17 @@
 package com.ps.judge.web.auth.service;
 
 import com.ps.common.query.QueryParams;
+import com.ps.common.query.QueryVo;
 import com.ps.judge.web.auth.objects.AuthUserBO;
 import com.ps.judge.web.auth.req.AuthUserLogin;
-import com.ps.judge.web.auth.req.AuthUserQueryReq;
+import com.ps.common.query.UserQuery;
 
 import java.util.List;
 
 public interface UserService {
     AuthUserBO getByUsername(String username);
 
-    List<AuthUserBO> query(QueryParams<AuthUserQueryReq> queryVo);
+    List<AuthUserBO> query(QueryParams<UserQuery> queryVo);
 
     void addUser(AuthUserBO authUserBO);
 
@@ -23,4 +24,6 @@ public interface UserService {
     List<AuthUserBO> queryDepartmentIsEmpty();
 
     String login(AuthUserLogin credential);
+
+    int total(QueryParams<UserQuery> queryVo);
 }

@@ -3,6 +3,7 @@ package com.ps.judge.web.auth.controller;
 import com.ps.common.ApiResponse;
 import com.ps.common.PageResult;
 import com.ps.common.query.QueryVo;
+import com.ps.common.query.RoleQuery;
 import com.ps.judge.web.auth.service.AuthorityService;
 import com.ps.judge.web.auth.service.RoleService;
 import com.ps.judge.web.auth.objects.AuthAuthorityBO;
@@ -36,27 +37,26 @@ public class RoleController {
         List<FirstMenu> firstMenus = VOUtils.convertToMenuTree(authRoleBOList);
         return ApiResponse.success(firstMenus);
     }
-
-    @PostMapping("/roles/list")
-    @PreAuthorize("hasAuthority('role_list')")
-    public ApiResponse<PageResult<AuthRoleVO>> roles(@RequestBody QueryVo<AuthRoleBO> queryVo) {
-        queryVo.setQuery(null);
-        return queryRoles(queryVo);
-    }
-
     @PostMapping("/roles/all")
     @PreAuthorize("hasAuthority('user_add')")
     public ApiResponse<List<AuthRoleBO>> allRoles() {
         List<AuthRoleBO> roleBOList = roleService.queryAll();
         return ApiResponse.success(roleBOList);
     }
+    @PostMapping(value = "/roles/query",params = "query=false")
+    @PreAuthorize("hasAuthority('role_list')")
+    public ApiResponse<PageResult<AuthRoleVO>> roles(@RequestBody QueryVo<RoleQuery> queryVo) {
+        queryVo.setQuery(null);
+        return queryRoles(queryVo);
+    }
 
-    @PostMapping("/roles/query")
+    @PostMapping(value = "/roles/query",params = "query=true")
     @PreAuthorize("hasAuthority('role_query')")
-    public ApiResponse<PageResult<AuthRoleVO>> queryRoles(@RequestBody QueryVo<AuthRoleBO> queryVo) {
+    public ApiResponse<PageResult<AuthRoleVO>> queryRoles(@RequestBody QueryVo<RoleQuery> queryVo) {
         List<AuthRoleBO> roleBOList = roleService.query(queryVo.convertToQueryParam());
         List<AuthRoleVO> authRoleVOS = VOUtils.convertToAuthRoleVOs(roleBOList);
-        PageResult<AuthRoleVO> pageResult = new PageResult<>(queryVo.getCurPage(), queryVo.getPageSize(), authRoleVOS);
+        int total = roleService.total(queryVo.convertToQueryParam());
+        PageResult<AuthRoleVO> pageResult = new PageResult<>(queryVo.getCurPage(), queryVo.getPageSize(),total, authRoleVOS);
         return ApiResponse.success(pageResult);
     }
 

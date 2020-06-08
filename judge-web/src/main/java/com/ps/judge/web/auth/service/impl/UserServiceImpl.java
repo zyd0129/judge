@@ -1,12 +1,13 @@
 package com.ps.judge.web.auth.service.impl;
 
 import com.ps.common.query.QueryParams;
+import com.ps.common.query.QueryVo;
 import com.ps.judge.dao.entity.AuthUserDO;
 import com.ps.judge.dao.mapper.UserMapper;
 import com.ps.judge.web.auth.service.UserService;
 import com.ps.judge.web.auth.objects.AuthUserBO;
 import com.ps.judge.web.auth.req.AuthUserLogin;
-import com.ps.judge.web.auth.req.AuthUserQueryReq;
+import com.ps.common.query.UserQuery;
 import com.ps.judge.web.auth.utils.JWTHelper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,18 +39,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<AuthUserBO> query(QueryParams<AuthUserQueryReq> query) {
+    public List<AuthUserBO> query(QueryParams<UserQuery> query) {
         String fuzzyValue = null;
         String role = null;
         if (query.getQuery() != null) {
             if (query.getQuery().getFuzzyValue() != null) {
                 fuzzyValue = "%" + query.getQuery().getFuzzyValue() + "%";
+                query.getQuery().setFuzzyValue(fuzzyValue);
             }
             if (query.getQuery().getRole() != null) {
                 role = "%" + query.getQuery().getRole() + "%";
+                query.getQuery().setRole(role);
             }
         }
-        return convertToBOs(userMapper.query(query.getStartNo(), query.getPageSize(), fuzzyValue, role));
+        return convertToBOs(userMapper.query(query));
     }
 
     @Override
@@ -88,7 +91,12 @@ public class UserServiceImpl implements UserService {
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(credential.getUsername(), credential.getPassword()));
         AuthUserBO authUserBO = (AuthUserBO) authentication.getPrincipal();
-        return JWTHelper.generateToken(authUserBO, keyPair.getPrivate(), 600);
+        return JWTHelper.generateToken(authUserBO, keyPair.getPrivate(), 6000);
+    }
+
+    @Override
+    public int total(QueryParams<UserQuery> query) {
+        return userMapper.total(query);
     }
 
     private AuthUserDO convertToDO(AuthUserBO authUserBO) {

@@ -1,9 +1,9 @@
-package com.ps.judge.web.auth.req;
+package com.ps.common.query;
 
 import lombok.Data;
 
 @Data
-public class AuthUserQueryReq {
+public class UserQuery {
     private String fuzzyValue;
     private String role;
 }

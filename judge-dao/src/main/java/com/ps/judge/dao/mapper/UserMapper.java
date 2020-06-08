@@ -1,5 +1,8 @@
 package com.ps.judge.dao.mapper;
 
+import com.ps.common.query.QueryParams;
+import com.ps.common.query.QueryVo;
+import com.ps.common.query.UserQuery;
 import com.ps.judge.dao.entity.AuthUserDO;
 import org.apache.ibatis.annotations.*;
 
@@ -74,5 +77,24 @@ public interface UserMapper {
             "limit #{startNo},#{pageSize}",
             "</script>"
     })
-    List<AuthUserDO> query(int startNo, int pageSize, String fuzzyValue, String role);
+    List<AuthUserDO> query(QueryParams<UserQuery> query);
+
+    @Select({"<script>",
+            "select count(*) from auth_user",
+            "where",
+            "1=1",
+            "<if test='query!=null'>",
+            "<if test='query.role!=null'>",
+            "and roles like #{query.role}",
+            "</if>",
+            "<if test='query.fuzzyValue!=null'>",
+            "and (username like #{query.fuzzyValue}",
+            "or name like #{query.fuzzyValue}",
+            "or mobile like #{query.fuzzyValue})",
+            "</if>",
+            "</if>",
+            "limit #{startNo},#{pageSize}",
+            "</script>"
+    })
+    int total(QueryParams<UserQuery> query);
 }

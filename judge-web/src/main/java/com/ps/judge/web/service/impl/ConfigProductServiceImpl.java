@@ -1,9 +1,11 @@
 package com.ps.judge.web.service.impl;
 
 import com.ps.common.exception.BizException;
+import com.ps.common.query.QueryParams;
 import com.ps.judge.dao.entity.ConfigProductDO;
 import com.ps.judge.dao.mapper.ConfigProductMapper;
 import com.ps.judge.web.models.ConfigProductBO;
+import com.ps.common.query.ProductQuery;
 import com.ps.judge.web.service.ConfigProductService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +20,6 @@ import java.util.List;
 public class ConfigProductServiceImpl implements ConfigProductService {
     @Autowired
     ConfigProductMapper productMapper;
-
-    @Override
-    public List<ConfigProductBO> query(int pageNo, int size) {
-        if (pageNo < 1) {
-            pageNo = 1;
-        }
-        List<ConfigProductDO> configProductDOList = productMapper.query((pageNo - 1) * size, size);
-
-        return convertToBOList(configProductDOList);
-    }
 
     @Override
     public ConfigProductBO getByProductCode(String flowCode) {
@@ -61,6 +53,16 @@ public class ConfigProductServiceImpl implements ConfigProductService {
         ConfigProductDO configProductDO = convertToDO(configProductBO);
         configProductDO.setGmtModified(LocalDateTime.now());
         productMapper.updateStatus(configProductDO);
+    }
+
+    @Override
+    public List<ConfigProductBO> query(QueryParams<ProductQuery> convertToQueryParam) {
+        return convertToBOList(productMapper.query(convertToQueryParam));
+    }
+
+    @Override
+    public int count(QueryParams<ProductQuery> queryQueryParams) {
+        return productMapper.count(queryQueryParams);
     }
 
 

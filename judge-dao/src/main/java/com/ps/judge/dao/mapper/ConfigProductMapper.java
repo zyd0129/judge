@@ -1,5 +1,7 @@
 package com.ps.judge.dao.mapper;
 
+import com.ps.common.query.ProductQuery;
+import com.ps.common.query.QueryParams;
 import com.ps.judge.dao.entity.ConfigProductDO;
 import org.apache.ibatis.annotations.*;
 
@@ -20,10 +22,89 @@ public interface ConfigProductMapper {
     @ResultMap(value = "productResultMap")
     ConfigProductDO getById(int id);
 
+    @Select({"<script>",
+            "select count(*) from config_product",
+            "where",
+            "1=1",
+            "<if test='query!=null'>",
+            "<if test='query.status!=null'>",
+            "and",
+            "status=#{query.status}",
+            "</if>",
 
-    @Select("select * from config_product order by id limit #{from},#{size}")
+            "<if test='query.gmtCreatedFrom!=null'>",
+            "and",
+            "gmt_created>=#{query.gmtCreatedFrom}",
+            "</if>",
+
+            "<if test='query.gmtCreatedTo!=null'>",
+            "and",
+            "gmt_created<![CDATA[<=]]>#{query.gmtCreatedTo}",
+            "</if>",
+
+            "<if test='query.gmtModifiedFrom!=null'>",
+            "and",
+            "gmt_modified>=#{query.gmtModifiedFrom}",
+            "</if>",
+
+            "<if test='query.gmtModifiedTo!=null'>",
+            "and",
+            "gmt_modified<![CDATA[<=]]>#{query.gmtModifiedTo}",
+            "</if>",
+
+            "<if test='query.fuzzyValue!=null'>",
+            "and (tenant_name like #{query.fuzzyValue}",
+            "or product_name like #{query.fuzzyValue}",
+            "or product_code like #{query.fuzzyValue})",
+            "</if>",
+            "</if>",
+            "limit #{startNo},#{pageSize}",
+            "</script>"
+    })
+    int count(QueryParams<ProductQuery> q);
+
+
+    @Select({"<script>",
+            "select * from config_product",
+            "where",
+            "1=1",
+            "<if test='query!=null'>",
+            "<if test='query.status!=null'>",
+            "and",
+            "status=#{query.status}",
+            "</if>",
+
+            "<if test='query.gmtCreatedFrom!=null'>",
+            "and",
+            "gmt_created>=#{query.gmtCreatedFrom}",
+            "</if>",
+
+            "<if test='query.gmtCreatedTo!=null'>",
+            "and",
+            "gmt_created<![CDATA[<=]]>#{query.gmtCreatedTo}",
+            "</if>",
+
+            "<if test='query.gmtModifiedFrom!=null'>",
+            "and",
+            "gmt_modified>=#{query.gmtModifiedFrom}",
+            "</if>",
+
+            "<if test='query.gmtModifiedTo!=null'>",
+            "and",
+            "gmt_modified<![CDATA[<=]]>#{query.gmtModifiedTo}",
+            "</if>",
+
+            "<if test='query.fuzzyValue!=null'>",
+            "and (tenant_name like #{query.fuzzyValue}",
+            "or product_name like #{query.fuzzyValue}",
+            "or product_code like #{query.fuzzyValue})",
+            "</if>",
+            "</if>",
+            "limit #{startNo},#{pageSize}",
+            "</script>"
+    })
     @ResultMap(value = "productResultMap")
-    List<ConfigProductDO> query(int from, int size);
+    List<ConfigProductDO> query(QueryParams<ProductQuery> q);
 
 
     @Insert("insert into config_product (product_code, product_name,tenant_code," +

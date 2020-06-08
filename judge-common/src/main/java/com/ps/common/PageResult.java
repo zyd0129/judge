@@ -14,5 +14,6 @@ import java.util.List;
 public class PageResult<T> {
     private int curPage;
     private int pageSize;
+    private int total;
     private List<T> data;
 }
