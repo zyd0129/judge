@@ -3,7 +3,7 @@ logging:
   level:
     root:
       info
-  file: /home/jurulog/jury.log
+  file: /home/judgelog/judge.log
 spring:
   application:
     name: judge-provider
