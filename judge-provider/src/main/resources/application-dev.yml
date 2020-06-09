@@ -3,6 +3,7 @@ logging:
   level:
     root:
       info
+  file: /home/judgelog/judge.log
 spring:
   application:
     name: judge-provider
@@ -34,7 +35,7 @@ com:
   ps:
     judge:
       provider:
-        cron-callback-tenant: 0 0/10 * * * ?
-        cron-reapply-jury: 0 0/10 * * * ?
-        cron-audit-variable: 0 0/10 * * * ?
-        cron-var-result-query: 0 0/10 * * * ?
+        cron-callback-tenant: 0 0/5 * * * ?
+        cron-reapply-jury: 0 0/5 * * * ?
+        cron-audit-variable: 0 0/5 * * * ?
+        cron-var-result-query: 0 0/5 * * * ?
