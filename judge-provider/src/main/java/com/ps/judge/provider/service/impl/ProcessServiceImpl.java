@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -100,16 +101,15 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public ApiResponse<String> saveVarResult(AuditTaskDO auditTask, VarResult varResult) {
-        if (auditTask.getTaskStatus() != AuditTaskStatusEnum.REQUEST_RECEIVED.getCode()
-                && auditTask.getTaskStatus() != AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode()
-                && auditTask.getTaskStatus() != AuditTaskStatusEnum.FORWARDED_FAIL.getCode()) {
-            return ApiResponse.success();
+        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.REQUEST_RECEIVED.getCode()
+                || auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode()
+                || auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.getCode()) {
+            Integer auditId = auditTask.getId();
+            auditTask.setTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode());
+            this.auditTaskMapper.updateTaskStatus(auditTask.getTaskStatus(), auditId);
+            this.auditTaskParamMapper.updateVarResult(JSON.toJSONString(varResult), auditId);
+            this.asyncProcessTask.startProcess(auditTask, varResult);
         }
-        Integer auditId = auditTask.getId();
-        auditTask.setTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode());
-        this.auditTaskMapper.updateTaskStatus(auditTask.getTaskStatus(), auditId);
-        this.auditTaskParamMapper.updateVarResult(JSON.toJSONString(varResult), auditId);
-        this.asyncProcessTask.startProcess(auditTask, varResult);
         return ApiResponse.success();
     }
 
@@ -144,7 +144,12 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public void reapplyJury() {
-        List<AuditTaskDO> auditTaskList = this.auditTaskMapper.listAuditTaskByTaskStatus(AuditTaskStatusEnum.FORWARDED_FAIL.getCode());
+        List<AuditTaskDO> auditTaskList = new ArrayList<>();
+        List<AuditTaskDO> requestReceivedList = this.auditTaskMapper.listAuditTaskByTaskStatus(AuditTaskStatusEnum.REQUEST_RECEIVED.getCode());
+        List<AuditTaskDO> forwardedFailList = this.auditTaskMapper.listAuditTaskByTaskStatus(AuditTaskStatusEnum.FORWARDED_FAIL.getCode());
+        auditTaskList.addAll(requestReceivedList);
+        auditTaskList.addAll(forwardedFailList);
+
         if (auditTaskList.isEmpty()) {
             return;
         }

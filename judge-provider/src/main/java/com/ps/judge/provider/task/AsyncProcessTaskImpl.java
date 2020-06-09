@@ -62,7 +62,12 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
     @Override
     @Async
     public void startProcess(AuditTaskDO auditTask, VarResult varResult) {
-        if (auditTask.getTaskStatus() != AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode()) {
+        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT.getCode()
+                || auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_SUCCESS.getCode()
+                || auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode()
+                || auditTask.getTaskStatus() == AuditTaskStatusEnum.CALLBACK.getCode()
+                || auditTask.getTaskStatus() == AuditTaskStatusEnum.CALLBACK_SUCCESS.getCode()
+                || auditTask.getTaskStatus() == AuditTaskStatusEnum.CALLBACK_FAIL.getCode()) {
             return;
         }
         Integer taskId = auditTask.getId();
