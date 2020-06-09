@@ -1,6 +1,5 @@
 package com.ps.judge.web.service.impl;
 
-import com.ps.common.ApiResponse;
 import com.ps.common.exception.BizException;
 import com.ps.common.query.QueryParams;
 import com.ps.judge.dao.entity.ConfigFlowDO;
@@ -8,7 +7,6 @@ import com.ps.judge.dao.entity.ConfigProductDO;
 import com.ps.judge.dao.mapper.ConfigFlowMapper;
 import com.ps.judge.dao.mapper.ConfigProductMapper;
 import com.ps.judge.web.auth.objects.AuthUserBO;
-import com.ps.judge.web.models.ConfigFlowBO;
 import com.ps.judge.web.models.ConfigProductBO;
 import com.ps.common.query.ProductQuery;
 import com.ps.judge.web.service.ConfigProductService;
@@ -106,6 +104,11 @@ public class ConfigProductServiceImpl implements ConfigProductService {
     @Override
     public void delete(int id) {
          productMapper.delete(id);
+    }
+
+    @Override
+    public List<ConfigProductBO> listByTenantId(String tenantId) {
+        return convertToBOList(productMapper.listByTenantId(tenantId));
     }
 
     private void convertParam(QueryParams<ProductQuery> queryQueryParams){

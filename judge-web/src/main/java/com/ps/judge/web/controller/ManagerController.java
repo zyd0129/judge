@@ -2,6 +2,8 @@ package com.ps.judge.web.controller;
 
 import com.ps.common.ApiResponse;
 import com.ps.common.PageResult;
+import com.ps.common.enums.Status;
+import com.ps.common.query.PackageQuery;
 import com.ps.common.query.QueryVo;
 import com.ps.judge.web.models.ConfigFlowBO;
 import com.ps.judge.web.models.ConfigPackageBO;
@@ -9,6 +11,7 @@ import com.ps.judge.web.models.ConfigProductBO;
 import com.ps.judge.web.models.StoragePath;
 import com.ps.common.query.ProductQuery;
 import com.ps.judge.web.service.ConfigFlowService;
+import com.ps.judge.web.service.ConfigPackageService;
 import com.ps.judge.web.service.ConfigProductService;
 import com.ps.judge.web.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,9 @@ public class ManagerController {
 
     @Autowired
     private ConfigProductService configProductService;
+
+    @Autowired
+    private ConfigPackageService configPackageService;
 
     @Autowired
     StorageService storageService;
@@ -71,19 +77,50 @@ public class ManagerController {
         return ApiResponse.success();
     }
 
-    @GetMapping("package/query")
-    public ApiResponse<List<ConfigPackageBO>> queryPackage() {
-        return null;
+    @PostMapping(value = "packages/query", params = "query=true")
+    public ApiResponse<PageResult<ConfigPackageBO>> queryPackage(@RequestBody QueryVo<PackageQuery> reqQueryVo) {
+        List<ConfigPackageBO> all = configPackageService.query(reqQueryVo.convertToQueryParam());
+        int total = configPackageService.count(reqQueryVo.convertToQueryParam());
+        PageResult<ConfigPackageBO> pageResult = new PageResult<>();
+        pageResult.setCurPage(reqQueryVo.getCurPage());
+        pageResult.setPageSize(reqQueryVo.getPageSize());
+        pageResult.setTotal(total);
+        pageResult.setData(all);
+        return ApiResponse.success(pageResult);
     }
 
-    @PostMapping("package/add")
-    public ApiResponse<List<ConfigPackageBO>> addPackage() {
-        return null;
+    @PostMapping(value = "packages/query", params = "query=false")
+    public ApiResponse<PageResult<ConfigPackageBO>> listPackage(@RequestBody QueryVo<PackageQuery> packageQuery) {
+        packageQuery.setQuery(null);
+        return queryPackage(packageQuery);
+    }
+
+    @PostMapping("packages/add")
+    public ApiResponse addPackage(@RequestBody ConfigPackageBO configPackageBO) {
+        configPackageService.insert(configPackageBO);
+        return ApiResponse.success(configPackageBO);
+    }
+
+    @PostMapping("packages/delete")
+    public ApiResponse deletePackage(int id) {
+        configPackageService.delete(id);
+        return ApiResponse.success();
+    }
+
+    @PostMapping("packages/changeStatus")
+    public ApiResponse changePackageStatus(@RequestBody ConfigPackageBO configPackageBO) {
+        configPackageService.updateStatus(configPackageBO);
+        return ApiResponse.success();
+    }
+
+    @PostMapping("packages/all")
+    public ApiResponse changePackageStatus(@RequestParam Status status) {
+        List<ConfigPackageBO> all =configPackageService.all(status);
+        return ApiResponse.success(all);
     }
 
 
-
-    @PostMapping(value = "products/query",params = "query=true")
+    @PostMapping(value = "products/query", params = "query=true")
     public ApiResponse<PageResult<ConfigProductBO>> queryProduct(@RequestBody QueryVo<ProductQuery> reqQueryVo) {
         List<ConfigProductBO> all = configProductService.query(reqQueryVo.convertToQueryParam());
         int total = configProductService.count(reqQueryVo.convertToQueryParam());
@@ -95,21 +132,22 @@ public class ManagerController {
         return ApiResponse.success(pageResult);
     }
 
-    @PostMapping(value = "products/query",params = "query=false")
+    @PostMapping(value = "products/query", params = "query=false")
     public ApiResponse<PageResult<ConfigProductBO>> listProduct(@RequestBody QueryVo<ProductQuery> reqQueryVo) {
-       reqQueryVo.setQuery(null);
+        reqQueryVo.setQuery(null);
         return queryProduct(reqQueryVo);
     }
 
     @PostMapping("products/add")
     public ApiResponse addProduct(@RequestBody ConfigProductBO configProductBO) {
+
         configProductService.insert(configProductBO);
         return ApiResponse.success(configProductBO);
     }
 
     @PostMapping("products/delete")
     public ApiResponse deleteProduct(int id) {
-         configProductService.delete(id);
+        configProductService.delete(id);
         return ApiResponse.success();
     }
 
@@ -119,8 +157,14 @@ public class ManagerController {
         return ApiResponse.success();
     }
 
-    @PostMapping("/upload")
-    public ApiResponse<String> upload(MultipartFile file) {
+    @GetMapping("products/all")
+    public ApiResponse<List<ConfigProductBO>> changeProductStatus(@RequestParam String tenantCode) {
+        List<ConfigProductBO> all = configProductService.listByTenantId(tenantCode);
+        return ApiResponse.success(all);
+    }
+
+    @PostMapping("/packages/upload")
+    public ApiResponse upload(MultipartFile file) {
         System.out.println("upload");
         System.out.println(file);
         try (InputStream inputStream = file.getInputStream()) {
@@ -134,7 +178,7 @@ public class ManagerController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return ApiResponse.error(6001, "文件上传失败");
     }
 
 }

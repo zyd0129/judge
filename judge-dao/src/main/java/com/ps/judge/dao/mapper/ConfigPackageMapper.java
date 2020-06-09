@@ -1,33 +1,33 @@
 package com.ps.judge.dao.mapper;
 
-import com.ps.common.query.ProductQuery;
+import com.ps.common.query.PackageQuery;
 import com.ps.common.query.QueryParams;
-import com.ps.judge.dao.entity.ConfigProductDO;
+import com.ps.judge.dao.entity.ConfigPackageDO;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-public interface ConfigProductMapper {
-    @Select("select * from config_product where product_code=#{productCode}")
-    @Results(id = "productResultMap", value = {
+public interface ConfigPackageMapper {
+    @Select("select * from config_package where id=#{id}")
+    @Results(id = "packageResultMap", value = {
             @Result(column = "product_code", property = "productCode"),
             @Result(column = "product_name", property = "productName"),
             @Result(column = "tenant_code", property = "tenantCode"),
             @Result(column = "tenant_name", property = "tenantName"),
+            @Result(column = "package_name", property = "packageName"),
             @Result(column = "gmt_created", property = "gmtCreated"),
             @Result(column = "gmt_modified", property = "gmtModified")
     })
-    ConfigProductDO getByCode(String productCode);
-
-    @Select("select * from config_product where id=#{id}")
-    @ResultMap(value = "productResultMap")
-    ConfigProductDO getById(int id);
+    ConfigPackageDO getById(Integer id);
 
     @Select({"<script>",
-            "select count(*) from config_product",
+            "select count(*) from config_package",
             "where",
             "1=1",
             "<if test='query!=null'>",
+            "<if test='query.packageName!=null'>",
+            "and package_name=#{query.packageName}",
+            "</if>",
             "<if test='query.status!=null'>",
             "and",
             "status=#{query.status}",
@@ -53,17 +53,12 @@ public interface ConfigProductMapper {
             "gmt_modified<![CDATA[<=]]>#{query.gmtModifiedTo}",
             "</if>",
 
-            "and ( 1<![CDATA[<>]]>1 " ,
-            "<if test='query.tenantName!=null'>",
-            "or tenant_name like #{query.tenantName}",
-            "</if>",
-
-            "<if test='query.productName!=null'>",
-            "or product_name like #{query.productName}",
+            "<if test='query.tenantCode!=null'>",
+            "and tenant_code=#{query.tenantCode}",
             "</if>",
 
             "<if test='query.productCode!=null'>",
-            "or product_code like #{query.productCode}",
+            "and product_code=#{query.productCode}",
             "</if>",
             ")",
 
@@ -71,14 +66,17 @@ public interface ConfigProductMapper {
             "limit #{startNo},#{pageSize}",
             "</script>"
     })
-    int count(QueryParams<ProductQuery> q);
+    int count(QueryParams<PackageQuery> q);
 
 
     @Select({"<script>",
-            "select * from config_product",
+            "select * from config_package",
             "where",
             "1=1",
             "<if test='query!=null'>",
+            "<if test='query.packageName!=null'>",
+            "and package_name=#{query.packageName}",
+            "</if>",
             "<if test='query.status!=null'>",
             "and",
             "status=#{query.status}",
@@ -104,42 +102,41 @@ public interface ConfigProductMapper {
             "gmt_modified<![CDATA[<=]]>#{query.gmtModifiedTo}",
             "</if>",
 
-            "and ( 1<![CDATA[<>]]>1 " ,
-            "<if test='query.tenantName!=null'>",
-            "or tenant_name like #{query.tenantName}",
-            "</if>",
-
-            "<if test='query.productName!=null'>",
-            "or product_name like #{query.productName}",
+            "<if test='query.tenantCode!=null'>",
+            "and tenant_code=#{query.tenantCode}",
             "</if>",
 
             "<if test='query.productCode!=null'>",
-            "or product_code like #{query.productCode}",
+            "and product_code=#{query.productCode}",
             "</if>",
             ")",
+
             "</if>",
             "limit #{startNo},#{pageSize}",
             "</script>"
     })
-    @ResultMap(value = "productResultMap")
-    List<ConfigProductDO> query(QueryParams<ProductQuery> q);
+    @ResultMap(value = "packageResultMap")
+    List<ConfigPackageDO> query(QueryParams<PackageQuery> q);
 
 
-    @Insert("insert into config_product (product_code, product_name,tenant_code,tenant_name," +
+    @Insert("insert into config_package (product_code, product_name,tenant_code,tenant_name," +
+            "package_name,version,url," +
             "status,operator,gmt_created,gmt_modified)" +
             " values " +
             "(#{productCode}, #{productName},#{tenantCode},#{tenantName}, " +
+            "#{packageName},#{version}, #{url},"+
             "#{status},#{operator}, #{gmtCreated},#{gmtModified})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
-    void insert(ConfigProductDO productDO);
+    void insert(ConfigPackageDO packageDO);
 
-    @Update("UPDATE config_product SET status = #{status},operator=#{operator}, gmt_modified=#{gmtModified} where id=#{id}")
-    void updateStatus(ConfigProductDO productDO);
+    @Update("UPDATE config_package SET status = #{status},operator=#{operator}, gmt_modified=#{gmtModified} where id=#{id}")
+    void updateStatus(ConfigPackageDO packageDO);
 
-    @Delete("delete from config_product where id=#{id}")
+
+    @Delete("delete from config_package where id=#{id}")
     void delete(int id);
 
-    @Select("select * from config_product where tenant_code=#{tenantCode}")
-    @ResultMap(value = "productResultMap")
-    List<ConfigProductDO> listByTenantId(String tenantCode);
+    @Select("select * from config_package where status=#{status}")
+    @ResultMap(value = "packageResultMap")
+    List<ConfigPackageDO> listByStatus(int status);
 }

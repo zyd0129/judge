@@ -23,4 +23,6 @@ public interface ConfigProductService {
     int count(QueryParams<ProductQuery> queryQueryParams);
 
     void delete(int id);
+
+    List<ConfigProductBO> listByTenantId(String tenantId);
 }
