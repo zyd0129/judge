@@ -63,6 +63,14 @@ public class ConfigPackageServiceImpl implements ConfigPackageService {
         return convertToBOList(packageMapper.listByStatus(status.getValue()));
     }
 
+    @Override
+    public void update(ConfigPackageBO configPackageBO) {
+        AuthUserBO authUserBO = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        configPackageBO.setOperator(authUserBO.getUsername());
+        configPackageBO.setGmtModified(LocalDateTime.now());
+        packageMapper.update(convertToDO(configPackageBO));
+    }
+
     private ConfigPackageBO convertToBO(ConfigPackageDO configPackageDO) {
         if (configPackageDO == null) {
             return null;

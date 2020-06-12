@@ -120,11 +120,11 @@ public interface ConfigPackageMapper {
 
 
     @Insert("insert into config_package (product_code, product_name,tenant_code,tenant_name," +
-            "package_name,version,url," +
+            "package_name,version,url,remark," +
             "status,operator,gmt_created,gmt_modified)" +
             " values " +
             "(#{productCode}, #{productName},#{tenantCode},#{tenantName}, " +
-            "#{packageName},#{version}, #{url},"+
+            "#{packageName},#{version}, #{url},#{remark},"+
             "#{status},#{operator}, #{gmtCreated},#{gmtModified})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insert(ConfigPackageDO packageDO);
@@ -139,4 +139,9 @@ public interface ConfigPackageMapper {
     @Select("select * from config_package where status=#{status}")
     @ResultMap(value = "packageResultMap")
     List<ConfigPackageDO> listByStatus(int status);
+
+    @Update("UPDATE config_package SET product_code=#{productCode},product_name=#{productName},tenant_code=#{tenantCode},tenant_name=#{tenantName}," +
+            "package_name=#{packageName},version=#{version},url=#{url},remark=#{remark},"+
+            "status = #{status},operator=#{operator}, gmt_modified=#{gmtModified} where id=#{id}")
+    void update(ConfigPackageDO convertToDO);
 }

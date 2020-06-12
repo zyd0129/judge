@@ -13,6 +13,7 @@ public interface UserMapper {
     @Select("select * from auth_user where username=#{username}")
     @Results(id = "userResultMap", value = {
             @Result(column = "credentials_expired", property = "credentialsExpired"),
+            @Result(column = "user_type", property = "userType"),
             @Result(column = "gmt_created", property = "gmtCreated"),
             @Result(column = "gmt_modified", property = "gmtModified")
     })
@@ -32,11 +33,11 @@ public interface UserMapper {
 
 
     @Insert("insert into auth_user (username,name, password,roles," +
-            "mobile, tenants,department," +
+            "mobile, tenants,department,user_type" +
             "operator,gmt_created,gmt_modified)" +
             " values " +
             "(#{username},#{name}, #{password},#{roles}, " +
-            "#{mobile}, #{tenants},#{department}," +
+            "#{mobile}, #{tenants},#{department},#{userType}," +
             "#{operator}, #{gmtCreated},#{gmtModified})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insert(AuthUserDO authUserDO);

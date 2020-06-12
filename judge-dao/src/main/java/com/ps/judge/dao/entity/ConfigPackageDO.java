@@ -16,6 +16,7 @@ public class ConfigPackageDO {
     private String version;
     private String url;
     private String flow;
+    private String remark;
     private Integer status;
     private String operator;
     private LocalDateTime gmtCreated;

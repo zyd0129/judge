@@ -16,6 +16,8 @@ public class AuthUserDO {
     private boolean credentialsExpired;
     private boolean enabled;
 
+    private Integer userType;
+
     private String mobile;
     private String tenants;
     private String department;

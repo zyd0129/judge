@@ -101,6 +101,12 @@ public class ManagerController {
         return ApiResponse.success(configPackageBO);
     }
 
+    @PostMapping("packages/modify")
+    public ApiResponse modifyPackage(@RequestBody ConfigPackageBO configPackageBO) {
+        configPackageService.update(configPackageBO);
+        return ApiResponse.success();
+    }
+
     @PostMapping("packages/delete")
     public ApiResponse deletePackage(int id) {
         configPackageService.delete(id);

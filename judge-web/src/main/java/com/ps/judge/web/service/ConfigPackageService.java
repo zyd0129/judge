@@ -22,4 +22,6 @@ public interface ConfigPackageService {
     int count(QueryParams<PackageQuery> convertToQueryParam);
 
     List<ConfigPackageBO> all(Status status);
+
+    void update(ConfigPackageBO configPackageBO);
 }

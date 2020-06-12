@@ -13,6 +13,7 @@ public class ConfigPackageBO {
     private String productCode;
     private String productName;
 
+    private String remark;
     private String packageName;
     private String version;
     private String url;

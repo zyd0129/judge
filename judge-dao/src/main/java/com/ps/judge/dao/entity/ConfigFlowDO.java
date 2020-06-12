@@ -13,6 +13,7 @@ public class ConfigFlowDO {
     private String productCode;
     private Integer packageId;
     private String packageUrl;
+    private String remark;
 
     private String operator;
     private Integer status;

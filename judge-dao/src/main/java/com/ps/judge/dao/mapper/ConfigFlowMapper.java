@@ -41,9 +41,9 @@ public interface ConfigFlowMapper {
     @ResultMap(value = "flowResultMap")
     List<ConfigFlowDO> getAllEnable();
 
-    @Insert("insert into config_flow (flow_code, flow_name, tenant_code, product_code,"
+    @Insert("insert into config_flow (flow_code, flow_name, tenant_code, product_code,remark,"
             + "package_id, package_url, status, operator, gmt_created, gmt_modified)"
-            + "values (#{flowCode}, #{flowName},#{tenantCode}, #{productCode}, #{packageId},"
+            + "values (#{flowCode}, #{flowName},#{tenantCode}, #{productCode}, #{remark},#{packageId},"
             + "#{packageUrl}, #{status}, #{operator}, #{gmtCreated}, #{gmtModified})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insert(ConfigFlowDO configFlowDO);

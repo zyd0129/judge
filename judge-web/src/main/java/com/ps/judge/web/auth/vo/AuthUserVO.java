@@ -28,6 +28,8 @@ public class AuthUserVO {
     private String roles;
     private Set<GrantedAuthority> authorities;
 
+    private Integer userType;
+
 
     private String mobile;
     private List<AuthTenantBO> tenants;

@@ -13,6 +13,7 @@ public class ConfigProductDO {
     private String productCode;
     private Integer status;
     private String operator;
+    private String remark;
     private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;
 }

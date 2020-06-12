@@ -125,10 +125,10 @@ public interface ConfigProductMapper {
     List<ConfigProductDO> query(QueryParams<ProductQuery> q);
 
 
-    @Insert("insert into config_product (product_code, product_name,tenant_code,tenant_name," +
+    @Insert("insert into config_product (product_code, product_name,tenant_code,tenant_name,remark," +
             "status,operator,gmt_created,gmt_modified)" +
             " values " +
-            "(#{productCode}, #{productName},#{tenantCode},#{tenantName}, " +
+            "(#{productCode}, #{productName},#{tenantCode},#{tenantName},#{remark}, " +
             "#{status},#{operator}, #{gmtCreated},#{gmtModified})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insert(ConfigProductDO productDO);

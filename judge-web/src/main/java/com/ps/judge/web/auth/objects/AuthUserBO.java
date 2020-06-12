@@ -41,6 +41,8 @@ public class AuthUserBO  implements UserDetails {
     @JSONField(serialize = false)
     private boolean enabled;
 
+    private Integer userType;
+
     private String mobile;
     private List<AuthTenantBO> tenants;
     private String department;

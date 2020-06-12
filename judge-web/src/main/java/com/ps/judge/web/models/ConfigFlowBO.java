@@ -16,6 +16,7 @@ public class ConfigFlowBO {
     private String curPackageArtifact;
     private String curPackageVersion;
     private Status status = Status.STOPPED;
+    private String remark;
     private String operator;
     private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;

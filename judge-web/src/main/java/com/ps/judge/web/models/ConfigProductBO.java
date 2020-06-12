@@ -12,6 +12,7 @@ public class ConfigProductBO {
     private String productName;
     private String productCode;
     private Status status;
+    private String remark;
     private String operator;
     private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;
