@@ -6,6 +6,7 @@ import com.ps.common.exception.BizException;
 import com.ps.common.query.FlowQuery;
 import com.ps.common.query.QueryParams;
 import com.ps.judge.api.JudgeApi;
+import com.ps.judge.api.entity.LoadFlowVO;
 import com.ps.judge.dao.entity.ConfigFlowDO;
 import com.ps.judge.dao.mapper.ConfigFlowMapper;
 import com.ps.judge.web.auth.objects.AuthUserBO;
@@ -113,12 +114,12 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
         ConfigFlowBO preFlow = convertToBO(flowMapper.getById(configFlowBO.getId()));
         flowMapper.update(convertToDO(configFlowBO));
         if (!Status.STARTED.equals(preFlow.getStatus()) && Status.STARTED.equals(configFlowBO.getStatus())) {
-            ApiResponse<String> response = judgeApi.loadFlow(configFlowBO.getFlowCode(), true);
+            ApiResponse<String> response = judgeApi.loadFlow(new LoadFlowVO(preFlow.getFlowCode(), true));
             if (!response.isSuccess()) {
                 throw new BizException(60001, "judge部署失败");
             }
         } else if (Status.STARTED.equals(preFlow.getStatus()) && !Status.STARTED.equals(configFlowBO.getStatus())) {
-            ApiResponse<String> response = judgeApi.loadFlow(configFlowBO.getFlowCode(), false);
+            ApiResponse<String> response = judgeApi.loadFlow(new LoadFlowVO(preFlow.getFlowCode(), false));
             if (!response.isSuccess()) {
                 throw new BizException(60001, "judge unload失败");
             }

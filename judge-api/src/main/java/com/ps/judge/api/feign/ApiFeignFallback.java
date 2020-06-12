@@ -4,6 +4,7 @@ import com.ps.judge.api.JudgeApi;
 import com.ps.judge.api.entity.ApplyResultVO;
 import com.ps.judge.api.entity.AuditResultQuery;
 import com.ps.judge.api.entity.AuditResultVO;
+import com.ps.judge.api.entity.LoadFlowVO;
 import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.request.ApplyRequest;
 import com.ps.jury.api.response.VarResult;
@@ -27,7 +28,7 @@ public class ApiFeignFallback implements JudgeApi {
     }
 
     @Override
-    public ApiResponse<String> loadFlow(String flowCode,boolean load) {
+    public ApiResponse<String> loadFlow(LoadFlowVO loadFlowVO) {
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), throwable.getMessage());
     }
 

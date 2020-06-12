@@ -4,6 +4,7 @@ import com.ps.judge.api.JudgeApi;
 import com.ps.judge.api.entity.ApplyResultVO;
 import com.ps.judge.api.entity.AuditResultQuery;
 import com.ps.judge.api.entity.AuditResultVO;
+import com.ps.judge.api.entity.LoadFlowVO;
 import com.ps.judge.dao.entity.AuditTaskDO;
 import com.ps.judge.dao.entity.ConfigFlowDO;
 import com.ps.judge.provider.enums.AuditTaskStatusEnum;
@@ -105,15 +106,16 @@ public class ProcessController implements JudgeApi {
     }
 
     @Override
-    public ApiResponse<String> loadFlow(String flowCode, boolean load) {
-        if (StringUtils.isEmpty(flowCode)) {
+    public ApiResponse<String> loadFlow(LoadFlowVO loadFlowVO) {
+
+        if (StringUtils.isEmpty(loadFlowVO.getFlowCode())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "flowCode不能为空");
         }
-        ConfigFlowDO configFlow = this.configFlowService.getByFlowCode(flowCode);
+        ConfigFlowDO configFlow = this.configFlowService.getByFlowCode(loadFlowVO.getFlowCode());
         if (Objects.isNull(configFlow)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不存在");
         }
-        if (load) {
+        if (loadFlowVO.isLoad()) {
             if (this.configFlowService.loadFlow(configFlow)) {
                 return ApiResponse.success();
             }
