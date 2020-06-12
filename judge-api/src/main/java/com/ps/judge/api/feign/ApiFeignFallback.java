@@ -27,7 +27,7 @@ public class ApiFeignFallback implements JudgeApi {
     }
 
     @Override
-    public ApiResponse<String> loadFlow(String flowCode) {
+    public ApiResponse<String> loadFlow(String flowCode,boolean load) {
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), throwable.getMessage());
     }
 
