@@ -3,6 +3,8 @@ package com.ps.judge.web.service;
 
 import com.ps.common.ApiResponse;
 import com.ps.common.exception.BizException;
+import com.ps.common.query.FlowQuery;
+import com.ps.common.query.QueryParams;
 import com.ps.judge.web.models.ConfigFlowBO;
 
 import java.util.List;
@@ -10,7 +12,7 @@ import java.util.List;
 public interface ConfigFlowService {
     List<ConfigFlowBO> getAll();
 
-    List<ConfigFlowBO> query(int pageNo, int size);
+    List<ConfigFlowBO> query(QueryParams<FlowQuery> queryParams);
 
     ConfigFlowBO getByFlowCode(String flowCode);
 
@@ -20,7 +22,9 @@ public interface ConfigFlowService {
 
     void updateStatus(ConfigFlowBO configFlowBO) throws BizException;
 
-    void changePackage(ConfigFlowBO configFlowBO);
+    void delete(int id);
 
-    ApiResponse<String> delete(int id);
+    int count(QueryParams<FlowQuery> queryParams);
+
+    void modify(ConfigFlowBO configFlowBO);
 }

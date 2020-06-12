@@ -3,6 +3,7 @@ package com.ps.judge.web.controller;
 import com.ps.common.ApiResponse;
 import com.ps.common.PageResult;
 import com.ps.common.enums.Status;
+import com.ps.common.query.FlowQuery;
 import com.ps.common.query.PackageQuery;
 import com.ps.common.query.QueryVo;
 import com.ps.judge.web.models.ConfigFlowBO;
@@ -36,44 +37,46 @@ public class ManagerController {
     @Autowired
     StorageService storageService;
 
-    /**
-     * query list
-     *
-     * @return
-     */
-    @GetMapping("flows/query")
-    public ApiResponse<PageResult<ConfigFlowBO>> queryFlow(@RequestParam int pageNo, @RequestParam(defaultValue = "10") int size) {
-        List<ConfigFlowBO> all = configFlowService.query(pageNo, size);
-        PageResult<ConfigFlowBO> pageResult = new PageResult<>();
-        pageResult.setCurPage(pageNo);
-        pageResult.setPageSize(size);
 
+    @PostMapping(value = "flows/query", params = "query=true")
+    public ApiResponse<PageResult<ConfigFlowBO>> queryFlow(@RequestBody QueryVo<FlowQuery> reqQueryVo) {
+        List<ConfigFlowBO> all = configFlowService.query(reqQueryVo.convertToQueryParam());
+        int total = configFlowService.count(reqQueryVo.convertToQueryParam());
+        PageResult<ConfigFlowBO> pageResult = new PageResult<>();
+        pageResult.setCurPage(reqQueryVo.getCurPage());
+        pageResult.setPageSize(reqQueryVo.getPageSize());
+        pageResult.setTotal(total);
         pageResult.setData(all);
-        ApiResponse<PageResult<ConfigFlowBO>> apiResponse = ApiResponse.success(pageResult);
-        return apiResponse;
+        return ApiResponse.success(pageResult);
+    }
+
+    @PostMapping(value = "flows/query", params = "query=false")
+    public ApiResponse<PageResult<ConfigFlowBO>> listFlow(@RequestBody QueryVo<FlowQuery> packageQuery) {
+        packageQuery.setQuery(null);
+        return queryFlow(packageQuery);
     }
 
     @PostMapping("flows/add")
     public ApiResponse<ConfigFlowBO> addFlow(@RequestBody ConfigFlowBO configFlowBO) {
         configFlowService.insert(configFlowBO);
-        ApiResponse apiResponse = ApiResponse.success(configFlowBO);
-        return apiResponse;
+        return ApiResponse.success(configFlowBO);
+    }
+
+    @PostMapping("flows/modify")
+    public ApiResponse<ConfigFlowBO> modifyFlow(@RequestBody ConfigFlowBO configFlowBO) {
+        configFlowService.modify(configFlowBO);
+        return ApiResponse.success(configFlowBO);
     }
 
     @PostMapping("flows/delete")
-    public ApiResponse<String> deleteFlow() {
-        return null;
+    public ApiResponse deleteFlow(Integer id) {
+        configFlowService.delete(id);
+        return ApiResponse.success();
     }
 
     @PostMapping("flows/changeStatus")
     public ApiResponse<String> changeFlowStatus(@RequestBody ConfigFlowBO configFlowBO) {
         configFlowService.updateStatus(configFlowBO);
-        return ApiResponse.success();
-    }
-
-    @PostMapping("flows/changePackage")
-    public ApiResponse<String> changePackage(@RequestBody ConfigFlowBO configFlowBO) {
-        configFlowService.changePackage(configFlowBO);
         return ApiResponse.success();
     }
 
@@ -121,7 +124,7 @@ public class ManagerController {
 
     @PostMapping("packages/all")
     public ApiResponse changePackageStatus(@RequestParam Status status) {
-        List<ConfigPackageBO> all =configPackageService.all(status);
+        List<ConfigPackageBO> all = configPackageService.all(status);
         return ApiResponse.success(all);
     }
 
