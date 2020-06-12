@@ -1,16 +1,17 @@
 package com.ps.judge.web.service.impl;
 
 
-import com.ps.common.ApiResponse;
 import com.ps.common.enums.Status;
 import com.ps.common.exception.BizException;
 import com.ps.common.query.FlowQuery;
 import com.ps.common.query.QueryParams;
+import com.ps.judge.api.JudgeApi;
 import com.ps.judge.dao.entity.ConfigFlowDO;
 import com.ps.judge.dao.mapper.ConfigFlowMapper;
 import com.ps.judge.web.auth.objects.AuthUserBO;
 import com.ps.judge.web.models.ConfigFlowBO;
 import com.ps.judge.web.service.ConfigFlowService;
+import com.ps.jury.api.common.ApiResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +28,9 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
     @Autowired
     ConfigFlowMapper flowMapper;
 
+    @Autowired
+    JudgeApi judgeApi;
+
 
     @Override
     public List<ConfigFlowBO> getAll() {
@@ -42,7 +46,7 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
 
     @Override
     public int count(QueryParams<FlowQuery> queryParams) {
-       processQueryParams(queryParams);
+        processQueryParams(queryParams);
         return flowMapper.count(queryParams);
     }
 
@@ -55,16 +59,16 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
         flowMapper.update(convertToDO(configFlowBO));
     }
 
-    private void processQueryParams(QueryParams<FlowQuery> queryParams){
-        if(queryParams==null || queryParams.getQuery()==null)
+    private void processQueryParams(QueryParams<FlowQuery> queryParams) {
+        if (queryParams == null || queryParams.getQuery() == null)
             return;
-        String flowName =queryParams.getQuery().getFlowName();
-        String packageName =queryParams.getQuery().getPackageName();
-        if(!StringUtils.isEmpty(flowName)){
-            queryParams.getQuery().setFlowName("%"+flowName+"%");
+        String flowName = queryParams.getQuery().getFlowName();
+        String packageName = queryParams.getQuery().getPackageName();
+        if (!StringUtils.isEmpty(flowName)) {
+            queryParams.getQuery().setFlowName("%" + flowName + "%");
         }
-        if(!StringUtils.isEmpty(packageName)){
-            queryParams.getQuery().setPackageName("%"+packageName+"%");
+        if (!StringUtils.isEmpty(packageName)) {
+            queryParams.getQuery().setPackageName("%" + packageName + "%");
         }
     }
 
@@ -101,11 +105,25 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
     }
 
     @Override
+    @Transactional
     public void updateStatus(ConfigFlowBO configFlowBO) throws BizException {
         AuthUserBO authUserBO = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         configFlowBO.setOperator(authUserBO.getUsername());
         configFlowBO.setGmtModified(LocalDateTime.now());
+        ConfigFlowBO preFlow = convertToBO(flowMapper.getById(configFlowBO.getId()));
         flowMapper.update(convertToDO(configFlowBO));
+        if (!Status.STARTED.equals(preFlow.getStatus()) && Status.STARTED.equals(configFlowBO.getStatus())) {
+            ApiResponse<String> response = judgeApi.loadFlow(configFlowBO.getFlowCode(), true);
+            if (!response.isSuccess()) {
+                throw new BizException(60001, "judge部署失败");
+            }
+        } else if (Status.STARTED.equals(preFlow.getStatus()) && !Status.STARTED.equals(configFlowBO.getStatus())) {
+            ApiResponse<String> response = judgeApi.loadFlow(configFlowBO.getFlowCode(), false);
+            if (!response.isSuccess()) {
+                throw new BizException(60001, "judge unload失败");
+            }
+        }
+
     }
 
     @Override

@@ -31,4 +31,9 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
     public boolean loadFlow(ConfigFlowDO configFlow) {
         return this.kSessionManager.addContainer(configFlow);
     }
+
+    @Override
+    public boolean unLoadFlow(ConfigFlowDO configFlow) {
+        return this.kSessionManager.removeContainer(configFlow);
+    }
 }

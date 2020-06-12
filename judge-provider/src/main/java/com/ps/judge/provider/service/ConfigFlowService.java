@@ -10,4 +10,6 @@ public interface ConfigFlowService {
     List<ConfigFlowDO> getAllEnable();
 
     boolean loadFlow(ConfigFlowDO configFlow);
+
+    boolean unLoadFlow(ConfigFlowDO configFlow);
 }

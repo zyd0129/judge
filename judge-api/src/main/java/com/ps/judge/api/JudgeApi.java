@@ -8,9 +8,11 @@ import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.request.ApplyRequest;
 import com.ps.jury.api.response.VarResult;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "judge-provider", fallbackFactory = ApiFeignFallbackFactory.class)
 public interface JudgeApi {
@@ -21,7 +23,7 @@ public interface JudgeApi {
     ApiResponse<ApplyResultVO> retryAudit(@PathVariable("taskId") Integer taskId);
 
     @PostMapping("/judge/audit/flow/load/{flowCode}")
-    ApiResponse<String> loadFlow(@PathVariable("flowCode") String flowCode);
+    ApiResponse<String> loadFlow(@PathVariable("flowCode") String flowCode, @RequestParam(required = false,defaultValue = "true") boolean load);
 
     @PostMapping("/judge/var/submit")
     ApiResponse<String> submitVar(@RequestBody ApiResponse<VarResult> apiResponse);

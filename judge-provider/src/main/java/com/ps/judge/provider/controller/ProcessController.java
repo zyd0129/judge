@@ -105,7 +105,7 @@ public class ProcessController implements JudgeApi {
     }
 
     @Override
-    public ApiResponse<String> loadFlow(String flowCode) {
+    public ApiResponse<String> loadFlow(String flowCode, boolean load) {
         if (StringUtils.isEmpty(flowCode)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "flowCode不能为空");
         }
@@ -113,8 +113,14 @@ public class ProcessController implements JudgeApi {
         if (Objects.isNull(configFlow)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不存在");
         }
-        if (this.configFlowService.loadFlow(configFlow)) {
-            return ApiResponse.success();
+        if (load) {
+            if (this.configFlowService.loadFlow(configFlow)) {
+                return ApiResponse.success();
+            }
+        } else {
+            if (this.configFlowService.unLoadFlow(configFlow)) {
+                return ApiResponse.success();
+            }
         }
         return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流加载失败");
     }
