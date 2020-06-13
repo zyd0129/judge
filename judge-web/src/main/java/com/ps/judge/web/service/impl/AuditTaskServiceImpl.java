@@ -1,12 +1,16 @@
 package com.ps.judge.web.service.impl;
 
 import com.ps.common.enums.TaskStatus;
+import com.ps.common.exception.BizException;
 import com.ps.common.query.QueryParams;
 import com.ps.common.query.TaskQuery;
+import com.ps.judge.api.JudgeApi;
+import com.ps.judge.api.entity.ApplyResultVO;
 import com.ps.judge.dao.entity.AuditTaskDO;
 import com.ps.judge.dao.mapper.AuditTaskMapper;
 import com.ps.judge.web.models.AuditTaskBO;
 import com.ps.judge.web.service.AuditTaskService;
+import com.ps.jury.api.common.ApiResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +29,9 @@ public class AuditTaskServiceImpl implements AuditTaskService {
 
     @Autowired
     AuditTaskMapper auditTaskMapper;
+
+    @Autowired
+    JudgeApi judgeApi;
     
     @Override
     public List<AuditTaskBO> query(QueryParams<TaskQuery> queryParams) {
@@ -36,6 +43,14 @@ public class AuditTaskServiceImpl implements AuditTaskService {
     public int count(QueryParams<TaskQuery> queryParams) {
         processQueryParams(queryParams);
         return auditTaskMapper.count(queryParams);
+    }
+
+    @Override
+    public void revoke(int taskId) {
+        ApiResponse<ApplyResultVO> response = judgeApi.retryAudit(taskId);
+        if (!response.isSuccess()) {
+            throw new BizException(60001, "重掉失败");
+        }
     }
 
     private AuditTaskBO convertToBO(AuditTaskDO auditTaskDO) {

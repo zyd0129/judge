@@ -4,13 +4,10 @@ package com.ps.judge.web.service;
 import com.ps.common.query.QueryParams;
 import com.ps.common.query.TaskQuery;
 import com.ps.judge.web.models.AuditTaskBO;
+import com.ps.judge.web.models.AuditTaskParamBO;
 
 import java.util.List;
 
-public interface AuditTaskService {
-    List<AuditTaskBO> query(QueryParams<TaskQuery> queryParams);
-
-    int count(QueryParams<TaskQuery> queryParams);
-
-    void revoke(int taskId);
+public interface AuditTaskParamService {
+    AuditTaskParamBO getById(int id);
 }
