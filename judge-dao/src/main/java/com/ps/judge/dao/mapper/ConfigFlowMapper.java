@@ -62,7 +62,7 @@ public interface ConfigFlowMapper {
             "and product_code=#{query.productCode}",
             "</if>",
 
-            "and ( 1=1 ",
+            "and ( 1<![CDATA[<>]]>1 ",
             "<if test='query.flowName!=null'>",
             "or flow_name like #{query.flowName}",
             "</if>",
@@ -107,7 +107,7 @@ public interface ConfigFlowMapper {
             "and product_code=#{query.productCode}",
             "</if>",
 
-            "and ( 1=1 ",
+            "and ( 1<![CDATA[<>]]>1 ",
             "<if test='query.flowName!=null'>",
             "or flow_name like #{query.flowName}",
             "</if>",

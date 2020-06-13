@@ -1,5 +1,7 @@
 package com.ps.judge.dao.mapper;
 
+import com.ps.common.query.QueryParams;
+import com.ps.common.query.TaskQuery;
 import com.ps.judge.dao.entity.AuditTaskDO;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
@@ -8,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AuditTaskMapper {
-    @Results(id = "auditTask", value = {
+    @Results(id = "auditTaskMap", value = {
         @Result(property = "id", column = "id", jdbcType = JdbcType.INTEGER, id = true),
         @Result(property = "tenantCode", column = "tenant_code", jdbcType = JdbcType.VARCHAR),
         @Result(property = "productCode", column = "product_code", jdbcType = JdbcType.VARCHAR),
@@ -31,7 +33,6 @@ public interface AuditTaskMapper {
         @Result(property = "gmtCreate", column = "gmt_create", jdbcType = JdbcType.TIMESTAMP),
         @Result(property = "gmtModified", column = "gmt_modified", jdbcType = JdbcType.TIMESTAMP)
     })
-
     @Select("select * from audit_task where id = #{id,jdbcType=INTEGER}")
     AuditTaskDO getAuditTaskById(@Param("id") int id);
 
@@ -55,4 +56,119 @@ public interface AuditTaskMapper {
             + "callback_count = #{callbackCount,jdbcType=TINYINT}, complete_time = #{completeTime, jdbcType=TIMESTAMP},"
             + "gmt_modified = now() where id=#{id}")
     void update(AuditTaskDO auditTask);
+
+    @Select({"<script>",
+            "select * from audit_task",
+            "where",
+            "1=1",
+            "<if test='query!=null'>",
+            "<if test='query.taskStatus!=null'>",
+            "and",
+            "task_status in",
+            "<foreach collection='query.taskStatus' item='taskStatus' open='(' separator=',' close=')'>",
+            "#{taskStatus}",
+            "</foreach>",
+            "</if>",
+
+            "<if test='query.gmtCreatedFrom!=null'>",
+            "and",
+            "gmt_created>=#{query.gmtCreatedFrom}",
+            "</if>",
+
+            "<if test='query.gmtCreatedTo!=null'>",
+            "and",
+            "gmt_created<![CDATA[<=]]>#{query.gmtCreatedTo}",
+            "</if>",
+
+            "<if test='query.completeTimeFrom!=null'>",
+            "and",
+            "complete_time>=#{query.completeTimeFrom}",
+            "</if>",
+
+            "<if test='query.completeTimeTo!=null'>",
+            "and",
+            "complete_time<![CDATA[<=]]>#{query.completeTimeTo}",
+            "</if>",
+
+            "and ( 1<![CDATA[<>]]>1 ",
+            "<if test='query.mobile!=null'>",
+            "or mobile like #{query.mobile}",
+            "</if>",
+
+            "<if test='query.tenantCode!=null'>",
+            "or tenant_code like #{query.tenantCode}",
+            "</if>",
+
+            "<if test='query.userName!=null'>",
+            "or user_name like #{query.userName}",
+            "</if>",
+
+            "<if test='query.idCard!=null'>",
+            "or idCard like #{query.idCard}",
+            "</if>",
+            ")",
+
+            "</if>",
+            "limit #{startNo},#{pageSize}",
+            "</script>"
+    })
+    @ResultMap(value = "auditTaskMap")
+    List<AuditTaskDO> query(QueryParams<TaskQuery> queryParams);
+
+    @Select({"<script>",
+            "select count(*) from audit_task",
+            "where",
+            "1=1",
+            "<if test='query!=null'>",
+            "<if test='query.taskStatus!=null'>",
+            "and",
+            "task_status in",
+            "<foreach collection='query.taskStatus' item='taskStatus' open='(' separator=',' close=')'>",
+            "#{taskStatus}",
+            "</foreach>",
+            "</if>",
+
+            "<if test='query.gmtCreatedFrom!=null'>",
+            "and",
+            "gmt_created>=#{query.gmtCreatedFrom}",
+            "</if>",
+
+            "<if test='query.gmtCreatedTo!=null'>",
+            "and",
+            "gmt_created<![CDATA[<=]]>#{query.gmtCreatedTo}",
+            "</if>",
+
+            "<if test='query.completeTimeFrom!=null'>",
+            "and",
+            "complete_time>=#{query.completeTimeFrom}",
+            "</if>",
+
+            "<if test='query.completeTimeTo!=null'>",
+            "and",
+            "complete_time<![CDATA[<=]]>#{query.completeTimeTo}",
+            "</if>",
+
+            "and ( 1<![CDATA[<>]]>1 ",
+            "<if test='query.mobile!=null'>",
+            "or mobile like #{query.mobile}",
+            "</if>",
+
+            "<if test='query.tenantCode!=null'>",
+            "or tenant_code like #{query.tenantCode}",
+            "</if>",
+
+            "<if test='query.userName!=null'>",
+            "or user_name like #{query.userName}",
+            "</if>",
+
+            "<if test='query.idCard!=null'>",
+            "or idCard like #{query.idCard}",
+            "</if>",
+            ")",
+
+            "</if>",
+            "limit #{startNo},#{pageSize}",
+            "</script>"
+    })
+    int count(QueryParams<TaskQuery> queryParams);
 }
