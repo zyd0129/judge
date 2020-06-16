@@ -1,5 +1,6 @@
 package com.ps.judge.provider.exception;
 
+import com.netflix.client.ClientException;
 import com.ps.jury.api.common.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IOException.class)
     public ApiResponse handleIOException(IOException e) {
         log.error("handle IOException: {}", e.getMessage());
+        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+    }
+
+    @ExceptionHandler(ClientException.class)
+    public ApiResponse handleClientException(ClientException e) {
+        log.error("handle ClientException: {}", e.getMessage());
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
     }
 }
