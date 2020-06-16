@@ -107,7 +107,6 @@ public class ProcessController implements JudgeApi {
 
     @Override
     public ApiResponse<String> loadFlow(LoadFlowVO loadFlowVO) {
-
         if (StringUtils.isEmpty(loadFlowVO.getFlowCode())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "flowCode不能为空");
         }

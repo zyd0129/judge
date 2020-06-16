@@ -16,5 +16,5 @@ public class AuditResultVO extends JuryHeader {
     private Integer taskStatus;
     private Integer auditScore;
     private String auditCode;
-    private List<TriggeredRuleVO> triggeredRules;
+    private List<NodeResultVO> nodeResult;
 }

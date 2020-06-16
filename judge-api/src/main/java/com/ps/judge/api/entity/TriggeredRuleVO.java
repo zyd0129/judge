@@ -10,7 +10,6 @@ import lombok.Data;
  */
 @Data
 public class TriggeredRuleVO {
-    private String rulePackageCode;
     private String ruleCode;
     private String ruleName;
     private String expression;

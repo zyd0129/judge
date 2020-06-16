@@ -11,6 +11,7 @@ public class AuditTaskTriggeredRuleDO {
     private Integer taskId;
     private String applyId;
     private String flowCode;
+    private Integer index;
     private String rulePackageCode;
     private String rulePackageName;
     private String rulePackageVersion;

@@ -3,6 +3,7 @@ package com.ps.judge.provider.task;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ps.judge.api.entity.AuditResultVO;
+import com.ps.judge.api.entity.NodeResultVO;
 import com.ps.judge.api.entity.TriggeredRuleVO;
 import com.ps.judge.dao.entity.AuditTaskDO;
 import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;
@@ -19,6 +20,7 @@ import com.ps.jury.api.JuryApi;
 import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.request.ApplyRequest;
 import com.ps.jury.api.response.VarResult;
+import org.apache.commons.lang.StringUtils;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -87,42 +89,74 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             return;
         }
 
-        Map<String, Object> map = new HashMap<>();
-        List<AuditTaskTriggeredRuleDO> triggeredRuleList = new ArrayList<>();
-        map.put("platform", varResult.getPlatform());
-        map.put("merchant", varResult.getMerchant());
-        map.put("product", varResult.getProduct());
-        map.put("triggeredRuleList", triggeredRuleList);
-        kieSession.startProcess(flowCode, map);
+        Map<String, Object> parameters = new HashMap<>();
+        List<AuditTaskTriggeredRuleDO> auditTaskTriggeredRuleDOList = new ArrayList<>();
+        parameters.put("platform", varResult.getPlatform());
+        parameters.put("merchant", varResult.getMerchant());
+        parameters.put("product", varResult.getProduct());
+        parameters.put("triggeredRuleList", auditTaskTriggeredRuleDOList);
+        kieSession.startProcess(flowCode, parameters);
         kieSession.dispose();
 
-        triggeredRuleList = (List<AuditTaskTriggeredRuleDO>) map.get("triggeredRuleList");
-        if (triggeredRuleList.isEmpty()) {
-            auditTask.setAuditCode(AuditCodeEnum.PASS.toString());
-        } else {
-            auditTask.setAuditCode(AuditCodeEnum.REJECT.toString());
-        }
+        auditTaskTriggeredRuleDOList = (List<AuditTaskTriggeredRuleDO>) parameters.get("triggeredRuleList");
         auditTask.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_SUCCESS.getCode());
         auditTask.setCompleteTime(LocalDateTime.now());
         this.auditTaskMapper.update(auditTask);
 
-        List<TriggeredRuleVO> triggeredRuleVOList = new ArrayList<>();
-        for (AuditTaskTriggeredRuleDO triggeredRule : triggeredRuleList) {
-            triggeredRule.setTaskId(taskId);
-            triggeredRule.setTenantCode(auditTask.getTenantCode());
-            triggeredRule.setApplyId(auditTask.getApplyId());
-            triggeredRule.setFlowCode(flowCode);
-            triggeredRule.setGmtCreate(LocalDateTime.now());
-            this.auditTaskTriggeredRuleMapper.insert(triggeredRule);
+        Map<String, List<AuditTaskTriggeredRuleDO>> triggeredRuleVOMap = new HashMap<>();
+        for (AuditTaskTriggeredRuleDO auditTaskTriggeredRuleDO : auditTaskTriggeredRuleDOList) {
+            auditTaskTriggeredRuleDO.setTaskId(taskId);
+            auditTaskTriggeredRuleDO.setTenantCode(auditTask.getTenantCode());
+            auditTaskTriggeredRuleDO.setApplyId(auditTask.getApplyId());
+            auditTaskTriggeredRuleDO.setFlowCode(flowCode);
+            auditTaskTriggeredRuleDO.setIndex(1);
+            auditTaskTriggeredRuleDO.setGmtCreate(LocalDateTime.now());
+            this.auditTaskTriggeredRuleMapper.insert(auditTaskTriggeredRuleDO);
 
-            TriggeredRuleVO triggeredRuleVO = new TriggeredRuleVO();
-            triggeredRuleVO.setRulePackageCode(triggeredRule.getRulePackageCode());
-            triggeredRuleVO.setRuleCode(triggeredRule.getRuleCode());
-            triggeredRuleVO.setRuleName(triggeredRule.getRuleName());
-            triggeredRuleVO.setExpression(triggeredRule.getExpression());
-            triggeredRuleVO.setParam(triggeredRule.getParam());
-            triggeredRuleVOList.add(triggeredRuleVO);
+            List<AuditTaskTriggeredRuleDO> triggeredRuleDOList = triggeredRuleVOMap.get(auditTaskTriggeredRuleDO.getRulePackageCode());
+            if (Objects.isNull(triggeredRuleDOList)) {
+                triggeredRuleDOList = new ArrayList<>();
+                triggeredRuleDOList.add(auditTaskTriggeredRuleDO);
+                triggeredRuleVOMap.put(auditTaskTriggeredRuleDO.getRulePackageCode(), triggeredRuleDOList);
+            } else {
+                triggeredRuleDOList.add(auditTaskTriggeredRuleDO);
+            }
         }
+
+        List<NodeResultVO> nodeResult = new ArrayList<>();
+        for (Map.Entry<String, List<AuditTaskTriggeredRuleDO>> entry : triggeredRuleVOMap.entrySet()) {
+            List<AuditTaskTriggeredRuleDO> auditTaskTriggeredRuleList = entry.getValue();
+            NodeResultVO nodeResultVO = new NodeResultVO();
+            nodeResultVO.setRulePackageCode(entry.getKey());
+            int resultCode = 1;
+            List<TriggeredRuleVO> triggeredRuleVOList = new ArrayList<>();
+            for (AuditTaskTriggeredRuleDO auditTaskTriggeredRuleDO : auditTaskTriggeredRuleList) {
+                TriggeredRuleVO triggeredRuleVO = new TriggeredRuleVO();
+                triggeredRuleVO.setRuleCode(auditTaskTriggeredRuleDO.getRuleCode());
+                triggeredRuleVO.setRuleName(auditTaskTriggeredRuleDO.getRuleName());
+                triggeredRuleVO.setExpression(auditTaskTriggeredRuleDO.getExpression());
+                triggeredRuleVO.setParam(auditTaskTriggeredRuleDO.getParam());
+                triggeredRuleVOList.add(triggeredRuleVO);
+
+                if (StringUtils.equals(entry.getKey(), "ZRX01")) {
+                    resultCode = resultCode & Integer.parseInt(auditTaskTriggeredRuleDO.getResult());
+                } else {
+                    resultCode = Integer.parseInt(auditTaskTriggeredRuleDO.getResult());
+                }
+            }
+            nodeResultVO.setAuditCode(AuditCodeEnum.getAuditCode(resultCode));
+            nodeResultVO.setAuditScore(0);
+            nodeResultVO.setTriggeredRules(triggeredRuleVOList);
+            nodeResult.add(nodeResultVO);
+        }
+
+        if (nodeResult.isEmpty()) {
+            auditTask.setAuditCode(AuditCodeEnum.PASS.toString());
+        } else {
+            auditTask.setAuditCode(nodeResult.get(0).getAuditCode());
+        }
+        auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK.getCode());
+        this.auditTaskMapper.update(auditTask);
 
         AuditResultVO auditResult = new AuditResultVO();
         auditResult.setApplyId(varResult.getApplyId());
@@ -139,13 +173,11 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         auditResult.setTransactionTime(varResult.getTransactionTime());
         auditResult.setCallbackUrl(varResult.getCallbackUrl());
         auditResult.setTaskStatus(auditTask.getTaskStatus());
-        auditResult.setAuditCode(auditResult.getAuditCode());
-        auditResult.setTriggeredRules(triggeredRuleVOList);
-
+        auditResult.setAuditCode(auditTask.getAuditCode());
+        auditResult.setAuditScore(0);
+        auditResult.setNodeResult(nodeResult);
         ApiResponse<AuditResultVO> apiResponse = ApiResponse.success(auditResult);
         this.auditTaskParamMapper.updateOutputRawParam(JSON.toJSONString(apiResponse), taskId);
-        auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK.getCode());
-        this.auditTaskMapper.updateTaskStatus(auditTask.getTaskStatus(), taskId);
         this.sendAuditResult(auditTask, apiResponse);
     }
 
