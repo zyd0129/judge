@@ -9,7 +9,7 @@ public class ConfigFlowDO {
     private Integer id;
     private String flowCode;
     private String flowName;
-    private String version;
+    private String flowVersion;
     private String tenantName;
     private String tenantCode;
     private String productCode;
