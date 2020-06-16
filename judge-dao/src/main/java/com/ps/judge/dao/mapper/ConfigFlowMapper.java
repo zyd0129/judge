@@ -15,6 +15,7 @@ public interface ConfigFlowMapper {
             @Result(property = "id", column = "id", jdbcType = JdbcType.INTEGER, id = true),
             @Result(column = "flow_code", property = "flowCode", jdbcType = JdbcType.VARCHAR),
             @Result(column = "flow_name", property = "flowName", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "flow_version", property = "flowVersion", jdbcType = JdbcType.VARCHAR),
             @Result(column = "tenant_code", property = "tenantCode", jdbcType = JdbcType.VARCHAR),
             @Result(column = "product_code", property = "productCode", jdbcType = JdbcType.VARCHAR),
             @Result(column = "package_id", property = "packageId", jdbcType = JdbcType.INTEGER),
@@ -131,9 +132,9 @@ public interface ConfigFlowMapper {
     @ResultMap(value = "flowResultMap")
     List<ConfigFlowDO> getAllEnable();
 
-    @Insert("insert into config_flow (flow_code, flow_name, tenant_code,tenant_name, product_code,product_name,remark,"
+    @Insert("insert into config_flow (flow_code, flow_name, flow_version，tenant_code,tenant_name, product_code,product_name,remark,"
             + "package_id, package_url,package_name,package_version, status, operator, gmt_created, gmt_modified)"
-            + "values (#{flowCode}, #{flowName},#{tenantCode}, #{tenantName}, #{productCode},#{productName}, #{remark},#{packageId},"
+            + "values (#{flowCode}, #{flowName},#{flowVersion},#{tenantCode}, #{tenantName}, #{productCode},#{productName}, #{remark},#{packageId},"
             + "#{packageUrl}, #{packageName},#{packageVersion},#{status}, #{operator}, #{gmtCreated}, #{gmtModified})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insert(ConfigFlowDO configFlowDO);
@@ -142,6 +143,9 @@ public interface ConfigFlowMapper {
             "UPDATE config_flow SET ",
             "<if test='flowName!=null'>",
             "flow_name=#{flowName},",
+            "</if>",
+            "<if test='flowVersion!=null'>",
+            "flow_version=#{flowVersion},",
             "</if>",
             "<if test='tenantCode!=null'>",
             "tenant_code=#{tenantCode},",
