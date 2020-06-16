@@ -33,7 +33,7 @@ public interface UserMapper {
 
 
     @Insert("insert into auth_user (username,name, password,roles," +
-            "mobile, tenants,department,user_type" +
+            "mobile, tenants,department,user_type," +
             "operator,gmt_created,gmt_modified)" +
             " values " +
             "(#{username},#{name}, #{password},#{roles}, " +
@@ -96,7 +96,6 @@ public interface UserMapper {
             "or mobile like #{query.fuzzyValue})",
             "</if>",
             "</if>",
-            "limit #{startNo},#{pageSize}",
             "</script>"
     })
     int total(QueryParams<UserQuery> query);

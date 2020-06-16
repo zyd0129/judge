@@ -167,7 +167,6 @@ public interface AuditTaskMapper {
             ")",
 
             "</if>",
-            "limit #{startNo},#{pageSize}",
             "</script>"
     })
     int count(QueryParams<TaskQuery> queryParams);

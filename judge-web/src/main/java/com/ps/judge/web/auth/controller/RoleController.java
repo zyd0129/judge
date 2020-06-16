@@ -37,8 +37,8 @@ public class RoleController {
         List<FirstMenu> firstMenus = VOUtils.convertToMenuTree(authRoleBOList);
         return ApiResponse.success(firstMenus);
     }
-    @PostMapping("/roles/all")
-    @PreAuthorize("hasAuthority('user_add')")
+    @GetMapping("/roles/all")
+    @PreAuthorize("hasAuthority('role_query')")
     public ApiResponse<List<AuthRoleBO>> allRoles() {
         List<AuthRoleBO> roleBOList = roleService.queryAll();
         return ApiResponse.success(roleBOList);

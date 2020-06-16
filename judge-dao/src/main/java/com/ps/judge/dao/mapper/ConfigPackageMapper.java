@@ -63,7 +63,6 @@ public interface ConfigPackageMapper {
             ")",
 
             "</if>",
-            "limit #{startNo},#{pageSize}",
             "</script>"
     })
     int count(QueryParams<PackageQuery> q);

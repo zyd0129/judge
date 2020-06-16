@@ -7,10 +7,10 @@ import java.util.List;
 
 @Data
 public class FirstMenu {
-    private String name;
+    private String displayName;
     private List<SecondMenu> children=new ArrayList<>();
 
-    public FirstMenu(String name) {
-        this.name = name;
+    public FirstMenu(String displayName) {
+        this.displayName = displayName;
     }
 }

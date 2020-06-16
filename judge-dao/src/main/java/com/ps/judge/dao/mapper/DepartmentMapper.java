@@ -56,7 +56,6 @@ public interface DepartmentMapper {
             "name=#{query.name}",
             "</if>",
             "</if>",
-            "limit #{startNo},#{pageSize}",
             "</script>"
     })
     int count(QueryParams<DepartmentQuery> q);

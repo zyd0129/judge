@@ -119,7 +119,6 @@ public interface ConfigFlowMapper {
             ")",
 
             "</if>",
-            "limit #{startNo},#{pageSize}",
             "</script>"
     })
     int count(QueryParams<FlowQuery> queryParams);
@@ -132,7 +131,7 @@ public interface ConfigFlowMapper {
     @ResultMap(value = "flowResultMap")
     List<ConfigFlowDO> getAllEnable();
 
-    @Insert("insert into config_flow (flow_code, flow_name, flow_version，tenant_code,tenant_name, product_code,product_name,remark,"
+    @Insert("insert into config_flow (flow_code, flow_name, flow_version,tenant_code,tenant_name, product_code,product_name,remark,"
             + "package_id, package_url,package_name,package_version, status, operator, gmt_created, gmt_modified)"
             + "values (#{flowCode}, #{flowName},#{flowVersion},#{tenantCode}, #{tenantName}, #{productCode},#{productName}, #{remark},#{packageId},"
             + "#{packageUrl}, #{packageName},#{packageVersion},#{status}, #{operator}, #{gmtCreated}, #{gmtModified})")

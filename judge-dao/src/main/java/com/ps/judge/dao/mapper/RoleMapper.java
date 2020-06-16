@@ -74,7 +74,6 @@ public interface RoleMapper {
             "name=#{query.name}",
             "</if>",
             "</if>",
-            "limit #{startNo},#{pageSize}",
             "</script>"
     })
     int total(QueryParams<RoleQuery> query);

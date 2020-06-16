@@ -30,19 +30,19 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @PostMapping(value = "/users/query",params = "query=false")
+    @PostMapping(value = "/users/query", params = "query=false")
     @PreAuthorize("hasAuthority('user_list')")
-    public ApiResponse<PageResult<AuthUserVO>> users(@RequestBody QueryVo<UserQuery> queryVo ) {
+    public ApiResponse<PageResult<AuthUserVO>> users(@RequestBody QueryVo<UserQuery> queryVo) {
         queryVo.setQuery(null);
         return queryUsers(queryVo);
     }
 
-    @PostMapping(value = "/users/query",params = "query=true")
+    @PostMapping(value = "/users/query", params = "query=true")
     @PreAuthorize("hasAuthority('user_query')")
     public ApiResponse<PageResult<AuthUserVO>> queryUsers(@RequestBody QueryVo<UserQuery> queryVo) {
         List<AuthUserBO> authUserBOList = userService.query(queryVo.convertToQueryParam());
         int count = userService.total(queryVo.convertToQueryParam());
-        PageResult<AuthUserVO> pageResult = new PageResult<>(queryVo.getCurPage(), queryVo.getPageSize(),count, VOUtils.convertToAuthUserVOs(authUserBOList));
+        PageResult<AuthUserVO> pageResult = new PageResult<>(queryVo.getCurPage(), queryVo.getPageSize(), count, VOUtils.convertToAuthUserVOs(authUserBOList));
         return ApiResponse.success(pageResult);
     }
 
@@ -50,7 +50,7 @@ public class UserController {
     @PostMapping("/users/add")
     @PreAuthorize("hasAuthority('user_add')")
     public ApiResponse addUser(@RequestBody AuthUserVO authUserVO) {
-        AuthUserBO  currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AuthUserBO currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         authUserVO.setGmtCreated(LocalDateTime.now());
         authUserVO.setGmtModified(LocalDateTime.now());
         authUserVO.setOperator(currentUser.getUsername());
@@ -64,7 +64,7 @@ public class UserController {
     @PostMapping("/users/modify")
     @PreAuthorize("hasAuthority('user_modify')")
     public ApiResponse modifyUser(@RequestBody AuthUserModifyReq authUserVO) {
-        AuthUserBO  currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AuthUserBO currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         authUserVO.setGmtModified(LocalDateTime.now());
         authUserVO.setOperator(currentUser.getUsername());
         AuthUserBO authUserBO = VOUtils.convertToAuthUserBO(authUserVO);
@@ -84,6 +84,7 @@ public class UserController {
 
     /**
      * 系统重置密码
+     *
      * @param authUserVO
      * @return
      */
@@ -91,7 +92,7 @@ public class UserController {
     @PreAuthorize("hasAuthority('user_password_reset')")
     public ApiResponse resetPassword(@RequestBody AuthUserResetPassReq authUserVO) {
 
-        AuthUserBO  currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AuthUserBO currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         authUserVO.setGmtModified(LocalDateTime.now());
         authUserVO.setOperator(currentUser.getUsername());
         authUserVO.setPassword(passwordEncoder.encode(authUserVO.getRawPassword()));
@@ -105,23 +106,24 @@ public class UserController {
     @GetMapping("/users/currentUser/info")
     public ApiResponse<AuthUserVO> getUser() {
 
-        AuthUserBO  currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AuthUserBO currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         return ApiResponse.success(VOUtils.convertToAuthUserVO(currentUser));
     }
 
     /**
      * 用户修改密码
+     *
      * @param authUserVO
      * @return
      */
     @PostMapping("/users/currentUser/changePassword")
     public ApiResponse changePassword(@RequestBody AuthUserResetPassReq authUserVO) {
 
-        AuthUserBO  currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String prePasswordExact = currentUser.getPassword();
-        String prePassowrdInput =passwordEncoder.encode(authUserVO.getRawPassword());
-        if(!prePasswordExact.equals(prePassowrdInput)) throw new BizException(40001,"pre password not exact");
+        AuthUserBO currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        AuthUserBO userBO = userService.getByUsername(currentUser.getUsername());
+        if (!passwordEncoder.matches(authUserVO.getRawPassword(), userBO.getPassword()))
+            throw new BizException(40001, "pre password not exact");
 
         authUserVO.setGmtModified(LocalDateTime.now());
         authUserVO.setOperator(currentUser.getUsername());

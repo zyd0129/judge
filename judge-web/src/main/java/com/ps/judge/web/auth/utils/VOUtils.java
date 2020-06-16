@@ -27,7 +27,7 @@ public class VOUtils {
             FirstMenu firstMenu = null;
 
             for (FirstMenu temp : firstMenus) {
-                if (temp.getName().equals(firstMenuName)) {
+                if (temp.getDisplayName().equals(firstMenuName)) {
                     firstMenu = temp;
                     break;
                 }
@@ -41,7 +41,7 @@ public class VOUtils {
             SecondMenu secondMenu = null;
 
             for (SecondMenu temp : secondMenus) {
-                if (temp.getName().equals(secondMenuName)) {
+                if (temp.getDisplayName().equals(secondMenuName)) {
                     secondMenu = temp;
                     break;
                 }

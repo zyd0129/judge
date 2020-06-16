@@ -68,7 +68,6 @@ public interface ConfigProductMapper {
             ")",
 
             "</if>",
-            "limit #{startNo},#{pageSize}",
             "</script>"
     })
     int count(QueryParams<ProductQuery> q);
