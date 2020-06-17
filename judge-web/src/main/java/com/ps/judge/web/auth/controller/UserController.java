@@ -4,12 +4,12 @@ import com.ps.common.ApiResponse;
 import com.ps.common.PageResult;
 import com.ps.common.exception.BizException;
 import com.ps.common.query.QueryVo;
+import com.ps.judge.web.auth.req.AuthUserChangePassReq;
 import com.ps.judge.web.auth.service.UserService;
 import com.ps.judge.web.auth.objects.AuthUserBO;
 import com.ps.judge.web.auth.req.AuthUserLogin;
 import com.ps.common.query.UserQuery;
 import com.ps.judge.web.auth.utils.VOUtils;
-import com.ps.judge.web.auth.req.AuthUserResetPassReq;
 import com.ps.judge.web.auth.req.AuthUserModifyReq;
 import com.ps.judge.web.auth.vo.AuthUserVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,9 +88,9 @@ public class UserController {
      * @param authUserVO
      * @return
      */
-    @PostMapping("/users/password/reset")
+    @PostMapping("/users/resetPassword")
     @PreAuthorize("hasAuthority('user_password_reset')")
-    public ApiResponse resetPassword(@RequestBody AuthUserResetPassReq authUserVO) {
+    public ApiResponse resetPassword(@RequestBody AuthUserChangePassReq authUserVO) {
 
         AuthUserBO currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         authUserVO.setGmtModified(LocalDateTime.now());
@@ -118,11 +118,11 @@ public class UserController {
      * @return
      */
     @PostMapping("/users/currentUser/changePassword")
-    public ApiResponse changePassword(@RequestBody AuthUserResetPassReq authUserVO) {
+    public ApiResponse changePassword(@RequestBody AuthUserChangePassReq authUserVO) {
 
         AuthUserBO currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AuthUserBO userBO = userService.getByUsername(currentUser.getUsername());
-        if (!passwordEncoder.matches(authUserVO.getRawPassword(), userBO.getPassword()))
+        if (!passwordEncoder.matches(authUserVO.getPrePassword(), userBO.getPassword()))
             throw new BizException(40001, "pre password not exact");
 
         authUserVO.setGmtModified(LocalDateTime.now());

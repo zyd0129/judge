@@ -63,6 +63,8 @@ public interface ConfigFlowMapper {
             "and product_code=#{query.productCode}",
             "</if>",
 
+
+            "<if test='query.fuzzy!=false'>",
             "and ( 1<![CDATA[<>]]>1 ",
             "<if test='query.flowName!=null'>",
             "or flow_name like #{query.flowName}",
@@ -72,6 +74,7 @@ public interface ConfigFlowMapper {
             "or package_name like #{query.packageName}",
             "</if>",
             ")",
+            "</if>",
 
             "</if>",
             "limit #{startNo},#{pageSize}",
@@ -108,6 +111,7 @@ public interface ConfigFlowMapper {
             "and product_code=#{query.productCode}",
             "</if>",
 
+            "<if test='query.fuzzy!=false'>",
             "and ( 1<![CDATA[<>]]>1 ",
             "<if test='query.flowName!=null'>",
             "or flow_name like #{query.flowName}",
@@ -117,6 +121,7 @@ public interface ConfigFlowMapper {
             "or package_name like #{query.packageName}",
             "</if>",
             ")",
+            "</if>",
 
             "</if>",
             "</script>"

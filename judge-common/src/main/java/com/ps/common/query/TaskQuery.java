@@ -19,4 +19,5 @@ public class TaskQuery {
     private LocalDateTime gmtCreatedTo;
     private TaskStatus status;
     private List<Integer> taskStatus;
+    private Boolean fuzzy;
 }

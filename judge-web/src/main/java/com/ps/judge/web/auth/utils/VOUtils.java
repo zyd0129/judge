@@ -3,8 +3,8 @@ package com.ps.judge.web.auth.utils;
 import com.ps.judge.web.auth.objects.AuthAuthorityBO;
 import com.ps.judge.web.auth.objects.AuthRoleBO;
 import com.ps.judge.web.auth.objects.AuthUserBO;
+import com.ps.judge.web.auth.req.AuthUserChangePassReq;
 import com.ps.judge.web.auth.req.AuthUserModifyReq;
-import com.ps.judge.web.auth.req.AuthUserResetPassReq;
 import com.ps.judge.web.auth.vo.*;
 import org.springframework.beans.BeanUtils;
 
@@ -109,7 +109,7 @@ public class VOUtils {
         return authUserBO;
     }
 
-    public static AuthUserBO convertToAuthUserBO(AuthUserResetPassReq authUserVO) {
+    public static AuthUserBO convertToAuthUserBO(AuthUserChangePassReq authUserVO) {
         if (authUserVO == null) {
             return null;
         }

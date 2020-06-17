@@ -14,4 +14,5 @@ public class ProductQuery {
     private LocalDateTime gmtModifiedFrom;
     private LocalDateTime gmtModifiedTo;
     private String status;
+    private Boolean fuzzy;
 }

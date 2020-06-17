@@ -121,18 +121,24 @@ public class AuditTaskServiceImpl implements AuditTaskService {
         String mobile = queryParams.getQuery().getMobile();
         String idCard = queryParams.getQuery().getIdCard();
         TaskStatus status = queryParams.getQuery().getStatus();
+        boolean fuzzy =false;
         if (!StringUtils.isEmpty(tenantCode)) {
             queryParams.getQuery().setTenantCode("%" + tenantCode + "%");
+            fuzzy =true;
         }
         if (!StringUtils.isEmpty(userName)) {
             queryParams.getQuery().setUserName("%" + userName + "%");
+            fuzzy =true;
         }
         if (!StringUtils.isEmpty(mobile)) {
             queryParams.getQuery().setMobile("%" + mobile + "%");
+            fuzzy =true;
         }
         if (!StringUtils.isEmpty(idCard)) {
             queryParams.getQuery().setIdCard("%" + idCard + "%");
+            fuzzy =true;
         }
+        queryParams.getQuery().setFuzzy(fuzzy);
         if (TaskStatus.SUCCESS.equals(status)) {
             queryParams.getQuery().setTaskStatus(successStatus);
         } else if (TaskStatus.FAILURE.equals(status)) {

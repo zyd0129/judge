@@ -113,16 +113,22 @@ public class ConfigProductServiceImpl implements ConfigProductService {
 
     private void convertParam(QueryParams<ProductQuery> queryQueryParams){
         ProductQuery query = queryQueryParams.getQuery();
+
         if(query!=null) {
+            boolean fuzzy=false;
             if (!StringUtils.isEmpty(query.getProductCode())) {
                 query.setProductCode("%" + query.getProductCode() + "%");
+                fuzzy=true;
             }
             if (!StringUtils.isEmpty(query.getTenantName())) {
                 query.setTenantName("%" + query.getTenantName() + "%");
+                fuzzy=true;
             }
             if (!StringUtils.isEmpty(query.getProductName())) {
                 query.setProductName("%" + query.getProductName() + "%");
+                fuzzy=true;
             }
+            query.setFuzzy(fuzzy);
         }
     }
 

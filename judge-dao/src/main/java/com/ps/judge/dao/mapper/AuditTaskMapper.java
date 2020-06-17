@@ -90,6 +90,7 @@ public interface AuditTaskMapper {
             "complete_time<![CDATA[<=]]>#{query.completeTimeTo}",
             "</if>",
 
+            "<if test='query.fuzzy!=false'>",
             "and ( 1<![CDATA[<>]]>1 ",
             "<if test='query.mobile!=null'>",
             "or mobile like #{query.mobile}",
@@ -107,6 +108,7 @@ public interface AuditTaskMapper {
             "or idCard like #{query.idCard}",
             "</if>",
             ")",
+            "</if>",
 
             "</if>",
             "limit #{startNo},#{pageSize}",
@@ -148,6 +150,7 @@ public interface AuditTaskMapper {
             "complete_time<![CDATA[<=]]>#{query.completeTimeTo}",
             "</if>",
 
+            "<if test='query.fuzzy!=false'>",
             "and ( 1<![CDATA[<>]]>1 ",
             "<if test='query.mobile!=null'>",
             "or mobile like #{query.mobile}",
@@ -165,6 +168,7 @@ public interface AuditTaskMapper {
             "or idCard like #{query.idCard}",
             "</if>",
             ")",
+            "</if>",
 
             "</if>",
             "</script>"

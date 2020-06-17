@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/manager/flow/tasks")
+@RequestMapping("/manager/flow/instances")
 public class AuditTaskController {
     @Autowired
     AuditTaskService taskService;
@@ -41,13 +41,13 @@ public class AuditTaskController {
         return queryTask(taskQuery);
     }
 
-    @PostMapping(value = "instances/restart")
+    @PostMapping(value = "/restart")
     public ApiResponse revoke(@RequestParam int taskId) {
         taskService.revoke(taskId);
         return ApiResponse.success();
     }
 
-    @GetMapping(value = "instances/result")
+    @GetMapping(value = "/result")
     public ApiResponse<AuditTaskParamBO> taskParams(@RequestParam int taskId) {
 
         return ApiResponse.success(paramService.getById(taskId));

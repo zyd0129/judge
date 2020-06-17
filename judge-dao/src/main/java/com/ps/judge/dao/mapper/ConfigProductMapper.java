@@ -102,7 +102,7 @@ public interface ConfigProductMapper {
             "and",
             "gmt_modified<![CDATA[<=]]>#{query.gmtModifiedTo}",
             "</if>",
-
+            "<if test='query.fuzzy!=false'>",
             "and ( 1<![CDATA[<>]]>1 " ,
             "<if test='query.tenantName!=null'>",
             "or tenant_name like #{query.tenantName}",
@@ -116,6 +116,7 @@ public interface ConfigProductMapper {
             "or product_code like #{query.productCode}",
             "</if>",
             ")",
+            "</if>",
             "</if>",
             "limit #{startNo},#{pageSize}",
             "</script>"

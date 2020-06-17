@@ -22,7 +22,9 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ConfigFlowServiceImpl implements ConfigFlowService {
@@ -65,12 +67,17 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
             return;
         String flowName = queryParams.getQuery().getFlowName();
         String packageName = queryParams.getQuery().getPackageName();
+        FlowQuery query = queryParams.getQuery();
+        boolean fuzzy=false;
         if (!StringUtils.isEmpty(flowName)) {
-            queryParams.getQuery().setFlowName("%" + flowName + "%");
+            query.setFlowName("%" + flowName + "%");
+            fuzzy=true;
         }
         if (!StringUtils.isEmpty(packageName)) {
-            queryParams.getQuery().setPackageName("%" + packageName + "%");
+            query.setPackageName("%" + packageName + "%");
+            fuzzy=true;
         }
+        query.setFuzzy(fuzzy);
     }
 
 

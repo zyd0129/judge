@@ -37,6 +37,11 @@ public class ManagerController {
     @Autowired
     StorageService storageService;
 
+    @GetMapping("flows/all")
+    public ApiResponse<List<ConfigFlowBO>> allFlow() {
+        List<ConfigFlowBO> all = configFlowService.getAll();
+        return ApiResponse.success(all);
+    }
 
     @PostMapping(value = "flows/query", params = "query=true")
     public ApiResponse<PageResult<ConfigFlowBO>> queryFlow(@RequestBody QueryVo<FlowQuery> reqQueryVo) {
@@ -122,7 +127,7 @@ public class ManagerController {
         return ApiResponse.success();
     }
 
-    @PostMapping("packages/all")
+    @GetMapping("packages/all")
     public ApiResponse changePackageStatus(@RequestParam Status status) {
         List<ConfigPackageBO> all = configPackageService.all(status);
         return ApiResponse.success(all);

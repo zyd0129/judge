@@ -27,18 +27,29 @@ public interface UserMapper {
     @ResultMap(value = "userResultMap")
     List<AuthUserDO> queryDepartmentIsEmpty();
 
-    @Select("select * from auth_user where department")
+    @Select("select * from auth_user where department=#{department}")
     @ResultMap(value = "userResultMap")
     List<AuthUserDO> queryByDepartment(String departmentName);
 
 
-    @Insert("insert into auth_user (username,name, password,roles," +
-            "mobile, tenants,department,user_type," +
-            "operator,gmt_created,gmt_modified)" +
-            " values " +
-            "(#{username},#{name}, #{password},#{roles}, " +
-            "#{mobile}, #{tenants},#{department},#{userType}," +
-            "#{operator}, #{gmtCreated},#{gmtModified})")
+    @Insert({"<script>",
+            "insert into auth_user (username,name, password,roles,",
+            "mobile, tenants",
+            "<if test='department!=null'>",
+            ",department",
+            "</if>",
+            ",user_type,",
+            "operator,gmt_created,gmt_modified)",
+            " values ",
+            "(#{username},#{name}, #{password},#{roles}, ",
+            "#{mobile}, #{tenants}" ,
+            "<if test='department!=null'>",
+            ",#{department}",
+            "</if>",
+            ",#{userType},",
+            "#{operator}, #{gmtCreated},#{gmtModified})",
+            "</script>"}
+    )
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     void insert(AuthUserDO authUserDO);
 
