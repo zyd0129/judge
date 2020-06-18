@@ -1,12 +1,12 @@
 package com.ps.common.query;
 
 import lombok.Data;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @Data
-public class FlowQuery {
+public class FlowQuery implements QueryConver {
     private String tenantCode;
     private String productCode;
     private String packageName;
@@ -15,4 +15,16 @@ public class FlowQuery {
     private LocalDateTime gmtCreatedTo;
     private String status;
     private boolean fuzzy;
+
+    @Override
+    public void convert() {
+        if (!StringUtils.isEmpty(flowName)) {
+            setTenantCode("%" + flowName + "%");
+            fuzzy = true;
+        }
+        if (!StringUtils.isEmpty(packageName)) {
+            setPackageName("%" + packageName + "%");
+            fuzzy = true;
+        }
+    }
 }

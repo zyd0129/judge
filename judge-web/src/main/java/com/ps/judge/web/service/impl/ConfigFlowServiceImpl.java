@@ -43,13 +43,11 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
 
     @Override
     public List<ConfigFlowBO> query(QueryParams<FlowQuery> queryParams) {
-        processQueryParams(queryParams);
         return convertToBOList(flowMapper.query(queryParams));
     }
 
     @Override
     public int count(QueryParams<FlowQuery> queryParams) {
-        processQueryParams(queryParams);
         return flowMapper.count(queryParams);
     }
 
@@ -62,23 +60,7 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
         flowMapper.update(convertToDO(configFlowBO));
     }
 
-    private void processQueryParams(QueryParams<FlowQuery> queryParams) {
-        if (queryParams == null || queryParams.getQuery() == null)
-            return;
-        String flowName = queryParams.getQuery().getFlowName();
-        String packageName = queryParams.getQuery().getPackageName();
-        FlowQuery query = queryParams.getQuery();
-        boolean fuzzy=false;
-        if (!StringUtils.isEmpty(flowName)) {
-            query.setFlowName("%" + flowName + "%");
-            fuzzy=true;
-        }
-        if (!StringUtils.isEmpty(packageName)) {
-            query.setPackageName("%" + packageName + "%");
-            fuzzy=true;
-        }
-        query.setFuzzy(fuzzy);
-    }
+
 
 
     @Override

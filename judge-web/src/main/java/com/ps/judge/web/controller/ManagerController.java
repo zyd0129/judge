@@ -3,14 +3,11 @@ package com.ps.judge.web.controller;
 import com.ps.common.ApiResponse;
 import com.ps.common.PageResult;
 import com.ps.common.enums.Status;
-import com.ps.common.query.FlowQuery;
-import com.ps.common.query.PackageQuery;
-import com.ps.common.query.QueryVo;
+import com.ps.common.query.*;
 import com.ps.judge.web.models.ConfigFlowBO;
 import com.ps.judge.web.models.ConfigPackageBO;
 import com.ps.judge.web.models.ConfigProductBO;
 import com.ps.judge.web.models.StoragePath;
-import com.ps.common.query.ProductQuery;
 import com.ps.judge.web.service.ConfigFlowService;
 import com.ps.judge.web.service.ConfigPackageService;
 import com.ps.judge.web.service.ConfigProductService;
@@ -45,8 +42,9 @@ public class ManagerController {
 
     @PostMapping(value = "flows/query", params = "query=true")
     public ApiResponse<PageResult<ConfigFlowBO>> queryFlow(@RequestBody QueryVo<FlowQuery> reqQueryVo) {
-        List<ConfigFlowBO> all = configFlowService.query(reqQueryVo.convertToQueryParam());
-        int total = configFlowService.count(reqQueryVo.convertToQueryParam());
+        QueryParams<FlowQuery> flowQueryQueryParams = reqQueryVo.convertToQueryParam();
+        List<ConfigFlowBO> all = configFlowService.query(flowQueryQueryParams);
+        int total = configFlowService.count(flowQueryQueryParams);
         PageResult<ConfigFlowBO> pageResult = new PageResult<>();
         pageResult.setCurPage(reqQueryVo.getCurPage());
         pageResult.setPageSize(reqQueryVo.getPageSize());
@@ -74,7 +72,7 @@ public class ManagerController {
     }
 
     @PostMapping("flows/delete")
-    public ApiResponse deleteFlow(Integer id) {
+    public ApiResponse deleteFlow(@RequestParam Integer id) {
         configFlowService.delete(id);
         return ApiResponse.success();
     }
@@ -136,8 +134,9 @@ public class ManagerController {
 
     @PostMapping(value = "products/query", params = "query=true")
     public ApiResponse<PageResult<ConfigProductBO>> queryProduct(@RequestBody QueryVo<ProductQuery> reqQueryVo) {
-        List<ConfigProductBO> all = configProductService.query(reqQueryVo.convertToQueryParam());
-        int total = configProductService.count(reqQueryVo.convertToQueryParam());
+        QueryParams<ProductQuery> productQueryQueryParams = reqQueryVo.convertToQueryParam();
+        List<ConfigProductBO> all = configProductService.query(productQueryQueryParams);
+        int total = configProductService.count(productQueryQueryParams);
         PageResult<ConfigProductBO> pageResult = new PageResult<>();
         pageResult.setCurPage(reqQueryVo.getCurPage());
         pageResult.setPageSize(reqQueryVo.getPageSize());
@@ -169,6 +168,7 @@ public class ManagerController {
     public ApiResponse<String> changeProductStatus(@RequestBody ConfigProductBO configProductBO) {
         configProductService.updateStatus(configProductBO);
         return ApiResponse.success();
+
     }
 
     @GetMapping("products/all")

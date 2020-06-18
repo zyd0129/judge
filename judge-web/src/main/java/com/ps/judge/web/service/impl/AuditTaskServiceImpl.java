@@ -25,7 +25,7 @@ import java.util.List;
 public class AuditTaskServiceImpl implements AuditTaskService {
     private List<Integer> successStatus = Arrays.asList(6, 8, 9, 10);
     private List<Integer> runningStatus = Arrays.asList(0,1,2,3,4,5);
-    List<Integer> failureStatus = Collections.singletonList(7);
+    private List<Integer> failureStatus = Collections.singletonList(7);
 
     @Autowired
     AuditTaskMapper auditTaskMapper;
@@ -35,13 +35,11 @@ public class AuditTaskServiceImpl implements AuditTaskService {
     
     @Override
     public List<AuditTaskBO> query(QueryParams<TaskQuery> queryParams) {
-        processQueryParams(queryParams);
         return convertToBOList(auditTaskMapper.query(queryParams));
     }
 
     @Override
     public int count(QueryParams<TaskQuery> queryParams) {
-        processQueryParams(queryParams);
         return auditTaskMapper.count(queryParams);
     }
 
@@ -103,50 +101,5 @@ public class AuditTaskServiceImpl implements AuditTaskService {
             auditTaskBOList.add(auditTaskBO);
         }
         return auditTaskBOList;
-    }
-
-    /**
-     *  private String tenantCode;
-     *     private String userName;
-     *     private String mobile;
-     *     private String idCard;
-     * @param queryParams
-     */
-    private void processQueryParams(QueryParams<TaskQuery> queryParams) {
-        if (queryParams == null || queryParams.getQuery() == null)
-            return;
-
-        String tenantCode = queryParams.getQuery().getTenantCode();
-        String userName = queryParams.getQuery().getUserName();
-        String mobile = queryParams.getQuery().getMobile();
-        String idCard = queryParams.getQuery().getIdCard();
-        TaskStatus status = queryParams.getQuery().getStatus();
-        boolean fuzzy =false;
-        if (!StringUtils.isEmpty(tenantCode)) {
-            queryParams.getQuery().setTenantCode("%" + tenantCode + "%");
-            fuzzy =true;
-        }
-        if (!StringUtils.isEmpty(userName)) {
-            queryParams.getQuery().setUserName("%" + userName + "%");
-            fuzzy =true;
-        }
-        if (!StringUtils.isEmpty(mobile)) {
-            queryParams.getQuery().setMobile("%" + mobile + "%");
-            fuzzy =true;
-        }
-        if (!StringUtils.isEmpty(idCard)) {
-            queryParams.getQuery().setIdCard("%" + idCard + "%");
-            fuzzy =true;
-        }
-        queryParams.getQuery().setFuzzy(fuzzy);
-        if (TaskStatus.SUCCESS.equals(status)) {
-            queryParams.getQuery().setTaskStatus(successStatus);
-        } else if (TaskStatus.FAILURE.equals(status)) {
-            queryParams.getQuery().setTaskStatus(failureStatus);
-        } else if (TaskStatus.RUNNING.equals(status)) {
-            queryParams.getQuery().setTaskStatus(runningStatus);
-        } else {
-            queryParams.getQuery().setTaskStatus(null);
-        }
     }
 }

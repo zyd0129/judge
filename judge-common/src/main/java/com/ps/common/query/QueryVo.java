@@ -10,6 +10,9 @@ public class QueryVo<T> {
 
     public QueryParams<T> convertToQueryParam() {
         QueryParams<T> queryParams = new QueryParams<>();
+        if (query!=null && query instanceof QueryConver) {
+            ((QueryConver) query).convert();
+        }
         queryParams.setQuery(query);
         queryParams.setPageSize(pageSize);
         curPage = Math.max(curPage, 1);

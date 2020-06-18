@@ -91,13 +91,11 @@ public class ConfigProductServiceImpl implements ConfigProductService {
 
     @Override
     public List<ConfigProductBO> query(QueryParams<ProductQuery> convertToQueryParam) {
-        convertParam(convertToQueryParam);
         return convertToBOList(productMapper.query(convertToQueryParam));
     }
 
     @Override
     public int count(QueryParams<ProductQuery> queryQueryParams) {
-        convertParam(queryQueryParams);
         return productMapper.count(queryQueryParams);
     }
 
@@ -109,27 +107,6 @@ public class ConfigProductServiceImpl implements ConfigProductService {
     @Override
     public List<ConfigProductBO> listByTenantId(String tenantId) {
         return convertToBOList(productMapper.listByTenantId(tenantId));
-    }
-
-    private void convertParam(QueryParams<ProductQuery> queryQueryParams){
-        ProductQuery query = queryQueryParams.getQuery();
-
-        if(query!=null) {
-            boolean fuzzy=false;
-            if (!StringUtils.isEmpty(query.getProductCode())) {
-                query.setProductCode("%" + query.getProductCode() + "%");
-                fuzzy=true;
-            }
-            if (!StringUtils.isEmpty(query.getTenantName())) {
-                query.setTenantName("%" + query.getTenantName() + "%");
-                fuzzy=true;
-            }
-            if (!StringUtils.isEmpty(query.getProductName())) {
-                query.setProductName("%" + query.getProductName() + "%");
-                fuzzy=true;
-            }
-            query.setFuzzy(fuzzy);
-        }
     }
 
 

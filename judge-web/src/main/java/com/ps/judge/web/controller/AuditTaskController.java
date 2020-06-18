@@ -2,6 +2,7 @@ package com.ps.judge.web.controller;
 
 import com.ps.common.ApiResponse;
 import com.ps.common.PageResult;
+import com.ps.common.query.QueryParams;
 import com.ps.common.query.QueryVo;
 import com.ps.common.query.TaskQuery;
 import com.ps.judge.web.models.AuditTaskBO;
@@ -23,8 +24,9 @@ public class AuditTaskController {
 
     @PostMapping(value = "query", params = "query=true")
     public ApiResponse<PageResult<AuditTaskBO>> queryTask(@RequestBody QueryVo<TaskQuery> taskQuery) {
-        List<AuditTaskBO> all = taskService.query(taskQuery.convertToQueryParam());
-        int total = taskService.count(taskQuery.convertToQueryParam());
+        QueryParams<TaskQuery> queryParams = taskQuery.convertToQueryParam();
+        List<AuditTaskBO> all = taskService.query(queryParams);
+        int total = taskService.count(queryParams);
         PageResult<AuditTaskBO> pageResult = new PageResult<>();
         pageResult.setCurPage(taskQuery.getCurPage());
         pageResult.setPageSize(taskQuery.getPageSize());

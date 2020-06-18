@@ -72,12 +72,12 @@ public interface AuditTaskMapper {
 
             "<if test='query.gmtCreatedFrom!=null'>",
             "and",
-            "gmt_created>=#{query.gmtCreatedFrom}",
+            "gmt_create>=#{query.gmtCreatedFrom}",
             "</if>",
 
             "<if test='query.gmtCreatedTo!=null'>",
             "and",
-            "gmt_created<![CDATA[<=]]>#{query.gmtCreatedTo}",
+            "gmt_create<![CDATA[<=]]>#{query.gmtCreatedTo}",
             "</if>",
 
             "<if test='query.completeTimeFrom!=null'>",
@@ -105,7 +105,7 @@ public interface AuditTaskMapper {
             "</if>",
 
             "<if test='query.idCard!=null'>",
-            "or idCard like #{query.idCard}",
+            "or id_card like #{query.idCard}",
             "</if>",
             ")",
             "</if>",
@@ -132,12 +132,12 @@ public interface AuditTaskMapper {
 
             "<if test='query.gmtCreatedFrom!=null'>",
             "and",
-            "gmt_created>=#{query.gmtCreatedFrom}",
+            "gmt_create>=#{query.gmtCreatedFrom}",
             "</if>",
 
             "<if test='query.gmtCreatedTo!=null'>",
             "and",
-            "gmt_created<![CDATA[<=]]>#{query.gmtCreatedTo}",
+            "gmt_create<![CDATA[<=]]>#{query.gmtCreatedTo}",
             "</if>",
 
             "<if test='query.completeTimeFrom!=null'>",
@@ -165,7 +165,7 @@ public interface AuditTaskMapper {
             "</if>",
 
             "<if test='query.idCard!=null'>",
-            "or idCard like #{query.idCard}",
+            "or id_card like #{query.idCard}",
             "</if>",
             ")",
             "</if>",
