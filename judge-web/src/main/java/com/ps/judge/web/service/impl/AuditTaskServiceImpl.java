@@ -7,7 +7,9 @@ import com.ps.common.query.TaskQuery;
 import com.ps.judge.api.JudgeApi;
 import com.ps.judge.api.entity.ApplyResultVO;
 import com.ps.judge.dao.entity.AuditTaskDO;
+import com.ps.judge.dao.entity.ConfigFlowDO;
 import com.ps.judge.dao.mapper.AuditTaskMapper;
+import com.ps.judge.dao.mapper.ConfigFlowMapper;
 import com.ps.judge.web.models.AuditTaskBO;
 import com.ps.judge.web.service.AuditTaskService;
 import com.ps.jury.api.common.ApiResponse;
@@ -27,8 +29,12 @@ public class AuditTaskServiceImpl implements AuditTaskService {
     private List<Integer> runningStatus = Arrays.asList(0,1,2,3,4,5);
     private List<Integer> failureStatus = Collections.singletonList(7);
 
+
     @Autowired
     AuditTaskMapper auditTaskMapper;
+
+    @Autowired
+    ConfigFlowMapper flowMapper;
 
     @Autowired
     JudgeApi judgeApi;
@@ -95,11 +101,20 @@ public class AuditTaskServiceImpl implements AuditTaskService {
         if (auditTaskDOList == null) {
             return null;
         }
+        List<ConfigFlowDO> flowDOS = flowMapper.getAll();
         List<AuditTaskBO> auditTaskBOList = new ArrayList<>();
         for (AuditTaskDO auditTaskDO : auditTaskDOList) {
             AuditTaskBO auditTaskBO = convertToBO(auditTaskDO);
             auditTaskBOList.add(auditTaskBO);
+            flowDOS.stream().filter(f->f.getFlowCode().equals(auditTaskBO.getFlowCode())).limit(1).forEach(s->{
+                auditTaskBO.setFlowName(s.getFlowName());
+                auditTaskBO.setProductName(s.getProductName());
+                auditTaskBO.setFlowVersion(s.getFlowVersion());
+            });
         }
+
+
+
         return auditTaskBOList;
     }
 }

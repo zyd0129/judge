@@ -9,8 +9,11 @@ import java.time.LocalDateTime;
 public class AuditTaskBO {
     private Integer id;
     private String tenantCode;
+    private String productName;
     private String productCode;
     private String flowCode;
+    private String flowName;
+    private String flowVersion;
     private String applyId;
     private String userId;
     private String userName;

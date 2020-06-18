@@ -21,10 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ConfigFlowServiceImpl implements ConfigFlowService {
@@ -83,6 +80,9 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
 
     @Override
     public void insert(ConfigFlowBO configFlowBO) {
+        if (configFlowBO.getFlowCode() == null) {
+            configFlowBO.setFlowCode(UUID.randomUUID().toString());
+        }
         AuthUserBO authUserBO = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         configFlowBO.setOperator(authUserBO.getUsername());
         configFlowBO.setGmtCreated(LocalDateTime.now());
