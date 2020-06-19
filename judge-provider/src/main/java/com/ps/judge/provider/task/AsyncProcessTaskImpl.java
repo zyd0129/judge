@@ -13,6 +13,7 @@ import com.ps.judge.dao.mapper.AuditTaskParamMapper;
 import com.ps.judge.dao.mapper.AuditTaskTriggeredRuleMapper;
 import com.ps.judge.dao.mapper.ConfigFlowMapper;
 import com.ps.judge.provider.drools.KSessionManager;
+import com.ps.judge.provider.entity.ScoreCardVO;
 import com.ps.judge.provider.enums.AuditCodeEnum;
 import com.ps.judge.provider.enums.AuditTaskStatusEnum;
 import com.ps.judge.provider.enums.StatusEnum;
@@ -88,18 +89,22 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode(), taskId);
             return;
         }
-
         Map<String, Object> parameters = new HashMap<>();
         List<AuditTaskTriggeredRuleDO> auditTaskTriggeredRuleDOList = new ArrayList<>();
+        ScoreCardVO scoreCard = new ScoreCardVO();
         parameters.put("platform", varResult.getPlatform());
         parameters.put("merchant", varResult.getMerchant());
         parameters.put("product", varResult.getProduct());
         parameters.put("triggeredRuleList", auditTaskTriggeredRuleDOList);
+        parameters.put("scoreCard", scoreCard);
         kieSession.startProcess(flowCode, parameters);
         kieSession.dispose();
 
+        scoreCard = (ScoreCardVO) parameters.get("scoreCard");
+        System.err.println(scoreCard);
         auditTaskTriggeredRuleDOList = (List<AuditTaskTriggeredRuleDO>) parameters.get("triggeredRuleList");
         auditTask.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_SUCCESS.getCode());
+        auditTask.setAuditCode(String.valueOf(scoreCard.getScore()));
         auditTask.setCompleteTime(LocalDateTime.now());
         this.auditTaskMapper.update(auditTask);
 
@@ -155,31 +160,37 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         } else {
             auditTask.setAuditCode(nodeResult.get(0).getAuditCode());
         }
+
+        ApiResponse<AuditResultVO> apiResponse = this.saveOutputRawParam(auditTask, nodeResult);
         auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK.getCode());
         this.auditTaskMapper.update(auditTask);
-
-        AuditResultVO auditResult = new AuditResultVO();
-        auditResult.setApplyId(varResult.getApplyId());
-        auditResult.setFlowCode(varResult.getFlowCode());
-        auditResult.setTenantCode(varResult.getTenantCode());
-        auditResult.setProductCode(varResult.getProductCode());
-        auditResult.setUserId(varResult.getUserId());
-        auditResult.setUserName(varResult.getUserName());
-        auditResult.setMobile(varResult.getMobile());
-        auditResult.setIdCard(varResult.getIdCard());
-        auditResult.setOrderId(varResult.getOrderId());
-        auditResult.setIp(varResult.getIp());
-        auditResult.setDeviceFingerPrint(varResult.getDeviceFingerPrint());
-        auditResult.setTransactionTime(varResult.getTransactionTime());
-        auditResult.setCallbackUrl(varResult.getCallbackUrl());
-        auditResult.setTaskStatus(auditTask.getTaskStatus());
-        auditResult.setAuditCode(auditTask.getAuditCode());
-        auditResult.setAuditScore(0);
-        auditResult.setNodeResult(nodeResult);
-        ApiResponse<AuditResultVO> apiResponse = ApiResponse.success(auditResult);
-        this.auditTaskParamMapper.updateOutputRawParam(JSON.toJSONString(apiResponse), taskId);
         this.sendAuditResult(auditTask, apiResponse);
     }
+
+    private ApiResponse<AuditResultVO> saveOutputRawParam(AuditTaskDO auditTask, List<NodeResultVO> nodeResult) {
+        AuditResultVO auditResult = new AuditResultVO();
+        auditResult.setApplyId(auditTask.getApplyId());
+        auditResult.setFlowCode(auditTask.getFlowCode());
+        auditResult.setTenantCode(auditTask.getTenantCode());
+        auditResult.setProductCode(auditTask.getProductCode());
+        auditResult.setUserId(auditTask.getUserId());
+        auditResult.setUserName(auditTask.getUserName());
+        auditResult.setMobile(auditTask.getMobile());
+        auditResult.setIdCard(auditTask.getIdCard());
+        auditResult.setOrderId(auditTask.getOrderId());
+        auditResult.setIp(auditTask.getIp());
+        auditResult.setDeviceFingerPrint(auditTask.getDeviceFingerPrint());
+        auditResult.setTransactionTime(auditTask.getTransactionTime());
+        auditResult.setCallbackUrl(auditTask.getCallbackUrl());
+        auditResult.setTaskStatus(auditTask.getTaskStatus());
+        auditResult.setAuditCode(auditTask.getAuditCode());
+        auditResult.setAuditScore(auditTask.getAuditScore());
+        auditResult.setNodeResult(nodeResult);
+        ApiResponse<AuditResultVO> apiResponse = ApiResponse.success(auditResult);
+        this.auditTaskParamMapper.updateOutputRawParam(JSON.toJSONString(apiResponse), auditTask.getId());
+        return apiResponse;
+    }
+
 
     @Override
     public void sendAuditResult(AuditTaskDO auditTask, ApiResponse<AuditResultVO> apiResponse) {
@@ -192,6 +203,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         if (this.sendPost(auditTask.getCallbackUrl(), apiResponse)) {
             auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK_SUCCESS.getCode());
         }
+
         auditTask.setCallbackCount(++callbackCount);
         this.auditTaskMapper.update(auditTask);
     }

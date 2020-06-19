@@ -2,6 +2,7 @@ package com.ps.judge.provider.drools;
 
 import com.ps.judge.dao.entity.ConfigFlowDO;
 import lombok.extern.slf4j.Slf4j;
+
 import org.drools.core.io.impl.UrlResource;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -56,7 +57,6 @@ public class KSessionManagerImpl implements KSessionManager {
                 try {
                     is.close();
                 } catch (IOException e1) {
-                    e1.printStackTrace();
                 }
             }
             log.error("addContainer failure, message : {}", e.getMessage());
@@ -64,11 +64,13 @@ public class KSessionManagerImpl implements KSessionManager {
         }
         //获取资源
         Resource resource = this.kieServices.getResources().newInputStreamResource(is);
+
         //获取加载资源获取KieModule
         KieModule kieModule = kieRepository.addKieModule(resource);
         //通过kieModule的ReleaseId获取kieContainer
         KieContainer kieContainer = this.kieServices.newKieContainer(kieModule.getReleaseId());
         this.kieContainerHashMap.put(configFlow.getFlowCode(), kieContainer);
+        System.err.println(kieContainerHashMap.size());
         return true;
     }
 

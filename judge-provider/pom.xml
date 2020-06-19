@@ -17,6 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <judge.api.version>0.0.1-SNAPSHOT</judge.api.version>
         <judge.dao.version>0.0.1-SNAPSHOT</judge.dao.version>
+        <drools.version>7.36.0.Final</drools.version>
     </properties>
 
     <dependencies>
@@ -93,6 +94,14 @@
 
         <dependency>
             <groupId>org.drools</groupId>
+            <artifactId>drools-bom</artifactId>
+            <type>pom</type>
+            <version>${drools.version}</version>
+            <scope>import</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.drools</groupId>
             <artifactId>drools-core</artifactId>
             <version>${drools.version}</version>
         </dependency>
@@ -116,7 +125,6 @@
             <artifactId>kie-api</artifactId>
             <version>${drools.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.kie.server</groupId>
             <artifactId>kie-server-client</artifactId>
@@ -125,10 +133,12 @@
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-bpmn2</artifactId>
+            <version>${drools.version}</version>
         </dependency>
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-ci</artifactId>
+            <version>${drools.version}</version>
         </dependency>
     </dependencies>
 

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -17,7 +15,7 @@
         <module>judge-common</module>
         <module>judge-web</module>
     </modules>
-    
+
     <groupId>com.ps.judge</groupId>
     <artifactId>judge-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -30,7 +28,6 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <spring-cloud.version>Greenwich.SR5</spring-cloud.version>
         <spring-cloud-alibaba.version>2.1.1.RELEASE</spring-cloud-alibaba.version>
-        <drools.version>7.36.0.Final</drools.version>
     </properties>
 
     <dependencyManagement>
@@ -44,27 +41,12 @@
             </dependency>
 
             <dependency>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-bom</artifactId>
-                <type>pom</type>
-                <version>${drools.version}</version>
-                <scope>import</scope>
-            </dependency>
-
-            <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
                 <version>${spring-cloud-alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
-            <dependency>
-                <groupId>org.jbpm</groupId>
-                <artifactId>jbpm-bpmn2</artifactId>
-                <version>${drools.version}</version>
-            </dependency>
-
         </dependencies>
     </dependencyManagement>
 

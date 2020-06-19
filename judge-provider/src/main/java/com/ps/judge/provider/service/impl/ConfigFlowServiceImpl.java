@@ -26,7 +26,6 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
         return  this.configFlowMapper.getAllEnable();
     }
 
-
     @Override
     public boolean loadFlow(ConfigFlowDO configFlow) {
         return this.kSessionManager.addContainer(configFlow);
