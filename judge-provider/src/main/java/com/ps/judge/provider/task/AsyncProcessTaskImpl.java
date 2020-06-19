@@ -89,7 +89,6 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             this.auditTaskMapper.updateTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode(), taskId);
             return;
         }
-
         Map<String, Object> parameters = new HashMap<>();
         List<AuditTaskTriggeredRuleDO> auditTaskTriggeredRuleDOList = new ArrayList<>();
         ScoreCardVO scoreCard = new ScoreCardVO();
@@ -101,8 +100,8 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         kieSession.startProcess(flowCode, parameters);
         kieSession.dispose();
 
-        System.err.println(parameters.get("scoreCard"));
         scoreCard = (ScoreCardVO) parameters.get("scoreCard");
+        System.err.println(scoreCard);
         auditTaskTriggeredRuleDOList = (List<AuditTaskTriggeredRuleDO>) parameters.get("triggeredRuleList");
         auditTask.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_SUCCESS.getCode());
         auditTask.setAuditCode(String.valueOf(scoreCard.getScore()));
