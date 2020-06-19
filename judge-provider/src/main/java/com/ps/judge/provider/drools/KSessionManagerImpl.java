@@ -57,7 +57,7 @@ public class KSessionManagerImpl implements KSessionManager {
                 try {
                     is.close();
                 } catch (IOException e1) {
-                    log.error("addContainer failure, message : {}", e1.getMessage());
+                    e1.printStackTrace();
                 }
             }
             log.error("addContainer failure, message : {}", e.getMessage());
