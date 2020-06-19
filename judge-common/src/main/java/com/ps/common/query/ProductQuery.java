@@ -21,15 +21,15 @@ public class ProductQuery implements QueryConver {
     public void convert() {
         if (!StringUtils.isEmpty(productCode)) {
             setProductCode("%" + productCode + "%");
-            fuzzy=true;
+            fuzzy = true;
         }
         if (!StringUtils.isEmpty(tenantName)) {
             setTenantName("%" + tenantName + "%");
-            fuzzy=true;
+            fuzzy = true;
         }
         if (!StringUtils.isEmpty(productName)) {
             setProductName("%" + productName + "%");
-            fuzzy=true;
+            fuzzy = true;
         }
     }
 }

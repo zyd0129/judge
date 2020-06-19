@@ -10,9 +10,9 @@ import java.util.Collections;
 import java.util.List;
 
 @Data
-public class TaskQuery implements  QueryConver{
+public class TaskQuery implements QueryConver {
     private List<Integer> successStatus = Arrays.asList(6, 8, 9, 10);
-    private List<Integer> runningStatus = Arrays.asList(0,1,2,3,4,5);
+    private List<Integer> runningStatus = Arrays.asList(0, 1, 2, 3, 4, 5);
     List<Integer> failureStatus = Collections.singletonList(7);
 
     private Integer id;
@@ -32,19 +32,19 @@ public class TaskQuery implements  QueryConver{
     public void convert() {
         if (!StringUtils.isEmpty(tenantCode)) {
             setTenantCode("%" + tenantCode + "%");
-            fuzzy =true;
+            fuzzy = true;
         }
         if (!StringUtils.isEmpty(userName)) {
             setUserName("%" + userName + "%");
-            fuzzy =true;
+            fuzzy = true;
         }
         if (!StringUtils.isEmpty(mobile)) {
             setMobile("%" + mobile + "%");
-            fuzzy =true;
+            fuzzy = true;
         }
         if (!StringUtils.isEmpty(idCard)) {
             setIdCard("%" + idCard + "%");
-            fuzzy =true;
+            fuzzy = true;
         }
         if (TaskStatus.SUCCESS.equals(status)) {
             setTaskStatus(successStatus);
