@@ -105,6 +105,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         scoreCard = (ScoreCardVO) parameters.get("scoreCard");
         auditTaskTriggeredRuleDOList = (List<AuditTaskTriggeredRuleDO>) parameters.get("triggeredRuleList");
         auditTask.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_SUCCESS.getCode());
+        auditTask.setAuditCode(String.valueOf(scoreCard.getScore()));
         auditTask.setCompleteTime(LocalDateTime.now());
         this.auditTaskMapper.update(auditTask);
 
@@ -150,7 +151,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
                 }
             }
             nodeResultVO.setAuditCode(AuditCodeEnum.getAuditCode(resultCode));
-            nodeResultVO.setAuditScore(scoreCard.getScore());
+            nodeResultVO.setAuditScore(0);
             nodeResultVO.setTriggeredRules(triggeredRuleVOList);
             nodeResult.add(nodeResultVO);
         }
@@ -184,7 +185,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         auditResult.setCallbackUrl(auditTask.getCallbackUrl());
         auditResult.setTaskStatus(auditTask.getTaskStatus());
         auditResult.setAuditCode(auditTask.getAuditCode());
-        auditResult.setAuditScore(0);
+        auditResult.setAuditScore(auditTask.getAuditScore());
         auditResult.setNodeResult(nodeResult);
         ApiResponse<AuditResultVO> apiResponse = ApiResponse.success(auditResult);
         this.auditTaskParamMapper.updateOutputRawParam(JSON.toJSONString(apiResponse), auditTask.getId());
