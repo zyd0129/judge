@@ -77,9 +77,6 @@ public class ProcessController implements JudgeApi {
         if (Objects.nonNull(audit)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "申请订单已存在");
         }
-        if (StringUtils.equals(audit.getFlowCode(), applyRequest.getFlowCode())) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不一致");
-        }
         ConfigFlowDO configFlow = this.configFlowService.getByFlowCode(applyRequest.getFlowCode());
         if (Objects.isNull(configFlow)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不存在");
@@ -141,6 +138,9 @@ public class ProcessController implements JudgeApi {
         AuditTaskDO auditTask = this.processService.getAuditTask(tenantCode, applyId);
         if (Objects.isNull(auditTask)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单不存在");
+        }
+        if (StringUtils.equals(auditTask.getFlowCode(), varResult.getFlowCode())) {
+            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不一致");
         }
         if (!apiResponse.isSuccess()) {
             this.processService.updateAuditStatus(auditTask.getId(), AuditTaskStatusEnum.VAR_COMPUTE_FAIL.getCode());
