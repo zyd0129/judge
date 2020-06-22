@@ -139,7 +139,7 @@ public class ProcessController implements JudgeApi {
         if (Objects.isNull(auditTask)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单不存在");
         }
-        if (StringUtils.equals(auditTask.getFlowCode(), varResult.getFlowCode())) {
+        if (!StringUtils.equals(auditTask.getFlowCode(), varResult.getFlowCode())) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不一致");
         }
         if (!apiResponse.isSuccess()) {
