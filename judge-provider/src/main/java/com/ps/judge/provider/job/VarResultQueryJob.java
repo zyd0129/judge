@@ -20,6 +20,6 @@ public class VarResultQueryJob extends QuartzJobBean {
         long startTime = System.currentTimeMillis();
         this.processService.varResultQuery();
         long endTime = System.currentTimeMillis();
-        log.info("start varResultQuery job, time cost: {}", endTime - startTime);
+        log.info("end varResultQuery job, time cost: {}", endTime - startTime);
     }
 }

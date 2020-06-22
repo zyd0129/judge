@@ -6,6 +6,7 @@ import java.util.List;
 
 @Data
 public class NodeResultVO {
+    private Integer index;
     private Integer auditScore;
     private String auditCode;
     private String rulePackageCode;

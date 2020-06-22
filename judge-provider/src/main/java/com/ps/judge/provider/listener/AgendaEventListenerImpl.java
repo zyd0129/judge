@@ -1,6 +1,8 @@
 package com.ps.judge.provider.listener;
 
+import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.kie.api.event.rule.*;
+import org.kie.api.runtime.rule.Match;
 
 /**
  * Drools 议程监听器
@@ -23,6 +25,10 @@ public class AgendaEventListenerImpl implements AgendaEventListener {
 
     @Override
     public void afterMatchFired(AfterMatchFiredEvent afterMatchFiredEvent) {
+        Match match = afterMatchFiredEvent.getMatch();
+        RuleImpl ruleImpl = (RuleImpl) match.getRule();
+        String ruleCode = ruleImpl.getName();
+        System.err.println("afterMatchFired rule : " + ruleCode);
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.ps.judge.provider.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum StatusEnum {
     DISABLE(0, "禁用"),
     ENABLE(1, "启用");
@@ -10,9 +13,5 @@ public enum StatusEnum {
     StatusEnum(int status, String name) {
         this.status = status;
         this.name = name;
-    }
-
-    public int status() {
-        return this.status;
     }
 }

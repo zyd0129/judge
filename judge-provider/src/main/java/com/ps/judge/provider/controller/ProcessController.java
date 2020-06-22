@@ -80,7 +80,7 @@ public class ProcessController implements JudgeApi {
         if (Objects.isNull(configFlow)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不存在");
         }
-        if (configFlow.getStatus() != StatusEnum.ENABLE.status()) {
+        if (configFlow.getStatus() != StatusEnum.ENABLE.getStatus()) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流未启用");
         }
         return this.processService.apply(applyRequest);

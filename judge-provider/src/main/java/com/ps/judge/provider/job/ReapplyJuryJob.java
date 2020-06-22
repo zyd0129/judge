@@ -20,6 +20,6 @@ public class ReapplyJuryJob extends QuartzJobBean {
         long startTime = System.currentTimeMillis();
         this.processService.reapplyJury();
         long endTime = System.currentTimeMillis();
-        log.info("start applyJury job, time cost: {}", endTime - startTime);
+        log.info("end applyJury job, time cost: {}", endTime - startTime);
     }
 }

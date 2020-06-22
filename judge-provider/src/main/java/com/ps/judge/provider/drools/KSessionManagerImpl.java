@@ -71,7 +71,6 @@ public class KSessionManagerImpl implements KSessionManager {
         //通过kieModule的ReleaseId获取kieContainer
         KieContainer kieContainer = this.kieServices.newKieContainer(kieModule.getReleaseId());
         this.kieContainerHashMap.put(configFlow.getFlowCode(), kieContainer);
-        System.err.println(kieContainerHashMap.size());
         return true;
     }
 

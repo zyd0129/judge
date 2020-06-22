@@ -21,6 +21,7 @@ public class ProcessEventListenerImpl implements ProcessEventListener {
     public void beforeProcessCompleted(ProcessCompletedEvent processCompletedEvent) {
     }
 
+    @Override
     public void afterProcessCompleted(ProcessCompletedEvent processCompletedEvent) {
     }
 
@@ -36,6 +37,7 @@ public class ProcessEventListenerImpl implements ProcessEventListener {
     public void beforeNodeLeft(ProcessNodeLeftEvent processNodeLeftEvent) {
     }
 
+    @Override
     public void afterNodeLeft(ProcessNodeLeftEvent processNodeLeftEvent) {
     }
 
