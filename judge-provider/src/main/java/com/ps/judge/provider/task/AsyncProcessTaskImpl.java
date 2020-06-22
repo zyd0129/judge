@@ -116,34 +116,23 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
     private void processResult(AuditTaskDO auditTask, Map<String, Object> parameters) {
         List<NodeResultVO> nodeResult = new ArrayList<>();
         ScoreCardVO scoreCard = (ScoreCardVO) parameters.get("scoreCard");
-        System.err.println(scoreCard);
         List<AuditTaskTriggeredRuleDO> auditTaskTriggeredRuleDOList = (List<AuditTaskTriggeredRuleDO>) parameters.get("triggeredRuleList");
 
+        NodeResultVO node1 = new NodeResultVO();
         if (auditTaskTriggeredRuleDOList.isEmpty()) {
-            NodeResultVO node1 = new NodeResultVO();
             node1.setIndex(1);
-            node1.setRulePackageCode("ZRX01");
+            if (StringUtils.equals(auditTask.getFlowCode(), "judge_new")) {
+                node1.setRulePackageCode("ZRX01");
+            } else {
+                node1.setRulePackageCode("ZRX02");
+            }
             node1.setAuditScore(0);
             node1.setAuditCode(AuditCodeEnum.PASS.toString());
             node1.setTriggeredRules(new ArrayList<>());
             nodeResult.add(node1);
-            auditTask.setAuditCode(node1.getAuditCode());
 
-            NodeResultVO node2 = new NodeResultVO();
-            node2.setIndex(2);
-            node2.setRulePackageCode("CS01");
-            node2.setAuditScore(scoreCard.getScore());
-            node2.setTriggeredRules(new ArrayList<>());
-            nodeResult.add(node2);
 
-            NodeResultVO node3 = new NodeResultVO();
-            node3.setIndex(3);
-            node3.setRulePackageCode("LOC01");
-            node3.setAuditScore(Integer.valueOf(scoreCard.getQuota()));
-            node3.setTriggeredRules(new ArrayList<>());
-            nodeResult.add(node3);
         } else {
-            NodeResultVO node1 = new NodeResultVO();
             int resultCode = 1;
             List<TriggeredRuleVO> triggeredRuleVOList = new ArrayList<>();
             for (AuditTaskTriggeredRuleDO auditTaskTriggeredRuleDO : auditTaskTriggeredRuleDOList) {
@@ -175,12 +164,27 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             node1.setAuditScore(0);
             node1.setTriggeredRules(triggeredRuleVOList);
             nodeResult.add(node1);
-            auditTask.setAuditCode(node1.getAuditCode());
         }
+
+        NodeResultVO node2 = new NodeResultVO();
+        node2.setIndex(2);
+        node2.setRulePackageCode("CS01");
+        node2.setAuditScore(scoreCard.getScore());
+        node2.setTriggeredRules(new ArrayList<>());
+        nodeResult.add(node2);
+
+        NodeResultVO node3 = new NodeResultVO();
+        node3.setIndex(3);
+        node3.setRulePackageCode("LOC01");
+        node3.setAuditScore(Integer.valueOf(scoreCard.getQuota()));
+        node3.setTriggeredRules(new ArrayList<>());
+        nodeResult.add(node3);
+
+        auditTask.setAuditCode(node1.getAuditCode());
+        auditTask.setAuditScore(scoreCard.getScore());
 
         ApiResponse<AuditResultVO> apiResponse = this.saveOutputRawParam(auditTask, nodeResult);
         auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK.getCode());
-        auditTask.setAuditScore(scoreCard.getScore());
         this.auditTaskMapper.update(auditTask);
         this.sendAuditResult(auditTask, apiResponse);
     }

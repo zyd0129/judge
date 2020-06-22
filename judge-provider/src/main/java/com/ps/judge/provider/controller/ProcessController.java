@@ -14,9 +14,10 @@ import com.ps.judge.provider.service.ProcessService;
 import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.request.ApplyRequest;
 import com.ps.jury.api.response.VarResult;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.StringUtils;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
@@ -75,6 +76,9 @@ public class ProcessController implements JudgeApi {
         AuditTaskDO audit = this.processService.getAuditTask(applyRequest.getTenantCode(), applyRequest.getApplyId());
         if (Objects.nonNull(audit)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "申请订单已存在");
+        }
+        if (StringUtils.equals(audit.getFlowCode(), applyRequest.getFlowCode())) {
+            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不一致");
         }
         ConfigFlowDO configFlow = this.configFlowService.getByFlowCode(applyRequest.getFlowCode());
         if (Objects.isNull(configFlow)) {
