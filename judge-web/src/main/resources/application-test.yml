@@ -20,8 +20,8 @@ spring:
         server-addr: ${CONFIG_SERVER}
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    password: Dev@123456
-    username: dev
+    password: Fas@123456
+    username: fas
     url: jdbc:mysql://192.168.40.152:3306/judge?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
   jackson:
     default-property-inclusion: non_null
