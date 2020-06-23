@@ -17,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -63,6 +64,10 @@ public class AuditTaskServiceImpl implements AuditTaskService {
         AuditTaskBO auditTaskBO = new AuditTaskBO();
         BeanUtils.copyProperties(auditTaskDO, auditTaskBO);
         auditTaskBO.setTaskStatus(convertToTaskStatus(auditTaskDO.getTaskStatus()));
+        LocalDateTime localDateTime = LocalDateTime.of(1970,1,1,0,0,0);
+        if (localDateTime.equals(auditTaskBO.getCompleteTime())) {
+            auditTaskBO.setCompleteTime(null);
+        }
         return auditTaskBO;
     }
 
