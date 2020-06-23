@@ -1,7 +1,6 @@
 package com.ps.judge.web.auth.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ps.common.exception.BizException;
 import com.ps.judge.web.auth.objects.AuthUserBO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

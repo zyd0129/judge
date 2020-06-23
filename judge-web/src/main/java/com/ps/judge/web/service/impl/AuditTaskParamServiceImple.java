@@ -1,9 +1,7 @@
 package com.ps.judge.web.service.impl;
 
-import com.ps.judge.dao.entity.AuditTaskDO;
 import com.ps.judge.dao.entity.AuditTaskParamDO;
 import com.ps.judge.dao.mapper.AuditTaskParamMapper;
-import com.ps.judge.web.models.AuditTaskBO;
 import com.ps.judge.web.models.AuditTaskParamBO;
 import com.ps.judge.web.service.AuditTaskParamService;
 import org.springframework.beans.BeanUtils;

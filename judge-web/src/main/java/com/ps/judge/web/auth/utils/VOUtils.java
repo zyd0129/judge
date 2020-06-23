@@ -5,7 +5,10 @@ import com.ps.judge.web.auth.objects.AuthRoleBO;
 import com.ps.judge.web.auth.objects.AuthUserBO;
 import com.ps.judge.web.auth.req.AuthUserChangePassReq;
 import com.ps.judge.web.auth.req.AuthUserModifyReq;
-import com.ps.judge.web.auth.vo.*;
+import com.ps.judge.web.auth.vo.AuthRoleVO;
+import com.ps.judge.web.auth.vo.AuthUserVO;
+import com.ps.judge.web.auth.vo.FirstMenu;
+import com.ps.judge.web.auth.vo.SecondMenu;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;
@@ -68,6 +71,7 @@ public class VOUtils {
         }
         return authRoleVO;
     }
+
     public static List<AuthRoleVO> convertToAuthRoleVOs(List<AuthRoleBO> authRoleBOList) {
         if (authRoleBOList == null) {
             return null;

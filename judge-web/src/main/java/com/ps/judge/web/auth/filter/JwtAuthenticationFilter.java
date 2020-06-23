@@ -1,17 +1,12 @@
 package com.ps.judge.web.auth.filter;
 
-import com.ps.common.exception.BizException;
 import com.ps.judge.web.auth.objects.AuthUserBO;
 import com.ps.judge.web.auth.utils.JWTHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -54,6 +49,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         }
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 }

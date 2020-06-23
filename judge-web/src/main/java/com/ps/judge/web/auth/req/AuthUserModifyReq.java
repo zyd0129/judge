@@ -1,13 +1,10 @@
 package com.ps.judge.web.auth.req;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ps.judge.web.auth.objects.AuthTenantBO;
 import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Data
 public class AuthUserModifyReq {

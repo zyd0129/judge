@@ -3,7 +3,6 @@ package com.ps.judge.web.auth.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ps.common.query.QueryParams;
-import com.ps.common.query.QueryVo;
 import com.ps.common.query.RoleQuery;
 import com.ps.judge.dao.entity.AuthRoleDO;
 import com.ps.judge.dao.mapper.RoleMapper;

@@ -37,26 +37,28 @@ public class RoleController {
         List<FirstMenu> firstMenus = VOUtils.convertToMenuTree(authRoleBOList);
         return ApiResponse.success(firstMenus);
     }
+
     @GetMapping("/roles/all")
     @PreAuthorize("hasAuthority('role_query')")
     public ApiResponse<List<AuthRoleBO>> allRoles() {
         List<AuthRoleBO> roleBOList = roleService.queryAll();
         return ApiResponse.success(roleBOList);
     }
-    @PostMapping(value = "/roles/query",params = "query=false")
+
+    @PostMapping(value = "/roles/query", params = "query=false")
     @PreAuthorize("hasAuthority('role_list')")
     public ApiResponse<PageResult<AuthRoleVO>> roles(@RequestBody QueryVo<RoleQuery> queryVo) {
         queryVo.setQuery(null);
         return queryRoles(queryVo);
     }
 
-    @PostMapping(value = "/roles/query",params = "query=true")
+    @PostMapping(value = "/roles/query", params = "query=true")
     @PreAuthorize("hasAuthority('role_query')")
     public ApiResponse<PageResult<AuthRoleVO>> queryRoles(@RequestBody QueryVo<RoleQuery> queryVo) {
         List<AuthRoleBO> roleBOList = roleService.query(queryVo.convertToQueryParam());
         List<AuthRoleVO> authRoleVOS = VOUtils.convertToAuthRoleVOs(roleBOList);
         int total = roleService.total(queryVo.convertToQueryParam());
-        PageResult<AuthRoleVO> pageResult = new PageResult<>(queryVo.getCurPage(), queryVo.getPageSize(),total, authRoleVOS);
+        PageResult<AuthRoleVO> pageResult = new PageResult<>(queryVo.getCurPage(), queryVo.getPageSize(), total, authRoleVOS);
         return ApiResponse.success(pageResult);
     }
 
@@ -70,6 +72,7 @@ public class RoleController {
         roleService.addRule(authRoleBO);
         return ApiResponse.success();
     }
+
     @PostMapping("/roles/modify")
     @PreAuthorize("hasAuthority('role_modify')")
     public ApiResponse modifyRule(@RequestBody AuthRoleBO authRoleBO) {
@@ -79,6 +82,7 @@ public class RoleController {
         roleService.modifyRule(authRoleBO);
         return ApiResponse.success();
     }
+
     @GetMapping("/roles/get")
     @PreAuthorize("hasAnyAuthority('role_add','role_modify')")
     public ApiResponse<AuthRoleVO> role(@RequestParam int id) {

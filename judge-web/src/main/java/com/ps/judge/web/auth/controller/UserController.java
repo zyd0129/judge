@@ -122,8 +122,9 @@ public class UserController {
 
         AuthUserBO currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         AuthUserBO userBO = userService.getByUsername(currentUser.getUsername());
-        if (!passwordEncoder.matches(authUserVO.getPrePassword(), userBO.getPassword()))
+        if (!passwordEncoder.matches(authUserVO.getPrePassword(), userBO.getPassword())) {
             throw new BizException(40001, "pre password not exact");
+        }
 
         authUserVO.setGmtModified(LocalDateTime.now());
         authUserVO.setOperator(currentUser.getUsername());

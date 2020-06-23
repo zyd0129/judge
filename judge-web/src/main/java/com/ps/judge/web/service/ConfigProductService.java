@@ -1,7 +1,6 @@
 package com.ps.judge.web.service;
 
 
-import com.ps.common.ApiResponse;
 import com.ps.common.query.QueryParams;
 import com.ps.judge.web.models.ConfigProductBO;
 import com.ps.common.query.ProductQuery;

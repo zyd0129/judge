@@ -9,14 +9,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 
 public class SimpleAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/json;charset=utf-8");
-        ApiResponse apiResponse = ApiResponse.error(403,authException.getMessage());
+        ApiResponse apiResponse = ApiResponse.error(403, authException.getMessage());
         response.getWriter().print(JSONObject.toJSON(apiResponse));
     }
 }

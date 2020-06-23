@@ -36,7 +36,6 @@ public class AuditTaskController {
     }
 
 
-
     @PostMapping(value = "query", params = "query=false")
     public ApiResponse<PageResult<AuditTaskBO>> listFlow(@RequestBody QueryVo<TaskQuery> taskQuery) {
         taskQuery.setQuery(null);

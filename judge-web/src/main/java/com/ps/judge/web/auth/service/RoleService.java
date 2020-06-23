@@ -1,7 +1,6 @@
 package com.ps.judge.web.auth.service;
 
 import com.ps.common.query.QueryParams;
-import com.ps.common.query.QueryVo;
 import com.ps.common.query.RoleQuery;
 import com.ps.judge.web.auth.objects.AuthAuthorityBO;
 import com.ps.judge.web.auth.objects.AuthRoleBO;
@@ -13,6 +12,7 @@ import java.util.Set;
 public interface RoleService {
 
     Set<AuthAuthorityBO> getAuthorityBOsByRoleNames(String[] split);
+
     Set<SimpleGrantedAuthority> getAuthoritiesByRoleNames(String[] split);
 
     void deleteRule(int id);

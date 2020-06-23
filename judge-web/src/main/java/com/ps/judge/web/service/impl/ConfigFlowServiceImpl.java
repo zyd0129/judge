@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -58,8 +57,6 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
     }
 
 
-
-
     @Override
     public ConfigFlowBO getByFlowCode(String flowCode) {
         ConfigFlowDO configFlowDO = flowMapper.getByFlowCode(flowCode);
@@ -81,7 +78,7 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
     @Override
     public void insert(ConfigFlowBO configFlowBO) {
         if (configFlowBO.getFlowCode() == null) {
-            configFlowBO.setFlowCode(UUID.randomUUID().toString().replace("-",""));
+            configFlowBO.setFlowCode(UUID.randomUUID().toString().replace("-", ""));
         }
         AuthUserBO authUserBO = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         configFlowBO.setOperator(authUserBO.getUsername());

@@ -3,7 +3,6 @@ package com.ps.judge.web.auth.objects;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 @Data
-public class AuthUserBO  implements UserDetails {
+public class AuthUserBO implements UserDetails {
     private Integer id;
     /**
      * 登录名

@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class FirstMenu {
     private String displayName;
-    private List<SecondMenu> children=new ArrayList<>();
+    private List<SecondMenu> children = new ArrayList<>();
 
     public FirstMenu(String displayName) {
         this.displayName = displayName;

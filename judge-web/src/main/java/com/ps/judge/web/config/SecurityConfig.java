@@ -17,8 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 import java.security.KeyPair;
 

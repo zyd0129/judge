@@ -62,7 +62,7 @@ public class ConfigProductServiceImpl implements ConfigProductService {
     @Override
     @Transactional
     public void updateStatus(ConfigProductBO configProductBO) throws BizException {
-        if(StringUtils.isEmpty(configProductBO.getProductCode())){
+        if (StringUtils.isEmpty(configProductBO.getProductCode())) {
             ConfigProductBO configProductBO1 = getById(configProductBO.getId());
             configProductBO.setProductCode(configProductBO1.getProductCode());
         }
@@ -71,7 +71,7 @@ public class ConfigProductServiceImpl implements ConfigProductService {
         configProductDO.setOperator(authUserBO.getUsername());
         configProductDO.setGmtModified(LocalDateTime.now());
         productMapper.updateStatus(configProductDO);
-        if(ConfigProductBO.Status.STOPPED.equals(configProductBO.getStatus())){
+        if (ConfigProductBO.Status.STOPPED.equals(configProductBO.getStatus())) {
             ConfigFlowDO configFlowDO = new ConfigFlowDO();
             configFlowDO.setGmtModified(LocalDateTime.now());
             configFlowDO.setStatus(0);
@@ -79,7 +79,7 @@ public class ConfigProductServiceImpl implements ConfigProductService {
             configFlowDO.setProductCode(configProductBO.getProductCode());
             flowMapper.batchUpdateStatus(configFlowDO);
         }
-        if(ConfigProductBO.Status.DISABLED.equals(configProductBO.getStatus())){
+        if (ConfigProductBO.Status.DISABLED.equals(configProductBO.getStatus())) {
             ConfigFlowDO configFlowDO = new ConfigFlowDO();
             configFlowDO.setGmtModified(LocalDateTime.now());
             configFlowDO.setStatus(2);
@@ -101,7 +101,7 @@ public class ConfigProductServiceImpl implements ConfigProductService {
 
     @Override
     public void delete(int id) {
-         productMapper.delete(id);
+        productMapper.delete(id);
     }
 
     @Override

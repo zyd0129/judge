@@ -16,43 +16,43 @@ import java.io.IOException;
 public class GlobalExceptionHandler {
     @ExceptionHandler(RuntimeException.class)
     public ApiResponse handleRuntimeException(RuntimeException e) {
-        log.error(e.getMessage(),e);
+        log.error(e.getMessage(), e);
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
     }
 
     @ExceptionHandler(NullPointerException.class)
     public ApiResponse handleNullPointerException(NullPointerException e) {
-        log.error(e.getMessage(),e);
+        log.error(e.getMessage(), e);
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
     }
 
     @ExceptionHandler(IOException.class)
     public ApiResponse handleIOException(IOException e) {
-        log.error(e.getMessage(),e);
+        log.error(e.getMessage(), e);
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
     }
 
     @ExceptionHandler(AuthenticationException.class)
     public ApiResponse handBadCredentials(AuthenticationException e) {
-        log.error(e.getMessage(),e);
+        log.error(e.getMessage(), e);
         return ApiResponse.error(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ApiResponse handle(AccessDeniedException e) {
-        log.error(e.getMessage(),e);
+        log.error(e.getMessage(), e);
         return ApiResponse.error(HttpStatus.FORBIDDEN.value(), e.getMessage());
     }
 
     @ExceptionHandler(BizException.class)
     public ApiResponse handle(BizException e) {
-        log.error(e.getMessage(),e);
+        log.error(e.getMessage(), e);
         return ApiResponse.error(600, e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     public ApiResponse handle(Exception e) {
-        log.error(e.getMessage(),e);
+        log.error(e.getMessage(), e);
         return ApiResponse.error(600, e.getMessage());
     }
 }

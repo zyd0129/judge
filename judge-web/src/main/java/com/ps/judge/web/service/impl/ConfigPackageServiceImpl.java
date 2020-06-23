@@ -7,7 +7,6 @@ import com.ps.judge.dao.entity.ConfigPackageDO;
 import com.ps.judge.dao.mapper.ConfigPackageMapper;
 import com.ps.judge.web.auth.objects.AuthUserBO;
 import com.ps.judge.web.models.ConfigPackageBO;
-import com.ps.judge.web.models.ConfigPackageBO;
 import com.ps.judge.web.service.ConfigPackageService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ import java.util.List;
 public class ConfigPackageServiceImpl implements ConfigPackageService {
     @Autowired
     ConfigPackageMapper packageMapper;
-    
+
     @Override
     public void updateStatus(ConfigPackageBO configPackageBO) {
         AuthUserBO authUserBO = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

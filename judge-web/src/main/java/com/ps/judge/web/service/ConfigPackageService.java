@@ -3,10 +3,8 @@ package com.ps.judge.web.service;
 
 import com.ps.common.enums.Status;
 import com.ps.common.query.PackageQuery;
-import com.ps.common.query.ProductQuery;
 import com.ps.common.query.QueryParams;
 import com.ps.judge.web.models.ConfigPackageBO;
-import com.ps.judge.web.models.ConfigProductBO;
 
 import java.util.List;
 

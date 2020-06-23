@@ -1,7 +1,6 @@
 package com.ps.judge.web.auth.service;
 
 import com.ps.common.query.QueryParams;
-import com.ps.common.query.QueryVo;
 import com.ps.judge.web.auth.objects.AuthUserBO;
 import com.ps.judge.web.auth.req.AuthUserLogin;
 import com.ps.common.query.UserQuery;

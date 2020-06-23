@@ -16,7 +16,6 @@ import com.ps.jury.api.common.ApiResponse;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +25,7 @@ import java.util.List;
 @Service
 public class AuditTaskServiceImpl implements AuditTaskService {
     private List<Integer> successStatus = Arrays.asList(6, 8, 9, 10);
-    private List<Integer> runningStatus = Arrays.asList(0,1,2,3,4,5);
+    private List<Integer> runningStatus = Arrays.asList(0, 1, 2, 3, 4, 5);
     private List<Integer> failureStatus = Collections.singletonList(7);
 
 
@@ -38,7 +37,7 @@ public class AuditTaskServiceImpl implements AuditTaskService {
 
     @Autowired
     JudgeApi judgeApi;
-    
+
     @Override
     public List<AuditTaskBO> query(QueryParams<TaskQuery> queryParams) {
         return convertToBOList(auditTaskMapper.query(queryParams));
@@ -70,15 +69,16 @@ public class AuditTaskServiceImpl implements AuditTaskService {
     /**
      * 章谦(Ethan) 6-12 下午01:57:43
      * 0 请求已接收 1 请求转发成功 2 请求转发失败  3 变量接受成功  4, 变量计算失败 5 审核中
-     *
+     * <p>
      * 章谦(Ethan) 6-12 下午01:58:05
      * 查询中  0 请求已接收 1 请求转发成功 2 请求转发失败  3 变量接受成功  4, 变量计算失败 5 审核中
-     *
+     * <p>
      * 章谦(Ethan) 6-12 下午01:58:28
      * 失败  7 审核失败
-     *
+     * <p>
      * 章谦(Ethan) 6-12 下午01:58:48
      * 成功  6 审核完成  8 审核完成回调中 9 回调成功 10 回调失败
+     *
      * @param taskStatus
      * @return
      */
@@ -106,13 +106,12 @@ public class AuditTaskServiceImpl implements AuditTaskService {
         for (AuditTaskDO auditTaskDO : auditTaskDOList) {
             AuditTaskBO auditTaskBO = convertToBO(auditTaskDO);
             auditTaskBOList.add(auditTaskBO);
-            flowDOS.stream().filter(f->f.getFlowCode().equals(auditTaskBO.getFlowCode())).limit(1).forEach(s->{
+            flowDOS.stream().filter(f -> f.getFlowCode().equals(auditTaskBO.getFlowCode())).limit(1).forEach(s -> {
                 auditTaskBO.setFlowName(s.getFlowName());
                 auditTaskBO.setProductName(s.getProductName());
                 auditTaskBO.setFlowVersion(s.getFlowVersion());
             });
         }
-
 
 
         return auditTaskBOList;

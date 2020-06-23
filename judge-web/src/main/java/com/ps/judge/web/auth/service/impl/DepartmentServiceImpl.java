@@ -67,12 +67,14 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Set<String> incSet = new HashSet<>(curUsernameSet);
         incSet.removeAll(preUsernameSet);
-        if (incSet.size() > 0)
+        if (incSet.size() > 0) {
             userMapper.batchUpdateDepartment(incSet, departmentBO.getName());
+        }
         Set<String> decSet = new HashSet<>(preUsernameSet);
         decSet.removeAll(curUsernameSet);
-        if (decSet.size() > 0)
+        if (decSet.size() > 0) {
             userMapper.batchUpdateDepartment(decSet, "");
+        }
 
     }
 

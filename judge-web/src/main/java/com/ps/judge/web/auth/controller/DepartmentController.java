@@ -24,11 +24,11 @@ public class DepartmentController {
     @GetMapping("/departments/all")
     @PreAuthorize("hasAuthority('department_query')")
     public ApiResponse<List<AuthDepartmentBO>> departmentAll() {
-        List<AuthDepartmentBO> departmentBOList =departmentService.all();
+        List<AuthDepartmentBO> departmentBOList = departmentService.all();
         return ApiResponse.success(departmentBOList);
     }
 
-    @PostMapping(value = "/departments/query",params = "query=false")
+    @PostMapping(value = "/departments/query", params = "query=false")
     @PreAuthorize("hasAuthority('department_list')")
     public ApiResponse<PageResult<AuthDepartmentBO>> departmentList(@RequestBody QueryVo<DepartmentQuery> queryVo) {
         queryVo.setQuery(null);
@@ -36,18 +36,18 @@ public class DepartmentController {
     }
 
 
-    @PostMapping(value = "/departments/query",params = "query=true")
+    @PostMapping(value = "/departments/query", params = "query=true")
     @PreAuthorize("hasAuthority('department_query')")
     public ApiResponse<PageResult<AuthDepartmentBO>> departmentQuery(@RequestBody QueryVo<DepartmentQuery> queryVo) {
         List<AuthDepartmentBO> departmentBOList = departmentService.query(queryVo.convertToQueryParam());
         int total = departmentService.total(queryVo.convertToQueryParam());
-        PageResult<AuthDepartmentBO> pageResult = new PageResult<>(queryVo.getCurPage(), queryVo.getPageSize(), total,departmentBOList);
+        PageResult<AuthDepartmentBO> pageResult = new PageResult<>(queryVo.getCurPage(), queryVo.getPageSize(), total, departmentBOList);
         return ApiResponse.success(pageResult);
     }
 
     @PostMapping("/departments/modify")
     @PreAuthorize("hasAuthority('department_modify')")
-    public ApiResponse departmentList(@RequestBody AuthDepartmentBO departmentBO) {
+    public ApiResponse departmentModify(@RequestBody AuthDepartmentBO departmentBO) {
         AuthUserBO currentUser = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         departmentBO.setGmtModified(LocalDateTime.now());
         departmentBO.setOperator(currentUser.getUsername());

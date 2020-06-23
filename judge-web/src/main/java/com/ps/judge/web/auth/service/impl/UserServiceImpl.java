@@ -2,7 +2,6 @@ package com.ps.judge.web.auth.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ps.common.query.QueryParams;
-import com.ps.common.query.QueryVo;
 import com.ps.judge.dao.entity.AuthUserDO;
 import com.ps.judge.dao.mapper.UserMapper;
 import com.ps.judge.web.auth.objects.AuthTenantBO;
@@ -60,14 +59,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void addUser(AuthUserBO authUserBO) {
-        if (authUserBO == null) return;
+        if (authUserBO == null) {
+            return;
+        }
         AuthUserDO authUserDO = convertToDO(authUserBO);
         userMapper.insert(authUserDO);
     }
 
     @Override
     public void modifyUser(AuthUserBO authUserBO) {
-        if (authUserBO == null) return;
+        if (authUserBO == null) {
+            return;
+        }
         AuthUserDO authUserDO = convertToDO(authUserBO);
         userMapper.update(authUserDO);
     }
@@ -79,7 +82,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changePassword(AuthUserBO authUserBO) {
-        if (authUserBO == null) return;
+        if (authUserBO == null) {
+            return;
+        }
         AuthUserDO authUserDO = convertToDO(authUserBO);
         userMapper.changePassword(authUserDO);
     }
