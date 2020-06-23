@@ -64,7 +64,7 @@ public class AuditTaskServiceImpl implements AuditTaskService {
         AuditTaskBO auditTaskBO = new AuditTaskBO();
         BeanUtils.copyProperties(auditTaskDO, auditTaskBO);
         auditTaskBO.setTaskStatus(convertToTaskStatus(auditTaskDO.getTaskStatus()));
-        LocalDateTime localDateTime = LocalDateTime.of(1970,1,1,0,0,0);
+        LocalDateTime localDateTime = LocalDateTime.of(1970, 1, 1, 0, 0, 0);
         if (localDateTime.equals(auditTaskBO.getCompleteTime())) {
             auditTaskBO.setCompleteTime(null);
         }
