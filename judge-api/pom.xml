@@ -33,9 +33,8 @@
         <dependency>
             <groupId>com.ps.jury</groupId>
             <artifactId>jury-api</artifactId>
-            <version>0.0.2</version>
+            <version>0.0.2-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
 
 </project>
