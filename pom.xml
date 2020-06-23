@@ -11,7 +11,7 @@
     <modules>
         <module>judge-dao</module>
         <module>judge-api</module>
-        <module>judge-provider</module>
+<!--        <module>judge-provider</module>-->
         <module>judge-common</module>
         <module>judge-web</module>
     </modules>

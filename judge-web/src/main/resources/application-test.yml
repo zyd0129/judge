@@ -1,4 +1,49 @@
+
 logging:
   level:
-    root:
-      info
+    root: info
+  file: /home/judgelog/judge.log
+#    com.ps.judge.dao.mapper: debug
+spring:
+  application:
+    name: judge-web
+  rabbitmq:
+    host: localhost
+  #    username: admin
+  #    password: admin
+  redis:
+    host: 192.168.40.151
+    port: 6379
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${CONFIG_SERVER}
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: Dev@123456
+    username: dev
+    url: jdbc:mysql://192.168.40.152:3306/judge?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+  jackson:
+    default-property-inclusion: non_null
+
+mybatis:
+  type-aliases-package: com.ps.judge.dao.entity
+server:
+  port: 8082
+
+
+com:
+  ps:
+    judge:
+      web:
+        bucket-name: factoryfilestore
+        base-url: http://${com.ps.judge.web.bucket-name}.oss-cn-hangzhou.aliyuncs.com/
+        expiration: 31104000000  #60*60*24*30*12*1000
+encrypt:
+  key-store:
+    location: xc.keystore
+    alias: ps
+    password: admin123
+    secret: admin123
+    type: jks
+  key: 12345
