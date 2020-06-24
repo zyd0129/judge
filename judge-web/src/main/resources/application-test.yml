@@ -2,7 +2,7 @@
 logging:
   level:
     root: info
-  file: /home/judgelog/judge.log
+  file: /home/judgelog/judge_web.log
 #    com.ps.judge.dao.mapper: debug
 spring:
   application:
