@@ -106,6 +106,9 @@ public class AuditTaskServiceImpl implements AuditTaskService {
         if (auditTaskDOList == null) {
             return null;
         }
+        if (auditTaskDOList.size() == 0) {
+            return new ArrayList<>();
+        }
         List<ConfigFlowDO> flowDOS = flowMapper.getAll();
         List<AuditTaskBO> auditTaskBOList = new ArrayList<>();
         for (AuditTaskDO auditTaskDO : auditTaskDOList) {
@@ -117,7 +120,6 @@ public class AuditTaskServiceImpl implements AuditTaskService {
                 auditTaskBO.setFlowVersion(s.getFlowVersion());
             });
         }
-
 
         return auditTaskBOList;
     }

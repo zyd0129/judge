@@ -111,6 +111,7 @@ public interface AuditTaskMapper {
             "</if>",
 
             "</if>",
+            "order by gmt_create desc",
             "limit #{startNo},#{pageSize}",
             "</script>"
     })

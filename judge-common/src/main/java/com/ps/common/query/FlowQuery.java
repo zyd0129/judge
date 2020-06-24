@@ -14,10 +14,11 @@ public class FlowQuery implements QueryConver {
     private LocalDateTime gmtCreatedFrom;
     private LocalDateTime gmtCreatedTo;
     private String status;
-    private boolean fuzzy;
+    private Boolean fuzzy = false;
 
     @Override
     public void convert() {
+        fuzzy = false;
         if (!StringUtils.isEmpty(flowName)) {
             setTenantCode("%" + flowName + "%");
             fuzzy = true;

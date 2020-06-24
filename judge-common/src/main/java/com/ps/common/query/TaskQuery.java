@@ -26,10 +26,11 @@ public class TaskQuery implements QueryConver {
     private LocalDateTime gmtCreatedTo;
     private TaskStatus status;
     private List<Integer> taskStatus;
-    private Boolean fuzzy;
+    private Boolean fuzzy = false;
 
     @Override
     public void convert() {
+        fuzzy = false;
         if (!StringUtils.isEmpty(tenantCode)) {
             setTenantCode("%" + tenantCode + "%");
             fuzzy = true;
