@@ -1,0 +1,17 @@
+package com.ps.judge;
+
+import com.ps.judge.provider.entity.ScoreCardVO;
+import com.ps.jury.api.response.level.MerchantLevel;
+import com.ps.jury.api.response.group.PersonalInfo;
+import java.lang.Integer;
+
+rule "PE0012_11"
+	@freeze_conditions(true)
+	dialect "mvel"
+	ruleflow-group "CS01"
+	when
+		$scoreCard : ScoreCardVO( $score : score)
+		MerchantLevel( Integer.parseInt(personalInfo.borrowerAge) >= "24" , Integer.parseInt(personalInfo.borrowerAge) <= "27" , personalInfo != null )
+	then
+		$scoreCard.setScore( $score - 10 );
+end

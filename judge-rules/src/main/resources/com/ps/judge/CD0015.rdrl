@@ -1,0 +1,30 @@
+package com.ps.judge;
+
+import com.ps.jury.api.response.level.PlatformLevel;
+import java.util.ArrayList;
+import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;
+import java.lang.Integer;
+import java.lang.String;
+import com.ps.jury.api.response.group.MultiplatformLoanInfo;
+
+rule "CD0015"
+	@freeze_conditions(true)
+	dialect "mvel"
+	ruleflow-group "ZRX01"
+	when
+		$arrayList : ArrayList( )
+		PlatformLevel( multiplatformLoanInfo != null , $param : Integer.parseInt(multiplatformLoanInfo.idCardAppliedOnDeviceCount30D) >= 3 )
+	then
+		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
+		triggeredRule.setRuleCode("CD0015");
+		triggeredRule.setRuleName("");
+		triggeredRule.setRuleVersion("1.0.0");
+		triggeredRule.setRulePackageCode("ZRX01");
+		triggeredRule.setRulePackageName("");
+		triggeredRule.setRulePackageVersion("1.0.0");
+		triggeredRule.setExpression(">＝");
+		triggeredRule.setCondition("3");
+		triggeredRule.setParam(String.valueOf($param));
+		triggeredRule.setResult("0");
+		$arrayList.add( triggeredRule );
+end

@@ -1,0 +1,30 @@
+package com.ps.judge;
+
+import com.ps.jury.api.response.level.MerchantLevel;
+import com.ps.jury.api.response.group.PersonalInfo;
+import java.util.ArrayList;
+import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;
+import java.lang.Integer;
+import java.lang.String;
+
+rule "PE0007"
+	@freeze_conditions(true)
+	dialect "mvel"
+	ruleflow-group "ZRX01"
+	when
+		$arrayList : ArrayList( )
+		MerchantLevel( personalInfo != null , $param : Integer.parseInt(personalInfo.borrowerMonthlyIncome) <= "8000" , Integer.parseInt(personalInfo.borrowerMonthlyIncome) >= "0" )
+	then
+		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
+		triggeredRule.setRuleCode("PE0007");
+		triggeredRule.setRuleName("");
+		triggeredRule.setRuleVersion("1.0.0");
+		triggeredRule.setRulePackageCode("ZRX01");
+		triggeredRule.setRulePackageName("");
+		triggeredRule.setRulePackageVersion("1.0.0");
+		triggeredRule.setExpression("＞＝and＜=");
+		triggeredRule.setCondition("[0,8000]");
+		triggeredRule.setParam(String.valueOf($param));
+		triggeredRule.setResult("0");
+		$arrayList.add( triggeredRule );
+end

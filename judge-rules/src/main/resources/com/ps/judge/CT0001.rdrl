@@ -1,0 +1,28 @@
+package com.ps.judge;
+
+import com.ps.jury.api.response.level.MerchantLevel;
+import com.ps.jury.api.response.group.AddressBookInfo;
+import java.util.ArrayList;
+import java.lang.Integer;
+
+rule "CT0001"
+	@freeze_conditions(true)
+	dialect "mvel"
+	ruleflow-group "ZRX01"
+	when
+		$arrayList : ArrayList( )
+		MerchantLevel( addressBookInfo != null , $param : Integer.parseInt(addressBookInfo.contactItemCount) <= 50 , Integer.parseInt(addressBookInfo.contactItemCount) >= 0 )
+	then
+		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
+		triggeredRule.setRuleCode("CT0001");
+		triggeredRule.setRuleName("");
+		triggeredRule.setRuleVersion("1.0.0");
+		triggeredRule.setRulePackageCode("ZRX01");
+		triggeredRule.setRulePackageName("");
+		triggeredRule.setRulePackageVersion("1.0.0");
+		triggeredRule.setExpression("＞＝and＜=");
+		triggeredRule.setCondition("[0,50]");
+		triggeredRule.setParam(String.valueOf($param));
+		triggeredRule.setResult("0");
+		$arrayList.add( triggeredRule );
+end

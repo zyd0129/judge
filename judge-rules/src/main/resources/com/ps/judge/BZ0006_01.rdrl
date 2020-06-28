@@ -1,0 +1,12 @@
+package com.ps.judge;
+
+import com.ps.judge.provider.entity.ScoreCardVO;
+
+rule "BZ0006_01"
+	dialect "mvel"
+	ruleflow-group "LOC01"
+	when
+		$scoreCard : ScoreCardVO( score <= -40 )
+	then
+		$scoreCard.setQuota( "1500" );
+end

@@ -1,0 +1,31 @@
+package com.ps.judge;
+
+import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;
+import com.ps.jury.api.response.group.BlackListInfo;
+import com.ps.jury.api.response.group.GreyListInfo;
+import com.ps.jury.api.response.level.ProductLevel;
+import java.util.ArrayList;
+import java.lang.Integer;
+import java.lang.String;
+
+rule "GR0004"
+	@freeze_conditions(true)
+	dialect "mvel"
+	ruleflow-group "ZRX01"
+	when
+		$arrayList : ArrayList( )
+		ProductLevel( greyListInfo != null , $param : Integer.parseInt(greyListInfo.mobileIdCardBankCardHitsGrayListForOverdueTime) <= 30 , Integer.parseInt(greyListInfo.mobileIdCardBankCardHitsGrayListForOverdueTime) >= 15 )
+	then
+		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
+		triggeredRule.setRuleCode("GR0004");
+		triggeredRule.setRuleName("");
+		triggeredRule.setRuleVersion("1.0.0");
+		triggeredRule.setRulePackageCode("ZRX01");
+		triggeredRule.setRulePackageName("");
+		triggeredRule.setRulePackageVersion("1.0.0");
+		triggeredRule.setExpression("＞＝and＜=");
+		triggeredRule.setCondition("[15,30]");
+		triggeredRule.setParam(String.valueOf($param));
+		triggeredRule.setResult("1");
+		$arrayList.add( triggeredRule );
+end
