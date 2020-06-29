@@ -12,8 +12,8 @@ import lombok.Data;
 public class TriggeredRuleVO {
     private String ruleCode;
     private String ruleName;
-    private String expression;
-    private String condition;
-    private String param;
-    private String triggeredResult;
+    //private String expression;
+    //private String condition;
+    //private String param;
+    //private String triggeredResult;
 }
