@@ -13,7 +13,7 @@ rule "PE0005"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("PE0005");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人职业-数据缺失");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

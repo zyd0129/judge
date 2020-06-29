@@ -17,7 +17,7 @@ rule "PE0002"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("PE0002");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人年龄不符合");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

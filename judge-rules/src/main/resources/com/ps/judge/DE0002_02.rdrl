@@ -14,7 +14,7 @@ rule "DE0002_02"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("DE0002");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人安卓系统版本过低");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

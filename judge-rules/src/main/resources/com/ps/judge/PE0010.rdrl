@@ -14,7 +14,7 @@ rule "PE0010"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("PE0010");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("Aadhaar-借款人手机号认证为未注册");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

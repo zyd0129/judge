@@ -13,7 +13,7 @@ rule "PE0011"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("PE0011");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("Aadhaar-借款人手机号后三位与注册手机号后三位不一致");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

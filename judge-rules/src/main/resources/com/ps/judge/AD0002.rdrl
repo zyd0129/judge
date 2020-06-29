@@ -14,7 +14,7 @@ rule "AD0002"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("AD0002");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人申请IP与真实IP的城市是否匹配");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

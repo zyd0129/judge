@@ -14,7 +14,7 @@ rule "DE0001"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("DE0001");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人手机品牌伪劣");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

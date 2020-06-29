@@ -16,7 +16,7 @@ rule "BZ0001"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("BZ0001");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人敏感时段注册");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

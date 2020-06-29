@@ -14,7 +14,7 @@ rule "PE0001_03"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("PE0001");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人活体相似度");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

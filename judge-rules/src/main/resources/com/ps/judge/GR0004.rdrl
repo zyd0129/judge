@@ -18,7 +18,7 @@ rule "GR0004"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("GR0004");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人命中灰名单-逾期时间太长");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

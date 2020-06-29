@@ -2,6 +2,7 @@ package com.ps.judge.provider.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ps.judge.api.entity.ApplyResultVO;
 import com.ps.judge.api.entity.AuditResultVO;
 import com.ps.judge.dao.entity.AuditTaskDO;
@@ -70,12 +71,13 @@ public class ProcessServiceImpl implements ProcessService {
         auditTask.setGmtModified(LocalDateTime.now());
         this.auditTaskMapper.insert(auditTask);
 
+        String requestString = JSON.toJSONString(request, SerializerFeature.WriteMapNullValue);
         Integer auditId = auditTask.getId();
         AuditTaskParamDO auditTaskParam = new AuditTaskParamDO();
         auditTaskParam.setTenantCode(request.getTenantCode());
         auditTaskParam.setTaskId(auditId);
         auditTaskParam.setApplyId(request.getApplyId());
-        auditTaskParam.setInputRawParam(JSON.toJSONString(request));
+        auditTaskParam.setInputRawParam(requestString);
         auditTaskParam.setOutputRawParam(StringUtils.EMPTY);
         auditTaskParam.setVarResult(StringUtils.EMPTY);
         auditTaskParam.setGmtCreate(LocalDateTime.now());
@@ -107,7 +109,8 @@ public class ProcessServiceImpl implements ProcessService {
             Integer auditId = auditTask.getId();
             auditTask.setTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode());
             this.auditTaskMapper.updateTaskStatus(auditTask.getTaskStatus(), auditId);
-            this.auditTaskParamMapper.updateVarResult(JSON.toJSONString(varResult), auditId);
+            String varResultString = JSON.toJSONString(varResult, SerializerFeature.WriteMapNullValue);
+            this.auditTaskParamMapper.updateVarResult(varResultString, auditId);
             this.asyncProcessTask.startProcess(auditTask, varResult);
         }
         return ApiResponse.success();

@@ -17,7 +17,7 @@ rule "CD0013"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("CD0013");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人30天内设备使用身份证号进行申请借款的个数");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

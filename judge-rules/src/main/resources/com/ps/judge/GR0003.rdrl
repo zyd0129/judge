@@ -15,7 +15,7 @@ rule "GR0003"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("GR0003");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人手机号命中灰名单_亲友偿还");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

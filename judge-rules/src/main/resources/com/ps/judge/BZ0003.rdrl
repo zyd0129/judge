@@ -16,7 +16,7 @@ rule "BZ0003"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("BZ0003");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人最近一笔还款逾期（3,7]天 且 最近一笔借款为还款成功状态");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX02");
 		triggeredRule.setRulePackageName("");

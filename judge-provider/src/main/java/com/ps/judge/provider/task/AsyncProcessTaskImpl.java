@@ -2,6 +2,7 @@ package com.ps.judge.provider.task;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ps.judge.api.entity.AuditResultVO;
 import com.ps.judge.api.entity.NodeResultVO;
 import com.ps.judge.api.entity.TriggeredRuleVO;
@@ -131,7 +132,6 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             node1.setTriggeredRules(new ArrayList<>());
             nodeResult.add(node1);
 
-
         } else {
             int resultCode = 1;
             List<TriggeredRuleVO> triggeredRuleVOList = new ArrayList<>();
@@ -147,9 +147,6 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
                 TriggeredRuleVO triggeredRuleVO = new TriggeredRuleVO();
                 triggeredRuleVO.setRuleCode(auditTaskTriggeredRuleDO.getRuleCode());
                 triggeredRuleVO.setRuleName(auditTaskTriggeredRuleDO.getRuleName());
-                triggeredRuleVO.setExpression(auditTaskTriggeredRuleDO.getExpression());
-                triggeredRuleVO.setCondition(auditTaskTriggeredRuleDO.getCondition());
-                triggeredRuleVO.setParam(auditTaskTriggeredRuleDO.getParam());
                 triggeredRuleVOList.add(triggeredRuleVO);
                 if (StringUtils.equals(auditTaskTriggeredRuleDO.getRulePackageCode(), "ZRX01")) {
                     resultCode = resultCode & Integer.parseInt(auditTaskTriggeredRuleDO.getResult());
@@ -209,7 +206,8 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         auditResult.setAuditScore(auditTask.getAuditScore());
         auditResult.setNodeResult(nodeResult);
         ApiResponse<AuditResultVO> apiResponse = ApiResponse.success(auditResult);
-        this.auditTaskParamMapper.updateOutputRawParam(JSON.toJSONString(apiResponse), auditTask.getId());
+        String apiResponseString = JSON.toJSONString(apiResponse, SerializerFeature.WriteMapNullValue);
+        this.auditTaskParamMapper.updateOutputRawParam(apiResponseString, auditTask.getId());
         return apiResponse;
     }
 

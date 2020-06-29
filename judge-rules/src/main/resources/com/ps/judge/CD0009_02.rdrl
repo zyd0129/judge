@@ -17,7 +17,7 @@ rule "CD0009_02"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("CD0009");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人银行卡关联多个人");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

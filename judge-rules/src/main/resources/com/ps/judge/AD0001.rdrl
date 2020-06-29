@@ -14,7 +14,7 @@ rule "AD0001"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("AD0001");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人申请时不在准入城市");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

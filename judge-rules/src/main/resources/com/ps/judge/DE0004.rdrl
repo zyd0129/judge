@@ -14,7 +14,7 @@ rule "DE0004"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("DE0004");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人设备使用时长_数据缺失");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

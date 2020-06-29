@@ -13,7 +13,7 @@ rule "SC0003"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("SC0003");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人贷款类软件数量_数据缺失");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

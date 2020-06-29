@@ -17,7 +17,7 @@ rule "CD0004"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("CD0004");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人90天内手机号在多个平台申请借款");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

@@ -17,7 +17,7 @@ rule "PE0007"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("PE0007");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人月收入较低");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

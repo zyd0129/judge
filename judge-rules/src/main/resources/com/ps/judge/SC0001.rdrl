@@ -16,7 +16,7 @@ rule "SC0001"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("SC0001");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("借款人三方APP数量过少");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");

@@ -15,7 +15,7 @@ rule "BK0006"
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("BK0006");
-		triggeredRule.setRuleName("");
+		triggeredRule.setRuleName("紧急联系人手机号命中黑名单");
 		triggeredRule.setRuleVersion("1.0.0");
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");
