@@ -8,7 +8,7 @@ import com.ps.judge.provider.entity.ScoreCardVO;
 rule "PE0012_01"
 	@freeze_conditions(true)
 	dialect "mvel"
-	ruleflow-group "CS01"
+	ruleflow-group "SC01"
 	when
 		$scoreCard : ScoreCardVO( $score : score)
 		MerchantLevel( Integer.parseInt(personalInfo.borrowerAge) >= 46 , Integer.parseInt(personalInfo.borrowerAge) <= 48 , personalInfo != null )

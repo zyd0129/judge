@@ -8,7 +8,7 @@ import java.lang.Integer;
 rule "PE0012_10"
 	@freeze_conditions(true)
 	dialect "mvel"
-	ruleflow-group "CS01"
+	ruleflow-group "SC01"
 	when
 		$scoreCard : ScoreCardVO( $score : score)
 		

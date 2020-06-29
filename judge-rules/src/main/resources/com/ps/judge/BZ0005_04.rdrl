@@ -6,7 +6,7 @@ import com.ps.jury.api.response.group.MerchantBusinessInfo;
 
 rule "BZ0005_04"
 	dialect "mvel"
-	ruleflow-group "CS01"
+	ruleflow-group "SC01"
 	when
 		MerchantLevel( merchantBusinessInfo.registrationPeriod in ( 5,8,11,13,14,22,23 ) )
 		$scoreCard : ScoreCardVO( $score : score)

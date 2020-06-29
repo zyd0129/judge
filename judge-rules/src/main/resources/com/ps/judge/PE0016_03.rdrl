@@ -6,7 +6,7 @@ import com.ps.jury.api.response.group.PersonalInfo;
 
 rule "PE0016_03"
 	dialect "mvel"
-	ruleflow-group "CS01"
+	ruleflow-group "SC01"
 	when
 		$scoreCard : ScoreCardVO( $score : score)
 		MerchantLevel( personalInfo != null , personalInfo.borrowerEducation == "master degree" )

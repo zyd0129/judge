@@ -6,6 +6,7 @@ import com.ps.jury.api.response.group.DeviceInfo;
 
 rule "DE0006_06"
 	dialect "mvel"
+	ruleflow-group "SC01"
 	when
 		MerchantLevel( deviceInfo.mobileBrand in ( "10or", "inFocus", "intex", "itel", "lephone" ) )
 		$scoreCard : ScoreCardVO( $score : score)

@@ -165,7 +165,7 @@
     <bpmn2:endEvent id="_F7990913-0BD8-41F4-A3AE-DB3A221F27D2">
       <bpmn2:incoming>_A14307B9-B8F3-4562-9918-50FB2507F7A6</bpmn2:incoming>
     </bpmn2:endEvent>
-    <bpmn2:businessRuleTask id="_67593EB3-F29E-4E5B-BD0C-E92AFC3D0DCE" drools:ruleFlowGroup="CS01" name="Score Card" implementation="http://www.jboss.org/drools/rule">
+    <bpmn2:businessRuleTask id="_67593EB3-F29E-4E5B-BD0C-E92AFC3D0DCE" drools:ruleFlowGroup="SC01" name="Score Card" implementation="http://www.jboss.org/drools/rule">
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[Score Card]]></drools:metaValue>
