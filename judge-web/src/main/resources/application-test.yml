@@ -2,8 +2,9 @@
 logging:
   level:
     root: info
+    com.ps.judge.dao.mapper: debug
+
   file: /home/judgelog/judge_web.log
-#    com.ps.judge.dao.mapper: debug
 spring:
   application:
     name: judge-web
