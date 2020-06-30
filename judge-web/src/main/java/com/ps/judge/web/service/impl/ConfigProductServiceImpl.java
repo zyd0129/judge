@@ -54,7 +54,7 @@ public class ConfigProductServiceImpl implements ConfigProductService {
         ConfigProductDO configProductDO = convertToDO(configProductBO);
         configProductDO.setGmtCreated(LocalDateTime.now());
         configProductDO.setGmtModified(LocalDateTime.now());
-        configProductBO.setProductCode(UUID.randomUUID().toString().replace("-", ""));
+        configProductDO.setProductCode(UUID.randomUUID().toString().replace("-", ""));
         AuthUserBO authUserBO = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         configProductDO.setOperator(authUserBO.getUsername());
         productMapper.insert(configProductDO);
