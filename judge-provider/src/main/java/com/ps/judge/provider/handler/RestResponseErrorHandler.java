@@ -13,6 +13,5 @@ public class RestResponseErrorHandler implements ResponseErrorHandler {
 
     @Override
     public void handleError(ClientHttpResponse clientHttpResponse) throws IOException {
-
     }
 }

@@ -132,6 +132,19 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             node1.setTriggeredRules(new ArrayList<>());
             nodeResult.add(node1);
 
+            NodeResultVO node2 = new NodeResultVO();
+            node2.setIndex(2);
+            node2.setRulePackageCode("SC01");
+            node2.setAuditScore(scoreCard.getScore());
+            node2.setTriggeredRules(new ArrayList<>());
+            nodeResult.add(node2);
+
+            NodeResultVO node3 = new NodeResultVO();
+            node3.setIndex(3);
+            node3.setRulePackageCode("LOC01");
+            node3.setAuditScore(Integer.valueOf(scoreCard.getQuota()));
+            node3.setTriggeredRules(new ArrayList<>());
+            nodeResult.add(node3);
         } else {
             int resultCode = 1;
             List<TriggeredRuleVO> triggeredRuleVOList = new ArrayList<>();
@@ -162,20 +175,6 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             node1.setTriggeredRules(triggeredRuleVOList);
             nodeResult.add(node1);
         }
-
-        NodeResultVO node2 = new NodeResultVO();
-        node2.setIndex(2);
-        node2.setRulePackageCode("CS01");
-        node2.setAuditScore(scoreCard.getScore());
-        node2.setTriggeredRules(new ArrayList<>());
-        nodeResult.add(node2);
-
-        NodeResultVO node3 = new NodeResultVO();
-        node3.setIndex(3);
-        node3.setRulePackageCode("LOC01");
-        node3.setAuditScore(Integer.valueOf(scoreCard.getQuota()));
-        node3.setTriggeredRules(new ArrayList<>());
-        nodeResult.add(node3);
 
         auditTask.setAuditCode(node1.getAuditCode());
         auditTask.setAuditScore(scoreCard.getScore());

@@ -2,6 +2,8 @@ package com.ps.judge.api.entity;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * 风控结果查询
  *
@@ -10,6 +12,8 @@ import lombok.Data;
  */
 @Data
 public class AuditResultQuery {
+    @NotBlank(message = "applyId 不能为空")
     private String applyId;
+    @NotBlank(message = "tenantCode 不能为空")
     private String tenantCode;
 }

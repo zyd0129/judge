@@ -21,7 +21,7 @@ rule "BZ0003"
 		triggeredRule.setRulePackageCode("ZRX02");
 		triggeredRule.setRulePackageName("");
 		triggeredRule.setRulePackageVersion("1.0.0");
-		triggeredRule.setExpression(">add<=|==");
+		triggeredRule.setExpression(">and<=|==");
 		triggeredRule.setCondition("(3,7]|13");
 		triggeredRule.setParam(String.valueOf($param1) + "|" + $param2);
 		triggeredRule.setResult("2");

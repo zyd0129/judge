@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
@@ -30,49 +31,7 @@ public class ProcessController implements JudgeApi {
     ConfigFlowService configFlowService;
 
     @Override
-    public ApiResponse<ApplyResultVO> applyAudit(ApplyRequest applyRequest) {
-        if (StringUtils.isEmpty(applyRequest.getApplyId())) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "ApplyId 不能为空");
-        }
-        if (StringUtils.isEmpty(applyRequest.getFlowCode())) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "FlowCode 不能为空");
-        }
-        if (StringUtils.isEmpty(applyRequest.getTenantCode())) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "TenantCode 不能为空");
-        }
-        if (StringUtils.isEmpty(applyRequest.getProductCode())) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "ProductCode 不能为空");
-        }
-        if (StringUtils.isEmpty(applyRequest.getCallbackUrl())) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "CallbackUrl 不能为空");
-        }
-        if (StringUtils.isEmpty(applyRequest.getUserId())) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "UserId 不能为空");
-        }
-        if (StringUtils.isEmpty(applyRequest.getUserName())) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "UserName 不能为空");
-        }
-        if (StringUtils.isEmpty(applyRequest.getMobile())) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "Mobile 不能为空");
-        }
-        if (StringUtils.isEmpty(applyRequest.getUserName())) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "UserName 不能为空");
-        }
-        if (StringUtils.isEmpty(applyRequest.getIdCard())) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "IdCard 不能为空");
-        }
-        if (StringUtils.isEmpty(applyRequest.getOrderId())) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "OrderId 不能为空");
-        }
-        if (StringUtils.isEmpty(applyRequest.getIp())) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "Ip 不能为空");
-        }
-        if (StringUtils.isEmpty(applyRequest.getDeviceFingerPrint())) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "DeviceFingerPrint 不能为空");
-        }
-        if (Objects.isNull(applyRequest.getTransactionTime())) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "TransactionTime 不能为空");
-        }
+    public ApiResponse<ApplyResultVO> applyAudit(@Validated ApplyRequest applyRequest) {
         AuditTaskDO audit = this.processService.getAuditTask(applyRequest.getTenantCode(), applyRequest.getApplyId());
         if (Objects.nonNull(audit)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "申请订单已存在");
@@ -90,10 +49,10 @@ public class ProcessController implements JudgeApi {
     @Override
     public ApiResponse<ApplyResultVO> retryAudit(Integer taskId) {
         if (Objects.isNull(taskId)) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
+            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "taskId 不能为空");
         }
         if (taskId <= 0) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "");
+            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "taskId 不能小于等于0");
         }
         AuditTaskDO auditTask = this.processService.getAuditTask(taskId);
         if (Objects.isNull(auditTask)) {
@@ -107,10 +66,7 @@ public class ProcessController implements JudgeApi {
     }
 
     @Override
-    public ApiResponse<String> loadFlow(LoadFlowVO loadFlowVO) {
-        if (StringUtils.isEmpty(loadFlowVO.getFlowCode())) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "flowCode不能为空");
-        }
+    public ApiResponse<String> loadFlow(@Validated LoadFlowVO loadFlowVO) {
         ConfigFlowDO configFlow = this.configFlowService.getByFlowCode(loadFlowVO.getFlowCode());
         if (Objects.isNull(configFlow)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不存在");
@@ -150,15 +106,9 @@ public class ProcessController implements JudgeApi {
     }
 
     @Override
-    public ApiResponse<AuditResultVO> getAuditResult(AuditResultQuery auditResultQuery) {
+    public ApiResponse<AuditResultVO> getAuditResult(@Validated AuditResultQuery auditResultQuery) {
         String tenantCode = auditResultQuery.getTenantCode();
         String applyId = auditResultQuery.getApplyId();
-        if (StringUtils.isEmpty(tenantCode)) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "TenantCode 不能为空");
-        }
-        if (StringUtils.isEmpty(applyId)) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "ApplyId 不能为空");
-        }
         AuditTaskDO auditTask = this.processService.getAuditTask(tenantCode, applyId);
         if (Objects.isNull(auditTask)) {
             return ApiResponse.error(HttpStatus.NOT_FOUND.value(), "订单不存在");

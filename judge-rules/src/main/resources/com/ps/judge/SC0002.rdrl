@@ -12,7 +12,7 @@ rule "SC0002"
 	ruleflow-group "ZRX01"
 	when
 		$arrayList : ArrayList( )
-		MerchantLevel( socialInfo != null , $param : Integer.parseInt(socialInfo.loanAppCount) >= 15 )
+		MerchantLevel( socialInfo != null, $param : Integer.parseInt(socialInfo.loanAppCount) >= 15 )
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("SC0002");
