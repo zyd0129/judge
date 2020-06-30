@@ -122,10 +122,10 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         NodeResultVO node1 = new NodeResultVO();
         if (auditTaskTriggeredRuleDOList.isEmpty()) {
             node1.setIndex(1);
-            if (StringUtils.equals(auditTask.getFlowCode(), "judge_new")) {
-                node1.setRulePackageCode("ZRX01");
-            } else {
+            if (StringUtils.equals(auditTask.getFlowCode(), "judge_old")) {
                 node1.setRulePackageCode("ZRX02");
+            } else {
+                node1.setRulePackageCode("ZRX01");
             }
             node1.setAuditScore(0);
             node1.setAuditCode(AuditCodeEnum.PASS.toString());
@@ -145,6 +145,8 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             node3.setAuditScore(Integer.valueOf(scoreCard.getQuota()));
             node3.setTriggeredRules(new ArrayList<>());
             nodeResult.add(node3);
+
+            auditTask.setAuditScore(scoreCard.getScore());
         } else {
             int resultCode = 1;
             List<TriggeredRuleVO> triggeredRuleVOList = new ArrayList<>();
@@ -177,8 +179,6 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         }
 
         auditTask.setAuditCode(node1.getAuditCode());
-        auditTask.setAuditScore(scoreCard.getScore());
-
         ApiResponse<AuditResultVO> apiResponse = this.saveOutputRawParam(auditTask, nodeResult);
         auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK.getCode());
         this.auditTaskMapper.update(auditTask);
