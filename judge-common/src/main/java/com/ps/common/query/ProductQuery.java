@@ -1,5 +1,6 @@
 package com.ps.common.query;
 
+import com.ps.common.enums.Status;
 import lombok.Data;
 import org.springframework.util.StringUtils;
 
@@ -15,6 +16,7 @@ public class ProductQuery implements QueryConver {
     private LocalDateTime gmtModifiedFrom;
     private LocalDateTime gmtModifiedTo;
     private String status;
+    private int statusCode;
     private Boolean fuzzy = false;
 
     @Override
@@ -31,6 +33,9 @@ public class ProductQuery implements QueryConver {
         if (!StringUtils.isEmpty(productName)) {
             setProductName("%" + productName + "%");
             fuzzy = true;
+        }
+        if (!StringUtils.isEmpty(status)) {
+            setStatusCode(Status.valueOf(this.status).getValue());
         }
     }
 }
