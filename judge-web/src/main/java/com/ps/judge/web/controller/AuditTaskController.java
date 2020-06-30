@@ -7,8 +7,10 @@ import com.ps.common.query.QueryVo;
 import com.ps.common.query.TaskQuery;
 import com.ps.judge.web.models.AuditTaskBO;
 import com.ps.judge.web.models.AuditTaskParamBO;
+import com.ps.judge.web.models.AuditTaskTriggeredRuleBO;
 import com.ps.judge.web.service.AuditTaskParamService;
 import com.ps.judge.web.service.AuditTaskService;
+import com.ps.judge.web.service.AuditTaskTriggeredRuleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,9 @@ public class AuditTaskController {
     AuditTaskService taskService;
     @Autowired
     AuditTaskParamService paramService;
+
+    @Autowired
+    AuditTaskTriggeredRuleService triggeredRuleService;
 
     @PostMapping(value = "query", params = "query=true")
     public ApiResponse<PageResult<AuditTaskBO>> queryTask(@RequestBody QueryVo<TaskQuery> taskQuery) {
@@ -52,5 +57,11 @@ public class AuditTaskController {
     public ApiResponse<AuditTaskParamBO> taskParams(@RequestParam int taskId) {
 
         return ApiResponse.success(paramService.getById(taskId));
+    }
+
+    @GetMapping(value = "/triggleRules")
+    public ApiResponse<List<AuditTaskTriggeredRuleBO>> triggleRules(@RequestParam int taskId) {
+
+        return ApiResponse.success(triggeredRuleService.queryByTaskId(taskId));
     }
 }

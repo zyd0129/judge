@@ -7,7 +7,7 @@ import org.apache.ibatis.type.JdbcType;
 import java.util.List;
 
 public interface AuditTaskTriggeredRuleMapper {
-    @Results(id="auditTaskTriggeredRule", value = {
+    @Results(id="auditTaskTriggeredRuleMap", value = {
         @Result(property = "id", column = "id", jdbcType = JdbcType.INTEGER, id = true),
         @Result(property = "tenantCode", column = "tenant_code", jdbcType = JdbcType.VARCHAR),
         @Result(property = "taskId", column = "task_id", jdbcType = JdbcType.INTEGER),
@@ -29,6 +29,10 @@ public interface AuditTaskTriggeredRuleMapper {
 
     @Select("select * from audit_task_triggered_rule where tenant_code = #{tenantCode,jdbcType=VARCHAR} and apply_id = #{applyId,jdbcType=VARCHAR}")
     List<AuditTaskTriggeredRuleDO> listTriggeredRuleLog(@Param("tenantCode") String tenantCode, @Param("applyId") String applyId);
+
+    @Select("select * from audit_task_triggered_rule where task_id = #{taskId}")
+    @ResultMap(value = "auditTaskTriggeredRuleMap")
+    List<AuditTaskTriggeredRuleDO> queryByTaskId(@Param("taskId") int taskId);
 
     @Insert("INSERT INTO audit_task_triggered_rule (tenant_code, task_id, apply_id, flow_code, `index`, rule_package_code, rule_package_name,"
             + "rule_package_version, rule_code, rule_name, rule_version, expression, `condition`, param, result, gmt_create)"
