@@ -15,8 +15,8 @@ public class QueryVo<T> {
         }
         queryParams.setQuery(query);
         queryParams.setPageSize(pageSize);
-        curPage = Math.max(curPage, 1);
-        pageSize = Math.min(pageSize, 10);
+//        curPage = Math.max(curPage, 1);
+//        pageSize = Math.min(pageSize, 10);
         queryParams.setStartNo((curPage - 1) * pageSize);
         return queryParams;
     }

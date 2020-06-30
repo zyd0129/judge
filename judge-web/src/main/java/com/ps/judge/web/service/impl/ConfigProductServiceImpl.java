@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ConfigProductServiceImpl implements ConfigProductService {
@@ -53,6 +54,7 @@ public class ConfigProductServiceImpl implements ConfigProductService {
         ConfigProductDO configProductDO = convertToDO(configProductBO);
         configProductDO.setGmtCreated(LocalDateTime.now());
         configProductDO.setGmtModified(LocalDateTime.now());
+        configProductBO.setProductCode(UUID.randomUUID().toString().replace("-", ""));
         AuthUserBO authUserBO = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         configProductDO.setOperator(authUserBO.getUsername());
         productMapper.insert(configProductDO);

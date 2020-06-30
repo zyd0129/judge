@@ -15,10 +15,11 @@ public class ProductQuery implements QueryConver {
     private LocalDateTime gmtModifiedFrom;
     private LocalDateTime gmtModifiedTo;
     private String status;
-    private Boolean fuzzy;
+    private Boolean fuzzy = false;
 
     @Override
     public void convert() {
+        fuzzy = false;
         if (!StringUtils.isEmpty(productCode)) {
             setProductCode("%" + productCode + "%");
             fuzzy = true;
