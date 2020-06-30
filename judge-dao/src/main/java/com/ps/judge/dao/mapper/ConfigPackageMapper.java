@@ -60,7 +60,6 @@ public interface ConfigPackageMapper {
             "<if test='query.productCode!=null'>",
             "and product_code=#{query.productCode}",
             "</if>",
-            ")",
 
             "</if>",
             "</script>"
@@ -108,7 +107,6 @@ public interface ConfigPackageMapper {
             "<if test='query.productCode!=null'>",
             "and product_code=#{query.productCode}",
             "</if>",
-            ")",
 
             "</if>",
             "limit #{startNo},#{pageSize}",
