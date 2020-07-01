@@ -100,7 +100,7 @@ public interface AuditTaskMapper {
             "or tenant_code like #{query.tenantCode}",
             "</if>",
 
-            "<if test='query.userName!=null'>",
+            "<if test='query.applyId!=null'>",
             "or apply_id like #{query.applyId}",
             "</if>",
 
@@ -161,7 +161,7 @@ public interface AuditTaskMapper {
             "or tenant_code like #{query.tenantCode}",
             "</if>",
 
-            "<if test='query.userName!=null'>",
+            "<if test='query.applyId!=null'>",
             "or apply_id like #{query.applyId}",
             "</if>",
 
