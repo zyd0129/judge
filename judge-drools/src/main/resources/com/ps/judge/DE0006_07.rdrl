@@ -1,0 +1,15 @@
+package com.ps.jury.api.objects.judge;
+
+import com.ps.judge.provider.entity.ScoreCardVO;
+import com.ps.jury.api.response.level.MerchantLevel;
+import com.ps.jury.api.response.group.DeviceInfo;
+
+rule "DE0006_07"
+	dialect "mvel"
+	ruleflow-group "CS01"
+	when
+		$scoreCard : ScoreCardVO( $score : score)
+		MerchantLevel( deviceInfo.mobileBrand in ( "comio", "mobiistar", "yu" ) )
+	then
+		$scoreCard.setScore( $score - 15 );
+end

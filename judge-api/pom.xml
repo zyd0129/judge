@@ -9,7 +9,7 @@
         <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
     <artifactId>judge-api</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>judge-api</name>
     <packaging>jar</packaging>
     <description>Demo project for Spring Boot</description>

@@ -1,0 +1,30 @@
+package com.ps.jury.api.objects.judge;
+
+import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;
+import com.ps.jury.api.response.level.MerchantLevel;
+import java.util.ArrayList;
+import java.lang.Integer;
+import com.ps.jury.api.response.group.DeviceInfo;
+import java.lang.String;
+
+rule "DE0003"
+	@freeze_conditions(true)
+	dialect "mvel"
+	ruleflow-group "ZRX01"
+	when
+		$arrayList : ArrayList( )
+		MerchantLevel( deviceInfo != null , $param : Integer.parseInt(deviceInfo.deviceUsedTime) <= "3" , Integer.parseInt(deviceInfo.deviceUsedTime) >= "0" )
+	then
+		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
+		triggeredRule.setRuleCode("DE0003");
+		triggeredRule.setRuleName("");
+		triggeredRule.setRuleVersion("1.0.0");
+		triggeredRule.setRulePackageCode("ZRX01");
+		triggeredRule.setRulePackageName("");
+		triggeredRule.setRulePackageVersion("1.0.0");
+		triggeredRule.setExpression("＞＝and＜=");
+		triggeredRule.setCondition("[0,3]");
+		triggeredRule.setParam(String.valueOf($param));
+		triggeredRule.setResult("1");
+		$arrayList.add( triggeredRule );
+end

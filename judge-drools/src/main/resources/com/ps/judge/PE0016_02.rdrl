@@ -1,0 +1,15 @@
+package com.ps.jury.api.objects.judge;
+
+import com.ps.judge.provider.entity.ScoreCardVO;
+import com.ps.jury.api.response.level.MerchantLevel;
+import com.ps.jury.api.response.group.PersonalInfo;
+
+rule "PE0016_02"
+	dialect "mvel"
+	ruleflow-group "CS01"
+	when
+		$scoreCard : ScoreCardVO( $score : score)
+		MerchantLevel( personalInfo != null , personalInfo.borrowerEducation in ( "doctor", "bachelor" ) )
+	then
+		$scoreCard.setScore( $score );
+end

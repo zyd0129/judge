@@ -1,6 +1,5 @@
 package com.ps.judge.dao.mapper;
 
-import com.ps.common.ApiResponse;
 import com.ps.common.query.FlowQuery;
 import com.ps.common.query.QueryParams;
 import com.ps.judge.dao.entity.ConfigFlowDO;

@@ -1,0 +1,29 @@
+package com.ps.jury.api.objects.judge;
+
+import com.ps.jury.api.response.level.MerchantLevel;
+import com.ps.jury.api.response.group.MerchantBusinessInfo;
+import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;
+import java.util.ArrayList;
+import java.lang.Integer;
+
+rule "BZ0002"
+	@freeze_conditions(true)
+	dialect "mvel"
+	ruleflow-group "ZRX02"
+	when
+		$arrayList : ArrayList( )
+		MerchantLevel( merchantBusinessInfo != null , $param1 : Integer.parseInt(merchantBusinessInfo.lastOverdueDays) <= 3 , $param2 : merchantBusinessInfo.orderStatus == "13" , $param3 : Integer.parseInt(merchantBusinessInfo.lastLoanSuccessfulDays) > 30 )
+	then
+		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
+		triggeredRule.setRuleCode("BZ0002");
+		triggeredRule.setRuleName("");
+		triggeredRule.setRuleVersion("1.0.0");
+		triggeredRule.setRulePackageCode("ZRX02");
+		triggeredRule.setRulePackageName("");
+		triggeredRule.setRulePackageVersion("1.0.0");
+		triggeredRule.setExpression("<=|==|>");
+		triggeredRule.setCondition("3|13|30");
+		triggeredRule.setParam(String.valueOf($param1) + "|" + $param2 + "|" + String.valueOf($param3));
+		triggeredRule.setResult("1");
+		$arrayList.add( triggeredRule );
+end

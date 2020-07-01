@@ -1,0 +1,28 @@
+package com.ps.jury.api.objects.judge;
+
+import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;
+import com.ps.jury.api.response.group.BlackListInfo;
+import com.ps.jury.api.response.group.GreyListInfo;
+import com.ps.jury.api.response.level.ProductLevel;
+import java.util.ArrayList;
+
+rule "GR0002"
+	dialect "mvel"
+	ruleflow-group "ZRX01"
+	when
+		ProductLevel( greyListInfo != null , $param : greyListInfo.mobileHitsGrayListForLinkedBlacklist == "1" )
+		$arrayList : ArrayList( )
+	then
+		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
+		triggeredRule.setRuleCode("GR0002");
+		triggeredRule.setRuleName("");
+		triggeredRule.setRuleVersion("1.0.0");
+		triggeredRule.setRulePackageCode("ZRX01");
+		triggeredRule.setRulePackageName("");
+		triggeredRule.setRulePackageVersion("1.0.0");
+		triggeredRule.setExpression("=");
+		triggeredRule.setCondition("1");
+		triggeredRule.setParam($param);
+		triggeredRule.setResult("1");
+		$arrayList.add( triggeredRule );
+end

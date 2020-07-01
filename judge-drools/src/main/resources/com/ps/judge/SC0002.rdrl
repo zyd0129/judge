@@ -1,0 +1,29 @@
+package com.ps.jury.api.objects.judge;
+
+import com.ps.jury.api.response.level.MerchantLevel;
+import com.ps.jury.api.response.group.SocialInfo;
+import java.util.ArrayList;
+import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;
+import java.lang.Integer;
+
+rule "SC0002"
+	@freeze_conditions(true)
+	dialect "mvel"
+	ruleflow-group "ZRX01"
+	when
+		$arrayList : ArrayList( )
+		MerchantLevel( socialInfo != null , $param : Integer.parseInt(socialInfo.loanAppCount) >= 15 )
+	then
+		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
+		triggeredRule.setRuleCode("SC0002");
+		triggeredRule.setRuleName("");
+		triggeredRule.setRuleVersion("1.0.0");
+		triggeredRule.setRulePackageCode("ZRX01");
+		triggeredRule.setRulePackageName("");
+		triggeredRule.setRulePackageVersion("1.0.0");
+		triggeredRule.setExpression("＞=");
+		triggeredRule.setCondition("15");
+		triggeredRule.setParam(String.valueOf($param));
+		triggeredRule.setResult("0");
+		$arrayList.add( triggeredRule );
+end

@@ -4,6 +4,8 @@ import com.ps.judge.dao.entity.AuditTaskParamDO;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 
+import java.time.LocalDateTime;
+
 public interface AuditTaskParamMapper {
     @Results(id = "auditTaskParam", value = {
         @Result(property = "id", column = "id", jdbcType = JdbcType.INTEGER, id = true),
@@ -27,9 +29,9 @@ public interface AuditTaskParamMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(AuditTaskParamDO auditTaskParam);
 
-    @Update("update audit_task_param set output_raw_param = #{outputRawParam,jdbcType=VARCHAR}, gmt_modified = now() where task_id = #{taskId,jdbcType=INTEGER}")
-    int updateOutputRawParam(@Param("outputRawParam") String outputRawParam, @Param("taskId") int taskId);
+    @Update("update audit_task_param set output_raw_param = #{outputRawParam,jdbcType=VARCHAR}, gmt_modified = #{gmtModified, jdbcType=TIMESTAMP} where task_id = #{taskId,jdbcType=INTEGER}")
+    int updateOutputRawParam(@Param("outputRawParam") String outputRawParam, @Param("taskId") int taskId, @Param("gmtModified") LocalDateTime gmtModified);
 
-    @Update("update audit_task_param set var_result = #{varResult,jdbcType=VARCHAR}, gmt_modified = now() where task_id = #{taskId,jdbcType=INTEGER}")
-    int updateVarResult(@Param("varResult") String varResult, @Param("taskId") int taskId);
+    @Update("update audit_task_param set var_result = #{varResult,jdbcType=VARCHAR}, gmt_modified = #{gmtModified, jdbcType=TIMESTAMP} where task_id = #{taskId,jdbcType=INTEGER}")
+    int updateVarResult(@Param("varResult") String varResult, @Param("taskId") int taskId, @Param("gmtModified") LocalDateTime gmtModified);
 }

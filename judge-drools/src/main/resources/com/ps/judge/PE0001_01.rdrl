@@ -1,0 +1,30 @@
+package com.ps.jury.api.objects.judge;
+
+import com.ps.jury.api.response.level.MerchantLevel;
+import com.ps.jury.api.response.group.PersonalInfo;
+import java.util.ArrayList;
+import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;
+import java.lang.String;
+import java.lang.Double;
+
+rule "PE0001_01"
+	@freeze_conditions(true)
+	dialect "mvel"
+	ruleflow-group "ZRX01"
+	when
+		$arrayList : ArrayList( )
+		MerchantLevel( personalInfo != null , $param : Double.valueOf(personalInfo.borrowerLiveSimilarity) < 60 )
+	then
+		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
+		triggeredRule.setRuleCode("PE0001");
+		triggeredRule.setRuleName("");
+		triggeredRule.setRuleVersion("1.0.0");
+		triggeredRule.setRulePackageCode("ZRX01");
+		triggeredRule.setRulePackageName("");
+		triggeredRule.setRulePackageVersion("1.0.0");
+		triggeredRule.setExpression("＜");
+		triggeredRule.setCondition("60%");
+		triggeredRule.setParam(String.valueOf($param));
+		triggeredRule.setResult("0");
+		$arrayList.add( triggeredRule );
+end

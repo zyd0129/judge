@@ -1,0 +1,15 @@
+package com.ps.jury.api.objects.judge;
+
+import com.ps.judge.provider.entity.ScoreCardVO;
+import com.ps.jury.api.response.level.MerchantLevel;
+import com.ps.jury.api.response.group.MerchantBusinessInfo;
+
+rule "BZ0005_01"
+	dialect "mvel"
+	ruleflow-group "CS01"
+	when
+		MerchantLevel( merchantBusinessInfo.registrationPeriod in ( "0", "1", "2", "3", "4" ) )
+		$scoreCard : ScoreCardVO( $score : score)
+	then
+		$scoreCard.setScore( $score - 25 );
+end

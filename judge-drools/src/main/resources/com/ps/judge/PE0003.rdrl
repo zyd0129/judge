@@ -1,0 +1,26 @@
+package com.ps.jury.api.objects.judge;
+
+import com.ps.jury.api.response.level.MerchantLevel;
+import com.ps.jury.api.response.group.PersonalInfo;
+import java.util.ArrayList;
+
+rule "PE0003"
+	dialect "mvel"
+	ruleflow-group "ZRX01"
+	when
+		MerchantLevel( personalInfo != null , $param : personalInfo.borrowerAge == "999999" )
+		$arrayList : ArrayList( )
+	then
+		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
+		triggeredRule.setRuleCode("PE0003");
+		triggeredRule.setRuleName("");
+		triggeredRule.setRuleVersion("1.0.0");
+		triggeredRule.setRulePackageCode("ZRX01");
+		triggeredRule.setRulePackageName("");
+		triggeredRule.setRulePackageVersion("1.0.0");
+		triggeredRule.setExpression("=");
+		triggeredRule.setCondition("1");
+		triggeredRule.setParam($param);
+		triggeredRule.setResult("0");
+		$arrayList.add( triggeredRule );
+end
