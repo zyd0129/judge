@@ -30,7 +30,7 @@ public interface ConfigPackageMapper {
             "</if>",
             "<if test='query.status!=null'>",
             "and",
-            "status=#{query.status}",
+            "status=#{query.statusCode}",
             "</if>",
 
             "<if test='query.gmtCreatedFrom!=null'>",
@@ -60,7 +60,6 @@ public interface ConfigPackageMapper {
             "<if test='query.productCode!=null'>",
             "and product_code=#{query.productCode}",
             "</if>",
-            ")",
 
             "</if>",
             "</script>"
@@ -78,7 +77,7 @@ public interface ConfigPackageMapper {
             "</if>",
             "<if test='query.status!=null'>",
             "and",
-            "status=#{query.status}",
+            "status=#{query.statusCode}",
             "</if>",
 
             "<if test='query.gmtCreatedFrom!=null'>",
@@ -108,7 +107,6 @@ public interface ConfigPackageMapper {
             "<if test='query.productCode!=null'>",
             "and product_code=#{query.productCode}",
             "</if>",
-            ")",
 
             "</if>",
             "limit #{startNo},#{pageSize}",

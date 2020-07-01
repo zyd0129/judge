@@ -53,7 +53,7 @@ public class AuditTaskServiceImpl implements AuditTaskService {
     public void revoke(int taskId) {
         ApiResponse<ApplyResultVO> response = judgeApi.retryAudit(taskId);
         if (!response.isSuccess()) {
-            throw new BizException(60001, "重掉失败");
+            throw new BizException(60001, response.getMessage());
         }
     }
 

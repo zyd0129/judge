@@ -29,7 +29,7 @@ public class FlowQuery implements QueryConver {
             setPackageName("%" + packageName + "%");
             fuzzy = true;
         }
-        if(!StringUtils.isEmpty(status)){
+        if (!StringUtils.isEmpty(status)) {
             setStatusCode(Status.valueOf(this.status).getValue());
         }
     }

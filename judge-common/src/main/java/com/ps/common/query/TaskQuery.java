@@ -17,7 +17,7 @@ public class TaskQuery implements QueryConver {
 
     private Integer id;
     private String tenantCode;
-    private String userName;
+    private String applyId;
     private String mobile;
     private String idCard;
     private LocalDateTime completeTimeFrom;
@@ -35,8 +35,8 @@ public class TaskQuery implements QueryConver {
             setTenantCode("%" + tenantCode + "%");
             fuzzy = true;
         }
-        if (!StringUtils.isEmpty(userName)) {
-            setUserName("%" + userName + "%");
+        if (!StringUtils.isEmpty(applyId)) {
+            setApplyId("%" + applyId + "%");
             fuzzy = true;
         }
         if (!StringUtils.isEmpty(mobile)) {

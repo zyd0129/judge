@@ -101,7 +101,7 @@ public interface AuditTaskMapper {
             "</if>",
 
             "<if test='query.userName!=null'>",
-            "or user_name like #{query.userName}",
+            "or apply_id like #{query.applyId}",
             "</if>",
 
             "<if test='query.idCard!=null'>",
@@ -162,7 +162,7 @@ public interface AuditTaskMapper {
             "</if>",
 
             "<if test='query.userName!=null'>",
-            "or user_name like #{query.userName}",
+            "or apply_id like #{query.applyId}",
             "</if>",
 
             "<if test='query.idCard!=null'>",

@@ -30,7 +30,7 @@ public interface ConfigProductMapper {
             "<if test='query!=null'>",
             "<if test='query.status!=null'>",
             "and",
-            "status=#{query.status}",
+            "status=#{query.statusCode}",
             "</if>",
 
             "<if test='query.gmtCreatedFrom!=null'>",
@@ -80,7 +80,7 @@ public interface ConfigProductMapper {
             "<if test='query!=null'>",
             "<if test='query.status!=null'>",
             "and",
-            "status=#{query.status}",
+            "status=#{query.statusCode}",
             "</if>",
 
             "<if test='query.gmtCreatedFrom!=null'>",
