@@ -219,13 +219,14 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             this.updateAuditStatus(AuditTaskStatusEnum.CALLBACK_FAIL.getCode(), auditId);
             return;
         }
-        if (this.sendPost(auditTask.getCallbackUrl(), apiResponse)) {
-            auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK_SUCCESS.getCode());
-        }
-
         auditTask.setCallbackCount(++callbackCount);
         auditTask.setGmtModified(LocalDateTime.now());
         this.auditTaskMapper.update(auditTask);
+        if (this.sendPost(auditTask.getCallbackUrl(), apiResponse)) {
+            auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK_SUCCESS.getCode());
+            auditTask.setGmtModified(LocalDateTime.now());
+            this.auditTaskMapper.update(auditTask);
+        }
     }
 
     private boolean sendPost(String url, ApiResponse<AuditResultVO> apiResponse) {

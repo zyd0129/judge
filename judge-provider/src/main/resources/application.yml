@@ -1,11 +1,7 @@
 
-logging:
-  level:
-    root:
-      info
-  file: /data/judge/log/provider.log
-
 spring:
+  profiles:
+    active: @profileActive@
   application:
     name: judge-provider
   redis:
@@ -16,6 +12,12 @@ mybatis:
   type-aliases-package: com.ps.judge.dao.entity
   configuration:
     map-underscore-to-camel-case: true
+
+logging:
+  level:
+    root:
+      info
+  file: /data/judge/log/provider.log
 
 hystrix:
   command:
