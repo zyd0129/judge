@@ -248,7 +248,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         return false;
     }
 
-    private boolean updateAuditStatus(int taskId, int status) {
+    private boolean updateAuditStatus(int status, int taskId) {
         return this.auditTaskMapper.updateTaskStatus(status, taskId, LocalDateTime.now()) > 0;
     }
 

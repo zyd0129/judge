@@ -99,7 +99,7 @@ public class ProcessController implements JudgeApi {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不一致");
         }
         if (!apiResponse.isSuccess()) {
-            this.processService.updateAuditStatus(auditTask.getId(), AuditTaskStatusEnum.VAR_COMPUTE_FAIL.getCode());
+            this.processService.updateAuditStatus(AuditTaskStatusEnum.VAR_COMPUTE_FAIL.getCode(), auditTask.getId());
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "变量计算失败");
         }
         return this.processService.saveVarResult(auditTask, varResult);

@@ -20,7 +20,7 @@ public interface ProcessService {
 
     ApiResponse<AuditResultVO> getAuditResult(AuditTaskDO audit);
 
-    boolean updateAuditStatus(int taskId, int status);
+    boolean updateAuditStatus(int status, int taskId);
 
     void reapplyJury();
 

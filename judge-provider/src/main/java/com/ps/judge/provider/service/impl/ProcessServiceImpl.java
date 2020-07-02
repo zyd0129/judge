@@ -141,7 +141,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public boolean updateAuditStatus(int taskId, int status) {
+    public boolean updateAuditStatus(int status, int taskId) {
         return this.auditTaskMapper.updateTaskStatus(status, taskId, LocalDateTime.now()) > 0;
     }
 
