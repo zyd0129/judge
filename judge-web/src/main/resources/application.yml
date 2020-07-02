@@ -1,34 +1,23 @@
 
+spring:
+  profiles:
+    active: @profileActive@
+  application:
+    name: judge-web
+  redis:
+    host: 192.168.40.151
+    port: 6379
+
 logging:
   level:
     root:
       info
-spring:
-  application:
-    name: judge-provider
-  redis:
-    host: 192.168.40.151
-    port: 6379
-  cloud:
-    nacos:
-      discovery:
-        server-addr: ${CONFIG_SERVER}
-    alicloud:
-      access-key: LTAI4Ftbiuu38HBpvMeikex1
-      secret-key: CjNZQLbZuoKdsTkfg4sS0RefKOXm3V
-      oss:
-        endpoint: oss-cn-hangzhou.aliyuncs.com
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    password: Dev@123456
-    username: dev
-    url: jdbc:mysql://192.168.40.147:3306/judge?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+  file: /data/judge/log/judge_web.log
 
 mybatis:
   type-aliases-package: com.ps.judge.dao.entity
   configuration:
     map-underscore-to-camel-case: true
-
 
 hystrix:
   command:

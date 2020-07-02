@@ -1,17 +1,7 @@
 
-logging:
-  level:
-    root: info
-    com.ps.judge.dao.mapper: debug
-
-  file: /home/judgelog/judge_web.log
 spring:
   application:
     name: judge-web
-  rabbitmq:
-    host: localhost
-  #    username: admin
-  #    password: admin
   redis:
     host: 192.168.40.151
     port: 6379
@@ -19,27 +9,29 @@ spring:
     nacos:
       discovery:
         server-addr: ${CONFIG_SERVER:192.168.40.152:8848}
+    alicloud:
+      access-key: LTAI4Ftbiuu38HBpvMeikex1
+      secret-key: CjNZQLbZuoKdsTkfg4sS0RefKOXm3V
+      oss:
+        endpoint: oss-cn-hangzhou.aliyuncs.com
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    password: Fas@123456
-    username: fas
     url: jdbc:mysql://192.168.40.152:3306/judge?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    username: fas
+    password: Fas@123456
   jackson:
     default-property-inclusion: non_null
 
-mybatis:
-  type-aliases-package: com.ps.judge.dao.entity
 server:
   port: 8082
-
 
 com:
   ps:
     judge:
       web:
-        bucket-name: factoryfilestore
-        base-url: http://${com.ps.judge.web.bucket-name}.oss-cn-hangzhou.aliyuncs.com/
-        expiration: 31104000000  #60*60*24*30*12*1000
+          bucket-name: factoryfilestore
+          base-url: http://${com.ps.judge.web.bucket-name}.oss-cn-hangzhou.aliyuncs.com/
+          expiration: 31104000000  #60*60*24*30*12*1000
 encrypt:
   key-store:
     location: xc.keystore

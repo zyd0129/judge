@@ -29,7 +29,7 @@ spring:
 mybatis:
   type-aliases-package: com.ps.judge.dao.entity
 server:
-  port: 8081
+  port: 8080
 
 com:
   ps:
