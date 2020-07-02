@@ -1,4 +1,44 @@
 logging:
   level:
-    root:
-      info
+    root: info
+  file: /data/judge/log/judge_web.log
+spring:
+  application:
+    name: judge-web
+  rabbitmq:
+    host: localhost
+  #    username: admin
+  #    password: admin
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${CONFIG_SERVER:192.168.2.143:8848}
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://rm-a2d2p89h8614dumf5.mysql.ap-south-1.rds.aliyuncs.com:3306/judge?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    username: public_user
+    password: qYmKQ$Z!8TZQTe6c
+  jackson:
+    default-property-inclusion: non_null
+
+mybatis:
+  type-aliases-package: com.ps.judge.dao.entity
+server:
+  port: 8082
+
+
+com:
+  ps:
+    judge:
+      web:
+        bucket-name: audit-judge
+        base-url: http://${com.ps.judge.web.bucket-name}.oss-ap-south-1.aliyuncs.com/
+        expiration: 31104000000  #60*60*24*30*12*1000
+encrypt:
+  key-store:
+    location: xc.keystore
+    alias: ps
+    password: admin123
+    secret: admin123
+    type: jks
+  key: 12345
