@@ -1,0 +1,81 @@
+Index: judge-provider/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- judge-provider/pom.xml	(revision ecfcca34a55cb3fbbfa8468c1c25734e7ada56c2)
++++ judge-provider/pom.xml	(date 1593669886084)
+@@ -162,24 +162,15 @@
+         </profile>
+         <profile>
+             <!-- 生产环境 -->
+-            <id>pro</id>
++            <id>prod</id>
+             <properties>
+-                <profileActive>pro</profileActive>
++                <profileActive>prod</profileActive>
+             </properties>
+         </profile>
+     </profiles>
+ 
+     <build>
+         <finalName>${project.artifactId}-${profileActive}-${project.version}</finalName>
+-        <resources>
+-            <resource>
+-                <directory>src/main/resources</directory>
+-                <includes>
+-                    <include>application.properties</include>
+-                </includes>
+-                <filtering>true</filtering>
+-            </resource>
+-        </resources>
+         <plugins>
+             <plugin>
+                 <groupId>org.springframework.boot</groupId>
+Index: judge-web/pom.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- judge-web/pom.xml	(revision ecfcca34a55cb3fbbfa8468c1c25734e7ada56c2)
++++ judge-web/pom.xml	(date 1593669915428)
+@@ -126,24 +126,15 @@
+         </profile>
+         <profile>
+             <!-- 生产环境 -->
+-            <id>pro</id>
++            <id>prod</id>
+             <properties>
+-                <profileActive>pro</profileActive>
++                <profileActive>prod</profileActive>
+             </properties>
+         </profile>
+     </profiles>
+ 
+     <build>
+         <finalName>${project.artifactId}-${profileActive}-${project.version}</finalName>
+-        <resources>
+-            <resource>
+-                <directory>src/main/resources</directory>
+-                <includes>
+-                    <include>application.properties</include>
+-                </includes>
+-                <filtering>true</filtering>
+-            </resource>
+-        </resources>
+         <plugins>
+             <plugin>
+                 <groupId>org.springframework.boot</groupId>
+Index: judge-provider/src/main/resources/bootstrap.properties
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>GBK
+===================================================================
+--- judge-provider/src/main/resources/bootstrap.properties	(date 1593669950695)
++++ judge-provider/src/main/resources/bootstrap.properties	(date 1593669950695)
+@@ -0,0 +1,4 @@
++spring.application.name=judge-provider
++spring.cloud.nacos.config.server-addr=${CONFIG_SERVER:192.168.40.150:8848}
++spring.cloud.nacos.config.namespace=${CONFIG_SERVER_NAMESPACE:b90363b4-1d0e-4cbb-9410-a9b4e8d58e16}
++spring.profiles.active=${CONFIG_ACTIVE:test}
+\ No newline at end of file
