@@ -170,7 +170,6 @@
     </profiles>
 
     <build>
-        <finalName>${project.artifactId}-${profileActive}-${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
