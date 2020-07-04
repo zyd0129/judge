@@ -3,6 +3,7 @@ package com.ps.judge.dao.mapper;
 import com.ps.common.query.QueryParams;
 import com.ps.common.query.QueryVo;
 import com.ps.common.query.UserQuery;
+import com.ps.judge.dao.entity.AuthDepartmentDO;
 import com.ps.judge.dao.entity.AuthUserDO;
 import org.apache.ibatis.annotations.*;
 
@@ -31,6 +32,10 @@ public interface UserMapper {
     @ResultMap(value = "userResultMap")
     List<AuthUserDO> queryByDepartment(String departmentName);
 
+    @Select("select * from auth_user where department_id=#{departmentId}")
+    @ResultMap(value = "userResultMap")
+    List<AuthUserDO> queryByDepartmentId(int departmentId);
+
 
     @Insert({"<script>",
             "insert into auth_user (username,name, password,roles,",
@@ -42,7 +47,7 @@ public interface UserMapper {
             "operator,gmt_created,gmt_modified)",
             " values ",
             "(#{username},#{name}, #{password},#{roles}, ",
-            "#{mobile}, #{tenants}" ,
+            "#{mobile}, #{tenants}",
             "<if test='department!=null'>",
             ",#{department}",
             "</if>",
@@ -65,14 +70,14 @@ public interface UserMapper {
 
     @Update({
             "<script>",
-            "UPDATE auth_user SET department=#{department}",
-            "where username in",
-            "<foreach collection='usernames' item='username' open='(' separator=',' close=')'>",
-            "#{username}",
+            "UPDATE auth_user SET department=#{departmentDO.name}, department_id=#{departmentDO.id}",
+            "where id in",
+            "<foreach collection='ids' item='id' open='(' separator=',' close=')'>",
+            "#{id}",
             "</foreach>",
             "</script>"
     })
-    void batchUpdateDepartment(@Param("usernames") Set<String> usernames, @Param("department") String department);
+    void batchUpdateDepartment(@Param("ids") Set<Integer> ids, @Param("departmentDO") AuthDepartmentDO departmentDO);
 
     @Select({"<script>",
             "select * from auth_user",

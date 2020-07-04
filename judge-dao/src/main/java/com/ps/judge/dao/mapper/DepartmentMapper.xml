@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ps.judge.dao.mapper.DepartmentMapper">
+    <resultMap id="departmentResultMap" type="AuthDepartmentDO">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="managerId" column="manager_id"/>
+        <result property="operator" column="operator"/>
+        <result property="gmtCreated" column="gmt_created"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <association property="manager" javaType="AuthUserDO">
+            <result property="id" column="uid"/>
+            <result property="username" column="username"/>
+            <result property="name" column="uname"/>
+            <result property="roles" column="roles"/>
+        </association>
+        <collection property="members" column="id" ofType="AuthUserDO"
+                    select="com.ps.judge.dao.mapper.UserMapper.queryByDepartmentId"/>
+    </resultMap>
+    <select id="query" resultMap="departmentResultMap">
+        select d.*, u.id uid, u.username username, u.name uname, u.roles from auth_department d left join auth_user u on
+        d.manager_id=u.id
+        <where>
+            <if test='query!=null'>
+                <if test='query.name!=null'>
+                    name=#{query.name}
+                </if>
+            </if>
+        </where>
+        limit #{startNo},#{pageSize}
+    </select>
+
+    <select id="getById" resultMap="departmentResultMap">
+        select d.*, u.id uid, u.username username, u.name uname, u.roles
+        from auth_department d
+                 left join auth_user u on d.manager_id = u.id
+        where d.id = #{id}
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from auth_department
+        <where>
+            <if test='query!=null'>
+                <if test='query.name!=null'>
+                    name=#{query.name}
+                </if>
+            </if>
+        </where>
+    </select>
+
+    <select id="all" resultMap="departmentResultMap">
+        select name
+        from auth_department
+    </select>
+
+    <insert id="insert" parameterType="AuthDepartmentDO" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into auth_department (name, manager_id, operator, gmt_created, gmt_modified)
+        values (#{name}, #{managerId}, #{operator}, #{gmtCreated}, #{gmtModified})
+    </insert>
+
+    <delete id="delete">
+        delete from auth_department where id=#{id}
+    </delete>
+
+    <update id="update" parameterType="AuthDepartmentDO">
+        UPDATE auth_department SET name = #{name}, manager_id = #{managerId}, operator=#{operator},gmt_modified = #{gmtModified} where id=#{id}
+    </update>
+</mapper>
