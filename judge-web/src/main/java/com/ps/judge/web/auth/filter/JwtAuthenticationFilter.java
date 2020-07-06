@@ -7,6 +7,8 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -28,11 +30,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String tokenHead = "Bearer ";
     private String tokenHeader = "Authorization";
 
+    private RequestMatcher ignoreAuthenticationRequestMatcher = new AntPathRequestMatcher("/auth/login", "POST");
+
+    private boolean ignoreAuthentication(HttpServletRequest request,
+                                         HttpServletResponse response) {
+        return ignoreAuthenticationRequestMatcher.matches(request);
+    }
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader(this.tokenHeader);
-        if (authHeader != null && authHeader.startsWith(tokenHead)) {
+        if (!ignoreAuthentication(request, response) && authHeader != null && authHeader.startsWith(tokenHead)) {
             final String authToken = authHeader.substring(tokenHead.length()); // The part after "Bearer "
             if (!StringUtils.isEmpty(authToken)) {
                 try {
