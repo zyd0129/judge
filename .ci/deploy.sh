@@ -1,6 +1,6 @@
 #!/bin/env bash
 #
-# 解析.ci/config.json文件并根据.ci/deploy_jar.sh生成部署shell脚本
+# 解析.ci/config.json文件并根据.ci/deployJarTemplate.sh生成部署shell脚本
 # 廖发友
 # 20200707
 
