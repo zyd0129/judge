@@ -89,5 +89,10 @@ function check() {
 
 if [[ ${$CI_JOB_STAGE} == "build" ]];then
     build
-    exit 0
+elif [[ ${$CI_JOB_STAGE} == "build" ]];then
+	deploy
+else
+	echo "没有检索到相应的CI阶段"
+	exit 1
 fi
+
