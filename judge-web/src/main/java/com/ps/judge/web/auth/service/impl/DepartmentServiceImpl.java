@@ -1,7 +1,5 @@
 package com.ps.judge.web.auth.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.ps.common.query.DepartmentQuery;
 import com.ps.common.query.QueryParams;
 import com.ps.judge.dao.entity.AuthDepartmentDO;
@@ -10,6 +8,7 @@ import com.ps.judge.dao.mapper.UserMapper;
 import com.ps.judge.web.auth.service.DepartmentService;
 import com.ps.judge.web.auth.objects.AuthDepartmentBO;
 import com.ps.judge.web.auth.objects.AuthUserBO;
+import com.ps.judge.web.auth.utils.BOUtitls;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,17 +34,18 @@ public class DepartmentServiceImpl implements DepartmentService {
         return convertToBOs(departmentMapper.query(queryParams));
     }
 
-    private Set<String> getUsernameSet(AuthDepartmentBO departmentBO) {
-        Set<String> curUsernameSet;
+    private Set<Integer> getIdSet(AuthDepartmentBO departmentBO) {
+        Set<Integer> curIdSet;
         if (departmentBO.getMembers() != null) {
-            curUsernameSet = departmentBO.getMembers().stream().map(AuthUserBO::getUsername).distinct().collect(Collectors.toSet());
+            curIdSet = departmentBO.getMembers().stream().map(AuthUserBO::getId).distinct().collect(Collectors.toSet());
         } else {
-            curUsernameSet = new HashSet<>();
+            curIdSet = new HashSet<>();
         }
-        if (!StringUtils.isEmpty(departmentBO.getPic())) {
-            curUsernameSet.add(departmentBO.getPic());
+        AuthUserBO manager = departmentBO.getManager();
+        if (manager != null && !StringUtils.isEmpty(manager.getId())) {
+            curIdSet.add(manager.getId());
         }
-        return curUsernameSet;
+        return curIdSet;
     }
 
     /*
@@ -59,23 +59,17 @@ public class DepartmentServiceImpl implements DepartmentService {
             return;
         }
         AuthDepartmentBO preDepartmentBO = getById(departmentBO.getId());
-        Set<String> preUsernameSet = getUsernameSet(preDepartmentBO);
-
-        departmentMapper.update(convertToDO(departmentBO));
-
-        Set<String> curUsernameSet = getUsernameSet(departmentBO);
-
-        Set<String> incSet = new HashSet<>(curUsernameSet);
-        incSet.removeAll(preUsernameSet);
-        if (incSet.size() > 0) {
-            userMapper.batchUpdateDepartment(incSet, departmentBO.getName());
+        Set<Integer> preIdSet = getIdSet(preDepartmentBO);
+        if (preIdSet.size() > 0) {
+            userMapper.batchUpdateDepartment(preIdSet, new AuthDepartmentDO());
         }
-        Set<String> decSet = new HashSet<>(preUsernameSet);
-        decSet.removeAll(curUsernameSet);
-        if (decSet.size() > 0) {
-            userMapper.batchUpdateDepartment(decSet, "");
-        }
+        AuthDepartmentDO authDepartmentDO = convertToDO(departmentBO);
+        departmentMapper.update(authDepartmentDO);
 
+        Set<Integer> curIdSet = getIdSet(departmentBO);
+        if (curIdSet.size() > 0) {
+            userMapper.batchUpdateDepartment(curIdSet, authDepartmentDO);
+        }
     }
 
 
@@ -88,25 +82,27 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Override
     public void deleteById(int id) {
         AuthDepartmentBO preDepartmentBO = getById(id);
-        Set<String> preUsernameSet = getUsernameSet(preDepartmentBO);
+        Set<Integer> idSet = getIdSet(preDepartmentBO);
         departmentMapper.delete(id);
-        if (preUsernameSet.size() > 0) {
-            userMapper.batchUpdateDepartment(preUsernameSet, "");
+        if (idSet.size() > 0) {
+            userMapper.batchUpdateDepartment(idSet, new AuthDepartmentDO());
         }
     }
 
     @Override
     public void add(AuthDepartmentBO departmentBO) {
+        // 增加成员，首先要判断该成员是否有部门，这部分由前端控制，也可有后端控制，departmentId为空才设置，类似乐观锁的机制，然后判断实际修改的条数和要修改的条数是否相等，不相等抛出异常
         if (departmentBO == null) {
             return;
         }
+        AuthDepartmentDO authDepartmentDO = convertToDO(departmentBO);
+        departmentMapper.insert(authDepartmentDO);
 
-        departmentMapper.insert(convertToDO(departmentBO));
+        Set<Integer> idSet = getIdSet(departmentBO);
 
-        Set<String> curUsernameSet = getUsernameSet(departmentBO);
-
-        if (curUsernameSet.size() > 0) {
-            userMapper.batchUpdateDepartment(curUsernameSet, departmentBO.getName());
+        if (idSet.size() > 0) {
+            // 设置 departmentId, department 冗余信息
+            userMapper.batchUpdateDepartment(idSet, authDepartmentDO);
         }
 
     }
@@ -128,11 +124,9 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
         AuthDepartmentDO authDepartmentDO = new AuthDepartmentDO();
         BeanUtils.copyProperties(authDepartmentBO, authDepartmentDO);
-        if (authDepartmentBO.getMembers() != null) {
-            /**
-             * 如果不加条件, null会变为字符串
-             */
-            authDepartmentDO.setMembers(JSON.toJSONString(authDepartmentBO.getMembers()));
+        AuthUserBO auth = authDepartmentBO.getManager();
+        if (auth != null && !StringUtils.isEmpty(auth.getId())) {
+            authDepartmentDO.setManagerId(auth.getId());
         }
         return authDepartmentDO;
     }
@@ -143,8 +137,12 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
         AuthDepartmentBO authDepartmentBO = new AuthDepartmentBO();
         BeanUtils.copyProperties(authDepartmentDO, authDepartmentBO);
-        if (!StringUtils.isEmpty(authDepartmentDO.getMembers())) {
-            authDepartmentBO.setMembers(new HashSet<>(JSONObject.parseArray(authDepartmentDO.getMembers(), AuthUserBO.class)));
+        if (authDepartmentDO.getMembers() != null) {
+            List<AuthUserBO> authUserBOS = BOUtitls.convertToBOs(authDepartmentDO.getMembers());
+            authDepartmentBO.setMembers(authUserBOS);
+        }
+        if (authDepartmentDO.getManager() != null) {
+            authDepartmentBO.setManager(BOUtitls.convertToBO(authDepartmentDO.getManager()));
         }
         return authDepartmentBO;
     }

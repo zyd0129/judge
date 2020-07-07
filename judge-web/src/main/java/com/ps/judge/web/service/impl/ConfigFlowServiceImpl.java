@@ -77,9 +77,9 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
 
     @Override
     public void insert(ConfigFlowBO configFlowBO) {
-        if (configFlowBO.getFlowCode() == null) {
-            configFlowBO.setFlowCode(UUID.randomUUID().toString().replace("-", ""));
-        }
+//        if (configFlowBO.getFlowCode() == null) {
+//            configFlowBO.setFlowCode(UUID.randomUUID().toString().replace("-", ""));
+//        }
         AuthUserBO authUserBO = (AuthUserBO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         configFlowBO.setOperator(authUserBO.getUsername());
         configFlowBO.setGmtCreated(LocalDateTime.now());
