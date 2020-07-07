@@ -91,7 +91,7 @@ function check() {
 
 if [[ ${stage} == "build" ]];then
     build
-elif [[ ${stage} == "build" ]];then
+elif [[ ${stage} == "deploy_production" ]];then
 	deploy
 else
 	echo "没有检索到相应的CI阶段"
