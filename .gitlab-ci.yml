@@ -13,7 +13,7 @@ build:
     - mvn clean package
   after_script:
     - mkdir -p ${HOME}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
-    - sh .ci/deploy.sh "${HOME}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}"
+    - sh .ci/deploy.sh "${HOME}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}" "${CI_JOB_STAGE}"
   tags:
     - RunnerGroupNode-HK-149.129.89.208-印度征信
 
@@ -22,7 +22,7 @@ deploy_production:
   only:
     - master
   script:
-    - sh .ci/deploy.sh "${HOME}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}"
+    - sh .ci/deploy.sh "${HOME}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}" "${CI_JOB_STAGE}"
   after_script:
     - rm -rf ${HOME}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
   when:
