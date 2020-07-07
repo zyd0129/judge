@@ -36,10 +36,10 @@ function deploy() {
 
         for (( count=0; count<${host_number}; count++ ));do
             host_ip=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read(),encoding=\""utf-8\"");print(j[\"app\"][${app_count}][\"ProductionHost\"][${count}])")
-            temp_name=${host_ip}_${jar_name}_${template}
+            temp_name=${host_ip}_${jar_name}_${template##*/}
             start_cmd="${prefix_cmd} ${jar_name} ${suffix_cmd}"
-            echo -e "开始生成部署Shell文件, HOST:${host_ip}\tJAR:${jar_name}\tSTART_CMD:${start_cmd}"
-            cp ${template}  ${temp_name}
+            echo -e "开始生成部署Shell文件, HOST:${host_ip}\n\tJAR:${jar_name}\n\tSTART_CMD:${start_cmd}"
+            cp ${template} ${temp_name}
             sed -i "s#JAR_PATH#${production_path}/${jar_name}#" ${temp_name}
             sed -i "s#JAR_PROT#${port}#" ${temp_name}
             sed -i "s#START_CMD#${start_cmd}#" ${temp_name}
