@@ -1,7 +1,7 @@
 #!/bin/env bash
 #
 #jar部署通用脚本
-#date: 20200706
+#date: 20200707
 #auth: 廖发友
 
 jar_path=JAR_PATH
