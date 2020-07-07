@@ -8,6 +8,7 @@ config=".ci/config.json"
 template=".ci/deployJarTemplate.sh"
 upload_max_count=3
 store=$1
+stage=$2
 
 python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read());print(j[\"app\"])"
 
@@ -88,9 +89,9 @@ function check() {
     fi
 }
 
-if [[ ${$CI_JOB_STAGE} == "build" ]];then
+if [[ ${stage} == "build" ]];then
     build
-elif [[ ${$CI_JOB_STAGE} == "build" ]];then
+elif [[ ${stage} == "build" ]];then
 	deploy
 else
 	echo "没有检索到相应的CI阶段"
