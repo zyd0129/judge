@@ -8,6 +8,13 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+/**
+ * 定时回调商户
+ *
+ * @author ：zhangqian9044.
+ * @date ：2020/5/19
+ */
+
 @DisallowConcurrentExecution
 @Slf4j
 public class CallbackTenantJob extends QuartzJobBean {

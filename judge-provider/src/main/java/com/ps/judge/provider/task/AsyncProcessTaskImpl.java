@@ -104,8 +104,20 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         parameters.put("product", varResult.getProduct());
         parameters.put("triggeredRuleList", auditTaskTriggeredRuleDOList);
         parameters.put("scoreCard", scoreCard);
-        kieSession.startProcess(flowCode, parameters);
-        kieSession.destroy();
+
+        try {
+            kieSession.startProcess(flowCode, parameters);
+        } catch (Exception e) {
+            auditTask.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode());
+            auditTask.setCompleteTime(LocalDateTime.now());
+            auditTask.setGmtModified(LocalDateTime.now());
+            this.auditTaskMapper.update(auditTask);
+            throw new RuntimeException(e);
+        } finally {
+            if (Objects.nonNull(kieSession)) {
+                kieSession.destroy();
+            }
+        }
 
         auditTask.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_SUCCESS.getCode());
         auditTask.setCompleteTime(LocalDateTime.now());
@@ -122,11 +134,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         NodeResultVO node1 = new NodeResultVO();
         if (auditTaskTriggeredRuleDOList.isEmpty()) {
             node1.setIndex(1);
-            if (StringUtils.equals(auditTask.getFlowCode(), "judge_old")) {
-                node1.setRulePackageCode("ZRX02");
-            } else {
-                node1.setRulePackageCode("ZRX01");
-            }
+            node1.setRulePackageCode("ZRX01");
             node1.setAuditScore(0);
             node1.setAuditCode(AuditCodeEnum.PASS.toString());
             node1.setTriggeredRules(new ArrayList<>());
@@ -230,7 +238,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
     }
 
     private boolean sendPost(String url, ApiResponse<AuditResultVO> apiResponse) {
-        HttpEntity<ApiResponse<AuditResultVO>> requestEntity = new HttpEntity<>(apiResponse, httpHeaders);
+        HttpEntity<ApiResponse<AuditResultVO>> requestEntity = new HttpEntity<>(apiResponse, this.httpHeaders);
         ResponseEntity<JSONObject> result = this.restTemplate.exchange(url , HttpMethod.POST, requestEntity, JSONObject.class);
         if (result.getStatusCode() == HttpStatus.OK) {
             JSONObject body = result.getBody();

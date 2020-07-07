@@ -25,10 +25,11 @@ public interface AuditTaskMapper {
         @Result(property = "deviceFingerPrint", column = "device_finger_print", jdbcType = JdbcType.VARCHAR),
         @Result(property = "transactionTime", column = "transaction_time", jdbcType = JdbcType.TIMESTAMP),
         @Result(property = "taskStatus", column = "task_status", jdbcType = JdbcType.TINYINT),
-        @Result(property = "auditScore", column = "audit_score", jdbcType = JdbcType.SMALLINT),
+        @Result(property = "auditScore", column = "audit_score", jdbcType = JdbcType.INTEGER),
         @Result(property = "auditCode", column = "audit_code", jdbcType = JdbcType.VARCHAR),
         @Result(property = "callbackUrl", column = "callback_url", jdbcType = JdbcType.VARCHAR),
         @Result(property = "callbackCount", column = "callback_count", jdbcType = JdbcType.TINYINT),
+        @Result(property = "retryCount", column = "retry_count", jdbcType = JdbcType.TINYINT),
         @Result(property = "completeTime", column = "complete_time", jdbcType = JdbcType.TIMESTAMP),
         @Result(property = "gmtCreate", column = "gmt_create", jdbcType = JdbcType.TIMESTAMP),
         @Result(property = "gmtModified", column = "gmt_modified", jdbcType = JdbcType.TIMESTAMP)
@@ -42,6 +43,9 @@ public interface AuditTaskMapper {
     @Select("select * from audit_task where task_status = #{taskStatus, jdbcType=TINYINT}")
     List<AuditTaskDO> listAuditTaskByTaskStatus(@Param("taskStatus") int taskStatus);
 
+    @Select("select * from audit_task where task_status = #{taskStatus, jdbcType=TINYINT} and retry_count < #{retryCount,jdbcType=TINYINT}")
+    List<AuditTaskDO> listAuditTaskByTaskStatusAndRetryCount(@Param("taskStatus") int taskStatus, @Param("retryCount") int retryCount);
+
     @Insert("INSERT INTO audit_task (tenant_code, product_code, flow_code, apply_id, user_id, user_name, mobile, id_card,"
             + "order_id, ip, device_finger_print, transaction_time, task_status, callback_url, gmt_create, gmt_modified)"
             + "VALUES(#{tenantCode}, #{productCode},  #{flowCode}, #{applyId}, #{userId}, #{userName}, #{mobile}, #{idCard}, #{orderId},"
@@ -53,8 +57,8 @@ public interface AuditTaskMapper {
     int updateTaskStatus(@Param("taskStatus") int taskStatus, @Param("id") int id, @Param("gmtModified") LocalDateTime gmtModified);
 
     @Update("UPDATE audit_task SET task_status = #{taskStatus,jdbcType=TINYINT}, audit_code = #{auditCode,jdbcType=VARCHAR},"
-            + "callback_count = #{callbackCount,jdbcType=TINYINT}, complete_time = #{completeTime, jdbcType=TIMESTAMP},"
-            + "gmt_modified = #{gmtModified, jdbcType=TIMESTAMP} where id=#{id}")
+            + "callback_count = #{callbackCount,jdbcType=TINYINT}, retry_count = #{retryCount,jdbcType=TINYINT}, "
+            + "complete_time = #{completeTime, jdbcType=TIMESTAMP}, gmt_modified = #{gmtModified, jdbcType=TIMESTAMP} where id=#{id}")
     void update(AuditTaskDO auditTask);
 
     @Select({"<script>",

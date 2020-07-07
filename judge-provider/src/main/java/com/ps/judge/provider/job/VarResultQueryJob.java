@@ -8,6 +8,12 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+/**
+ * 定时请求jury，查询变量结果
+ *
+ * @author ：zhangqian9044.
+ * @date ：2020/5/19
+ */
 @DisallowConcurrentExecution
 @Slf4j
 public class VarResultQueryJob extends QuartzJobBean {
