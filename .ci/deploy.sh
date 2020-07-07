@@ -18,24 +18,24 @@ if [[ $? -ne 0 ]];then
 fi
 
 function deploy() {
-    local app_number=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read());print(len(j[\"app\"]))")
+    app_number=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read());print(len(j[\"app\"]))")
 
-        for (( app_count=0; app_count<${app_number}; app_count++ ));do
-        local host_number=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read(),encoding=\""utf-8\"");print(len(j[\"app\"][${app_count}][\"ProductionHost\"]))")
-        local jar_name=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read(),encoding='utf-8');print(j[\"app\"][${app_count}][\"JarName\"])")
-        local production_path=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read(),encoding='utf-8');print(j[\"app\"][${app_count}][\"ProductionPath\"])")
-        local prefix_cmd=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read(),encoding='utf-8');print(j[\"app\"][${app_count}][\"PrefixCmd\"])")
-        local suffix_cmd=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read(),encoding='utf-8');print(j[\"app\"][${app_count}][\"SuffixCmd\"])")
-        local port=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read(),encoding='utf-8');print(j[\"app\"][${app_count}][\"Port\"])")
+    for (( app_count=0; app_count<${app_number}; app_count++ ));do
+		host_number=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read(),encoding=\""utf-8\"");print(len(j[\"app\"][${app_count}][\"ProductionHost\"]))")
+        jar_name=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read(),encoding='utf-8');print(j[\"app\"][${app_count}][\"JarName\"])")
+        production_path=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read(),encoding='utf-8');print(j[\"app\"][${app_count}][\"ProductionPath\"])")
+        prefix_cmd=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read(),encoding='utf-8');print(j[\"app\"][${app_count}][\"PrefixCmd\"])")
+        suffix_cmd=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read(),encoding='utf-8');print(j[\"app\"][${app_count}][\"SuffixCmd\"])")
+        port=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read(),encoding='utf-8');print(j[\"app\"][${app_count}][\"Port\"])")
 
         for text in host_number jar_name production_path prefix_cmd suffix_cmd port;do
             check "${!text}" "${text}" "${app_count}"
         done
 
         for (( count=0; count<${host_number}; count++ ));do
-            local host_ip=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read(),encoding=\""utf-8\"");print(j[\"app\"][${app_count}][\"ProductionHost\"][${count}])")
-            local temp_name=${host_ip}_${jar_name}_${template}
-            local start_cmd=${prefix_cmd} ${jar_name} ${suffix_cmd}
+            host_ip=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read(),encoding=\""utf-8\"");print(j[\"app\"][${app_count}][\"ProductionHost\"][${count}])")
+            temp_name=${host_ip}_${jar_name}_${template}
+            start_cmd=${prefix_cmd} ${jar_name} ${suffix_cmd}
             echo -e "开始生成部署Shell文件, HOST:${$host_ip}\tJAR:${jar_name}\tSTART_CMD:${start_cmd}"
             cp ${template}  ${temp_name}
             sed -i "s#JAR_PATH#${production_path}/${jar_name}#" ${temp_name}
@@ -63,13 +63,13 @@ function deploy() {
 }
 
 function build() {
-    local app_number=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read());print(len(j[\"app\"]))")
+    app_number=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read());print(len(j[\"app\"]))")
 
     for (( app_count=0; app_count<${app_number}; app_count++ ));do
-        local jar_name=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read(),encoding='utf-8');print(j[\"app\"][${app_count}][\"JarName\"])")
+        jar_name=$(python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read(),encoding='utf-8');print(j[\"app\"][${app_count}][\"JarName\"])")
         check "${jar_name}" "jar_name" "${app_count}"
         prefix_name=$(echo ${jar_name} | grep -oP '(.*)(?=-(\d+\.)+(.*?)jar)')
-        echo -e "转存 ${jar_name} --> ${HOME}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/${jar_name}"
+        echo -e "转存 ${jar_name} --> ${store}/${jar_name}"
         cp -rf ${prefix_name}/target/${jar_name} ${store}
     done
     cd ${store}
