@@ -11,5 +11,5 @@ public interface ConfigFlowService {
 
     boolean loadFlow(ConfigFlowDO configFlow);
 
-    boolean unLoadFlow(ConfigFlowDO configFlow);
+    boolean removeFlow(ConfigFlowDO configFlow);
 }

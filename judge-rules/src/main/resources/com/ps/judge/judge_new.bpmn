@@ -37,7 +37,7 @@
   <bpmn2:itemDefinition id="__C30A03E2-B693-4DE4-A7A0-485FFB166E23_platformOutputXItem" structureRef="com.ps.jury.api.response.level.PlatformLevel"/>
   <bpmn2:itemDefinition id="__C30A03E2-B693-4DE4-A7A0-485FFB166E23_merchantOutputXItem" structureRef="com.ps.jury.api.response.level.MerchantLevel"/>
   <bpmn2:itemDefinition id="__C30A03E2-B693-4DE4-A7A0-485FFB166E23_scoreCardOutputXItem" structureRef="com.ps.judge.provider.entity.ScoreCardVO"/>
-  <bpmn2:process id="judge_new" drools:packageName="com.ps.jury.api.objects.judge" drools:version="1.0" drools:adHoc="false" name="judge_new" isExecutable="true" processType="Public">
+  <bpmn2:process id="new_customer" drools:packageName="com.ps.jury.api.objects.judge" drools:version="1.0" drools:adHoc="false" name="new_customer" isExecutable="true" processType="Public">
     <bpmn2:extensionElements>
       <drools:import name="com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO"/>
       <drools:import name="java.util.ArrayList"/>
@@ -269,7 +269,7 @@
     </bpmn2:businessRuleTask>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="_FvxD0LRhEeqQEu_ItvUE-g">
-    <bpmndi:BPMNPlane id="_FvxD0bRhEeqQEu_ItvUE-g" bpmnElement="judge_new">
+    <bpmndi:BPMNPlane id="_FvxD0bRhEeqQEu_ItvUE-g" bpmnElement="new_customer">
       <bpmndi:BPMNShape id="shape__F22A515D-E8F5-40D3-A75F-917399F2FC02" bpmnElement="_F22A515D-E8F5-40D3-A75F-917399F2FC02">
         <dc:Bounds height="102.0" width="154.0" x="1148.0" y="309.0"/>
       </bpmndi:BPMNShape>

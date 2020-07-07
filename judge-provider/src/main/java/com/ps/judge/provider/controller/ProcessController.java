@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.sound.midi.Soundbank;
 import java.util.Objects;
 
 @RestController
@@ -59,7 +60,8 @@ public class ProcessController implements JudgeApi {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单不存在");
         }
         if (auditTask.getTaskStatus() != AuditTaskStatusEnum.VAR_COMPUTE_FAIL.getCode()
-                && auditTask.getTaskStatus() != AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode()) {
+                && auditTask.getTaskStatus() != AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode()
+                && auditTask.getTaskStatus() != AuditTaskStatusEnum.FORWARDED_FAIL.getCode()) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单未失败，不能重试");
         }
         return this.processService.retryAudit(auditTask);
@@ -76,7 +78,7 @@ public class ProcessController implements JudgeApi {
                 return ApiResponse.success();
             }
         } else {
-            if (this.configFlowService.unLoadFlow(configFlow)) {
+            if (this.configFlowService.removeFlow(configFlow)) {
                 return ApiResponse.success();
             }
         }

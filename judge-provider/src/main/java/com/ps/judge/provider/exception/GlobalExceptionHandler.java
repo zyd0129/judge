@@ -13,7 +13,7 @@ import java.io.IOException;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(RuntimeException.class)
+   /* @ExceptionHandler(RuntimeException.class)
     public ApiResponse handleRuntimeException(RuntimeException e) {
         log.error("handle RuntimeException: {}", e.getMessage());
         return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
@@ -41,5 +41,5 @@ public class GlobalExceptionHandler {
     public ApiResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error("handle MethodArgumentNotValidException: {}", e.getMessage());
         return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), e.getBindingResult().getFieldError().getDefaultMessage());
-    }
+    }*/
 }

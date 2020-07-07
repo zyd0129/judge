@@ -18,7 +18,7 @@ public interface JudgeApi {
     ApiResponse<ApplyResultVO> applyAudit(@RequestBody ApplyRequest applyRequest);
 
     @PostMapping("/judge/audit/retry")
-    ApiResponse<ApplyResultVO> retryAudit(@RequestBody Integer taskId);
+    ApiResponse<ApplyResultVO> retryAudit(Integer taskId);
 
     @PostMapping("/judge/audit/flow/load")
     ApiResponse<String> loadFlow(@RequestBody LoadFlowVO loadFlowVO);
