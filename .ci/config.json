@@ -2,7 +2,7 @@
   "comment": "项目CI配置文件,随项目变更修改,供CI读取部署时使用,勿删",
   "app": [
     {
-      "JarName": "judge-provider-0.0.1-SNAPSHOT.jar",
+      "JarName": "judge-provider-0.0.1.jar",
       "ProductionHost": [
         "147.139.38.138"
       ],
