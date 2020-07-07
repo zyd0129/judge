@@ -1,0 +1,31 @@
+#gitlab CI部署文件，切勿删除
+#date: 20200704
+#auth: 廖发友
+stages:
+  - build
+  - deploy_production
+
+build:
+  stage: build
+  only:
+    - master
+  script:
+    - mvn clean package
+  after_script:
+    - mkdir -p ${HOME}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
+    - sh .ci/deploy.sh
+  tags:
+    - RunnerGroupNode-HK-149.129.89.208-印度征信
+
+deploy_production:
+  stage: deploy_production
+  only:
+    - master
+  script:
+    - sh .ci/deploy.sh
+  after_script:
+    - rm -rf ${HOME}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
+  when:
+    on_success
+  tags:
+    - RunnerGroupNode-HK-149.129.89.208-印度征信
