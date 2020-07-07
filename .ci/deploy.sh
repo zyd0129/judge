@@ -8,7 +8,7 @@ config=".ci/config.json"
 template=".ci/deployJarTemplate.sh"
 upload_max_count=3
 
-python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read());print(j[\"app\"]))"
+python -c "import json;import sys;reload(sys);sys.setdefaultencoding('utf-8');f=open(\"${config}\");j=json.loads(f.read());print(j[\"app\"])"
 
 if [[ $? -ne 0 ]];then
     echo -e "配置文件\t${config}\t解析错误"
