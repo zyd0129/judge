@@ -4,9 +4,9 @@
 #date: 20200706
 #auth: 廖发友
 
-jar_path=JAR_PATH
-jar_port=JAR_PROT
-start_cmd=START_CMD
+jar_path="JAR_PATH"
+jar_port="JAR_PROT"
+start_cmd="START_CMD"
 stop_max_wait_time=10
 start_max_wait_time=60
 Time=$(date "+%Y%m%d%H%M%S")
@@ -90,7 +90,7 @@ function start_process() {
 			sleep 1
 		fi
 	done
-	if [[ ${started_flag} -eq 1 && ${success} -eq 0 ]} ]];then
+	if [[ ${started_flag} -eq 1 && ${success} -eq 0 ]];then
 		echo -e "进程\t${name}\t启动失败,开始结束进程..."
 		stop_process
 		exit 1
