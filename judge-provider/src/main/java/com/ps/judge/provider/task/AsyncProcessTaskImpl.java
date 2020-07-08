@@ -70,7 +70,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
     @Override
     @Async
     public void startProcess(AuditTaskDO auditTask, VarResult varResult) {
-        if(!syncAuditTaskStatus(auditTask)){
+        if (!syncAuditTaskStatus(auditTask)) {
             return;
         }
         Integer taskId = auditTask.getId();

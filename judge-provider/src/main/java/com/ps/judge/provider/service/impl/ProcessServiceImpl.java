@@ -19,7 +19,6 @@ import com.ps.jury.api.request.ApplyRequest;
 import com.ps.jury.api.response.VarResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
