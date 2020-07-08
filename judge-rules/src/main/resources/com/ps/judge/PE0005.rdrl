@@ -3,6 +3,7 @@ package com.ps.judge;
 import com.ps.jury.api.response.level.MerchantLevel;
 import com.ps.jury.api.response.group.PersonalInfo;
 import java.util.ArrayList;
+import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;
 
 rule "PE0005"
 	dialect "mvel"

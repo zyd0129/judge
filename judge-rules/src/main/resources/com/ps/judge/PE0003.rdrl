@@ -2,6 +2,7 @@ package com.ps.judge;
 
 import com.ps.jury.api.response.level.MerchantLevel;
 import com.ps.jury.api.response.group.PersonalInfo;
+import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;
 import java.util.ArrayList;
 
 rule "PE0003"
@@ -19,7 +20,7 @@ rule "PE0003"
 		triggeredRule.setRulePackageName("");
 		triggeredRule.setRulePackageVersion("1.0.0");
 		triggeredRule.setExpression("=");
-		triggeredRule.setCondition("1");
+		triggeredRule.setCondition("999999");
 		triggeredRule.setParam($param);
 		triggeredRule.setResult("0");
 		$arrayList.add( triggeredRule );

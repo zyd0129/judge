@@ -20,7 +20,7 @@ rule "PE0001_03"
 		triggeredRule.setRulePackageName("");
 		triggeredRule.setRulePackageVersion("1.0.0");
 		triggeredRule.setExpression("==");
-		triggeredRule.setCondition("00");
+		triggeredRule.setCondition("999999");
 		triggeredRule.setParam($param);
 		triggeredRule.setResult("0");
 		$arrayList.add( triggeredRule );
