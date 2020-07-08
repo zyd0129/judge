@@ -69,7 +69,9 @@ function start_process() {
 	mv /data/.tmp-gitlab-runner/${name} ${path}
 	echo > ${path}/nohup.out
 	echo -e "开始启动进程\t${name}"
-	nohup ${start_cmd} 2>&1 &
+	nohup ${start_cmd} > nohup.out 2>&1 &
+	echo "进程启方式为: nohup ${start_cmd} > nohup.out 2>&1 &"
+
 	sleep 5
 	for (( count=1; count<${start_max_wait_time}; count++ ));do
 		if [[ ${started_flag} -eq 0 ]];then
