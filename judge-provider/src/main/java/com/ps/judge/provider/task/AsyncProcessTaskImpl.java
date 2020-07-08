@@ -126,7 +126,6 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
     @Transactional
     public boolean syncAuditTaskStatus(AuditTaskDO auditTask) {
         auditTask = this.auditTaskMapper.getAuditTaskByIdForUpdate(auditTask.getId());
-        this.updateAuditStatus(AuditTaskStatusEnum.AUDIT.getCode(), auditTask.getId());
         if (auditTask.getTaskStatus() == AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode()
                 || auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode()) {
             return this.updateAuditStatus(AuditTaskStatusEnum.AUDIT.getCode(), auditTask.getId());
