@@ -1,8 +1,10 @@
 #!/bin/env bash
 #
 #jar部署通用脚本
-#date: 20200706
+#date: 20200708
 #auth: 廖发友
+
+DEBUG
 
 jar_path="JAR_PATH"
 jar_port="JAR_PROT"

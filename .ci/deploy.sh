@@ -2,9 +2,15 @@
 #
 # 解析.ci/config.json文件并根据.ci/deploy_jar.sh生成部署shell脚本
 # 廖发友
-# 20200707
+# 20200708
 
-set -ex
+if [[ ${DEBUG} -eq 1 ]];then
+	set -ex
+	DEBUG="set -ex"
+else
+	set -e
+	DEBUG="set -e"
+fi
 
 config=".ci/config.json"
 template=".ci/deployJarTemplate.sh"
@@ -40,6 +46,7 @@ function deploy() {
             start_cmd="${prefix_cmd} ${jar_name} ${suffix_cmd}"
             echo -e "开始生成部署Shell文件, HOST:${host_ip}\n\tJAR:${jar_name}\n\tSTART_CMD:${start_cmd}"
             cp ${template} ${temp_name}
+            sed -i "s#DEBUG#${DEBUG}#" ${temp_name}
             sed -i "s#JAR_PATH#${production_path}/${jar_name}#" ${temp_name}
             sed -i "s#JAR_PROT#${port}#" ${temp_name}
             sed -i "s#START_CMD#${start_cmd}#" ${temp_name}
