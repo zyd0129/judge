@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.KeyPair;
 
-@Service
+@Service //这种写法不是很合适，secuirty链中和 servlet链中各有一个，重复了
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
