@@ -4,7 +4,7 @@
 # 廖发友
 # 20200707
 
-set -e
+set -ex
 
 config=".ci/config.json"
 template=".ci/deployJarTemplate.sh"
@@ -48,7 +48,7 @@ function deploy() {
                 scp -B -C ${store}/${jar_name} root@${host_ip}:/data/.tmp-gitlab-runner
                 echo -e "${jar_name} 开始进行文件md5校验"
                 remote_md5=$(ssh root@${host_ip} "cd /data/.tmp-gitlab-runner && md5sum ${jar_name}")
-                if ( fgrep -q ${remote_md5} ${store}/md5.txt );then
+                if ( fgrep -q "${remote_md5}" ${store}/md5.txt );then
                     echo "md5值相同"
                     break
                 else

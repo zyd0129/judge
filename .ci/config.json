@@ -7,8 +7,8 @@
         "147.139.38.138"
       ],
       "ProductionPath": "/data/jar_dir/judge-provider",
-      "PrefixCmd": "nohup java -jar -Xmx256m -Xms128m",
-      "SuffixCmd": "--spring.profiles.active=prod 2>&1 &",
+      "PrefixCmd": "java -jar -Xmx256m -Xms128m",
+      "SuffixCmd": "--spring.profiles.active=prod",
       "Port": "8080"
     },
     {
@@ -17,8 +17,8 @@
         "147.139.38.138"
       ],
       "ProductionPath": "/data/jar_dir/judge-web",
-      "PrefixCmd": "nohup java -jar -Xmx256m -Xms128m",
-      "SuffixCmd": "--spring.profiles.active=prod 2>&1 &",
+      "PrefixCmd": "java -jar -Xmx256m -Xms128m",
+      "SuffixCmd": "--spring.profiles.active=prod",
       "Port": "8082"
     }
   ]

@@ -1,7 +1,7 @@
 #!/bin/env bash
 #
 #jar部署通用脚本
-#date: 20200707
+#date: 20200706
 #auth: 廖发友
 
 jar_path=JAR_PATH
@@ -69,7 +69,7 @@ function start_process() {
 	mv /data/.tmp-gitlab-runner/${name} ${path}
 	echo > ${path}/nohup.out
 	echo -e "开始启动进程\t${name}"
-	${start_cmd}
+	nohup ${start_cmd} 2>&1 &
 	sleep 5
 	for (( count=1; count<${start_max_wait_time}; count++ ));do
 		if [[ ${started_flag} -eq 0 ]];then
@@ -100,3 +100,4 @@ function start_process() {
 check_environment
 stop_process
 start_process
+
