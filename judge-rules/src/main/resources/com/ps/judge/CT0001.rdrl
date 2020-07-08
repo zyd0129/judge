@@ -4,6 +4,7 @@ import com.ps.jury.api.response.level.MerchantLevel;
 import com.ps.jury.api.response.group.AddressBookInfo;
 import java.util.ArrayList;
 import java.lang.Integer;
+import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;
 
 rule "CT0001"
 	@freeze_conditions(true)

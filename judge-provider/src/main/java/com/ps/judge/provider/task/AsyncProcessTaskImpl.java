@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -69,11 +70,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
     @Override
     @Async
     public void startProcess(AuditTaskDO auditTask, VarResult varResult) {
-        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT.getCode()
-                || auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_SUCCESS.getCode()
-                || auditTask.getTaskStatus() == AuditTaskStatusEnum.CALLBACK.getCode()
-                || auditTask.getTaskStatus() == AuditTaskStatusEnum.CALLBACK_SUCCESS.getCode()
-                || auditTask.getTaskStatus() == AuditTaskStatusEnum.CALLBACK_FAIL.getCode()) {
+        if (!syncAuditTaskStatus(auditTask)) {
             return;
         }
         Integer taskId = auditTask.getId();
@@ -126,7 +123,19 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         this.processResult(auditTask, parameters);
     }
 
-    private void processResult(AuditTaskDO auditTask, Map<String, Object> parameters) {
+    @Transactional
+    public boolean syncAuditTaskStatus(AuditTaskDO auditTask) {
+        auditTask = this.auditTaskMapper.getAuditTaskByIdForUpdate(auditTask.getId());
+        this.updateAuditStatus(AuditTaskStatusEnum.AUDIT.getCode(), auditTask.getId());
+        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode()
+                || auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode()) {
+            return this.updateAuditStatus(AuditTaskStatusEnum.AUDIT.getCode(), auditTask.getId());
+        }
+        return false;
+    }
+
+    @Transactional
+    public void processResult(AuditTaskDO auditTask, Map<String, Object> parameters) {
         List<NodeResultVO> nodeResult = new ArrayList<>();
         ScoreCardVO scoreCard = (ScoreCardVO) parameters.get("scoreCard");
         List<AuditTaskTriggeredRuleDO> auditTaskTriggeredRuleDOList = (List<AuditTaskTriggeredRuleDO>) parameters.get("triggeredRuleList");

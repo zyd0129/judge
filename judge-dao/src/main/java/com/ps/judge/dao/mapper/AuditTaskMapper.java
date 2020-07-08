@@ -37,6 +37,9 @@ public interface AuditTaskMapper {
     @Select("select * from audit_task where id = #{id,jdbcType=INTEGER}")
     AuditTaskDO getAuditTaskById(@Param("id") int id);
 
+    @Select("select * from audit_task where id = #{id,jdbcType=INTEGER} for update")
+    AuditTaskDO getAuditTaskByIdForUpdate(@Param("id") int id);
+
     @Select("select * from audit_task where tenant_code = #{tenantCode,jdbcType=VARCHAR} and apply_id = #{applyId,jdbcType=VARCHAR}")
     AuditTaskDO getAuditTask(@Param("tenantCode") String tenantCode, @Param("applyId") String applyId);
 

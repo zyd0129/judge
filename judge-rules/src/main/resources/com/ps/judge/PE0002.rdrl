@@ -13,7 +13,7 @@ rule "PE0002"
 	ruleflow-group "ZRX01"
 	when
 		$arrayList : ArrayList( )
-		MerchantLevel( $param : Integer.parseInt(personalInfo.borrowerAge) < "18" || Integer.parseInt(personalInfo.borrowerAge) > "50" , personalInfo != null )
+		MerchantLevel( personalInfo != null , personalInfo.borrowerAge != "999999" , $param : Integer.parseInt(personalInfo.borrowerAge) < "18" || Integer.parseInt(personalInfo.borrowerAge) > "50" )
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("PE0002");

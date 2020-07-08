@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
+    @Transactional
     public ApiResponse<ApplyResultVO> apply(ApplyRequest request) {
         AuditTaskDO auditTask = new AuditTaskDO();
         auditTask.setApplyId(request.getApplyId());
@@ -127,9 +129,9 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
+    @Transactional
     public ApiResponse<String> saveVarResult(AuditTaskDO auditTask, VarResult varResult) {
-        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.REQUEST_RECEIVED.getCode()
-                || auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode()
+        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode()
                 || auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.getCode()) {
             Integer auditId = auditTask.getId();
             auditTask.setTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode());
