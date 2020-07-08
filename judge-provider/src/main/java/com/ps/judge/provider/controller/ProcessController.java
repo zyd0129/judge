@@ -17,7 +17,6 @@ import com.ps.jury.api.response.VarResult;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -59,7 +58,8 @@ public class ProcessController implements JudgeApi {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单不存在");
         }
         if (auditTask.getTaskStatus() != AuditTaskStatusEnum.VAR_COMPUTE_FAIL.getCode()
-                && auditTask.getTaskStatus() != AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode()) {
+                && auditTask.getTaskStatus() != AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode()
+                && auditTask.getTaskStatus() != AuditTaskStatusEnum.FORWARDED_FAIL.getCode()) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单未失败，不能重试");
         }
         return this.processService.retryAudit(auditTask);
@@ -76,7 +76,7 @@ public class ProcessController implements JudgeApi {
                 return ApiResponse.success();
             }
         } else {
-            if (this.configFlowService.unLoadFlow(configFlow)) {
+            if (this.configFlowService.removeFlow(configFlow)) {
                 return ApiResponse.success();
             }
         }
@@ -87,20 +87,20 @@ public class ProcessController implements JudgeApi {
     public ApiResponse<String> submitVar(ApiResponse<VarResult> apiResponse) {
         VarResult varResult = apiResponse.getData();
         if (Objects.isNull(varResult)) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "信息不存在");
+            return ApiResponse.success("varResult 信息不存在");
         }
         String tenantCode = varResult.getTenantCode();
         String applyId = varResult.getApplyId();
         AuditTaskDO auditTask = this.processService.getAuditTask(tenantCode, applyId);
         if (Objects.isNull(auditTask)) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单不存在");
+            return ApiResponse.success("订单不存在");
         }
         if (!StringUtils.equals(auditTask.getFlowCode(), varResult.getFlowCode())) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不一致");
+            return ApiResponse.success("规则流不一致");
         }
         if (!apiResponse.isSuccess()) {
             this.processService.updateAuditStatus(AuditTaskStatusEnum.VAR_COMPUTE_FAIL.getCode(), auditTask.getId());
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "变量计算失败");
+            return ApiResponse.success("变量计算失败");
         }
         return this.processService.saveVarResult(auditTask, varResult);
     }

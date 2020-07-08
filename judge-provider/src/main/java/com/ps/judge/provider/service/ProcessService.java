@@ -12,6 +12,8 @@ public interface ProcessService {
 
     AuditTaskDO getAuditTask(String tenantCode, String applyId);
 
+    boolean updateAuditStatus(int status, int taskId);
+
     ApiResponse<ApplyResultVO> apply(ApplyRequest request);
 
     ApiResponse<ApplyResultVO> retryAudit(AuditTaskDO auditTask);
@@ -19,8 +21,6 @@ public interface ProcessService {
     ApiResponse<String> saveVarResult(AuditTaskDO auditTask, VarResult varResult);
 
     ApiResponse<AuditResultVO> getAuditResult(AuditTaskDO audit);
-
-    boolean updateAuditStatus(int status, int taskId);
 
     void reapplyJury();
 

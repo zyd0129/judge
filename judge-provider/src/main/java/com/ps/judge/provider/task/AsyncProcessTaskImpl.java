@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -69,11 +70,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
     @Override
     @Async
     public void startProcess(AuditTaskDO auditTask, VarResult varResult) {
-        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT.getCode()
-                || auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_SUCCESS.getCode()
-                || auditTask.getTaskStatus() == AuditTaskStatusEnum.CALLBACK.getCode()
-                || auditTask.getTaskStatus() == AuditTaskStatusEnum.CALLBACK_SUCCESS.getCode()
-                || auditTask.getTaskStatus() == AuditTaskStatusEnum.CALLBACK_FAIL.getCode()) {
+        if (!syncAuditTaskStatus(auditTask)) {
             return;
         }
         Integer taskId = auditTask.getId();
@@ -104,8 +101,20 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         parameters.put("product", varResult.getProduct());
         parameters.put("triggeredRuleList", auditTaskTriggeredRuleDOList);
         parameters.put("scoreCard", scoreCard);
-        kieSession.startProcess(flowCode, parameters);
-        kieSession.destroy();
+
+        try {
+            kieSession.startProcess(flowCode, parameters);
+        } catch (Exception e) {
+            auditTask.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode());
+            auditTask.setCompleteTime(LocalDateTime.now());
+            auditTask.setGmtModified(LocalDateTime.now());
+            this.auditTaskMapper.update(auditTask);
+            throw new RuntimeException(e);
+        } finally {
+            if (Objects.nonNull(kieSession)) {
+                kieSession.destroy();
+            }
+        }
 
         auditTask.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_SUCCESS.getCode());
         auditTask.setCompleteTime(LocalDateTime.now());
@@ -114,7 +123,18 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         this.processResult(auditTask, parameters);
     }
 
-    private void processResult(AuditTaskDO auditTask, Map<String, Object> parameters) {
+    @Transactional
+    public boolean syncAuditTaskStatus(AuditTaskDO auditTask) {
+        auditTask = this.auditTaskMapper.getAuditTaskByIdForUpdate(auditTask.getId());
+        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode()
+                || auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode()) {
+            return this.updateAuditStatus(AuditTaskStatusEnum.AUDIT.getCode(), auditTask.getId());
+        }
+        return false;
+    }
+
+    @Transactional
+    public void processResult(AuditTaskDO auditTask, Map<String, Object> parameters) {
         List<NodeResultVO> nodeResult = new ArrayList<>();
         ScoreCardVO scoreCard = (ScoreCardVO) parameters.get("scoreCard");
         List<AuditTaskTriggeredRuleDO> auditTaskTriggeredRuleDOList = (List<AuditTaskTriggeredRuleDO>) parameters.get("triggeredRuleList");
@@ -122,11 +142,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         NodeResultVO node1 = new NodeResultVO();
         if (auditTaskTriggeredRuleDOList.isEmpty()) {
             node1.setIndex(1);
-            if (StringUtils.equals(auditTask.getFlowCode(), "judge_old")) {
-                node1.setRulePackageCode("ZRX02");
-            } else {
-                node1.setRulePackageCode("ZRX01");
-            }
+            node1.setRulePackageCode("ZRX01");
             node1.setAuditScore(0);
             node1.setAuditCode(AuditCodeEnum.PASS.toString());
             node1.setTriggeredRules(new ArrayList<>());
@@ -230,7 +246,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
     }
 
     private boolean sendPost(String url, ApiResponse<AuditResultVO> apiResponse) {
-        HttpEntity<ApiResponse<AuditResultVO>> requestEntity = new HttpEntity<>(apiResponse, httpHeaders);
+        HttpEntity<ApiResponse<AuditResultVO>> requestEntity = new HttpEntity<>(apiResponse, this.httpHeaders);
         ResponseEntity<JSONObject> result = this.restTemplate.exchange(url , HttpMethod.POST, requestEntity, JSONObject.class);
         if (result.getStatusCode() == HttpStatus.OK) {
             JSONObject body = result.getBody();

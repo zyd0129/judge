@@ -25,7 +25,7 @@
         <where>
             <if test='query!=null'>
                 <if test='query.name!=null'>
-                    name=#{query.name}
+                    d.name=#{query.name}
                 </if>
             </if>
         </where>

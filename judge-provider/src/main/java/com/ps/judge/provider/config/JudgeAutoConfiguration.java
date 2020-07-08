@@ -1,6 +1,7 @@
 package com.ps.judge.provider.config;
 
 import com.ps.judge.provider.handler.RestResponseErrorHandler;
+import com.ps.jury.api.feign.ApiFeignFallbackFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -26,5 +27,11 @@ public class JudgeAutoConfiguration {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         return headers;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(ApiFeignFallbackFactory.class)
+    public ApiFeignFallbackFactory apiFeignFallbackFactory() {
+        return new ApiFeignFallbackFactory();
     }
 }

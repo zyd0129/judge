@@ -20,7 +20,9 @@ import com.ps.jury.api.response.VarResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,6 +31,8 @@ import java.util.List;
 @Service
 @Slf4j
 public class ProcessServiceImpl implements ProcessService {
+    private static final int MAX_RETRY_COUNT = 5;
+
     @Autowired
     JuryApi juryApi;
     @Autowired
@@ -51,6 +55,12 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
+    public boolean updateAuditStatus(int status, int taskId) {
+        return this.auditTaskMapper.updateTaskStatus(status, taskId, LocalDateTime.now()) > 0;
+    }
+
+    @Override
+    @Transactional
     public ApiResponse<ApplyResultVO> apply(ApplyRequest request) {
         AuditTaskDO auditTask = new AuditTaskDO();
         auditTask.setApplyId(request.getApplyId());
@@ -83,6 +93,7 @@ public class ProcessServiceImpl implements ProcessService {
         auditTaskParam.setGmtCreate(LocalDateTime.now());
         auditTaskParam.setGmtModified(LocalDateTime.now());
         this.auditTaskParamMapper.insert(auditTaskParam);
+
         this.asyncProcessTask.applyJury(auditId, request);
         ApplyResultVO applyResultVO = new ApplyResultVO();
         applyResultVO.setApplyId(request.getApplyId());
@@ -92,19 +103,35 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     public ApiResponse<ApplyResultVO> retryAudit(AuditTaskDO auditTask) {
         int auditId = auditTask.getId();
-        this.updateAuditStatus(AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode(), auditId);
-        AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditId);
-        ApplyRequest request = JSON.parseObject(auditTaskParam.getInputRawParam(), ApplyRequest.class);
-        this.asyncProcessTask.applyJury(auditId, request);
+
+        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.getCode()) {
+            if (auditTask.getRetryCount() < MAX_RETRY_COUNT) {
+                return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单自动重试中，不能手动重试");
+            }
+        }
+
+        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.VAR_COMPUTE_FAIL.getCode()
+                || auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.getCode()) {
+            AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditId);
+            ApplyRequest request = JSON.parseObject(auditTaskParam.getInputRawParam(), ApplyRequest.class);
+            this.asyncProcessTask.applyJury(auditId, request);
+        }
+
+        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode()) {
+            AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditId);
+            VarResult varResult = JSON.parseObject(auditTaskParam.getVarResult(), VarResult.class);
+            this.asyncProcessTask.startProcess(auditTask, varResult);
+        }
+
         ApplyResultVO applyResultVO = new ApplyResultVO();
-        applyResultVO.setApplyId(request.getApplyId());
+        applyResultVO.setApplyId(auditTask.getApplyId());
         return ApiResponse.success(applyResultVO);
     }
 
     @Override
+    @Transactional
     public ApiResponse<String> saveVarResult(AuditTaskDO auditTask, VarResult varResult) {
-        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.REQUEST_RECEIVED.getCode()
-                || auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode()
+        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode()
                 || auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.getCode()) {
             Integer auditId = auditTask.getId();
             auditTask.setTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode());
@@ -141,30 +168,32 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public boolean updateAuditStatus(int status, int taskId) {
-        return this.auditTaskMapper.updateTaskStatus(status, taskId, LocalDateTime.now()) > 0;
-    }
-
-    @Override
     public void reapplyJury() {
         List<AuditTaskDO> auditTaskList = new ArrayList<>();
-        List<AuditTaskDO> requestReceivedList = this.auditTaskMapper.listAuditTaskByTaskStatus(AuditTaskStatusEnum.REQUEST_RECEIVED.getCode());
-        List<AuditTaskDO> forwardedFailList = this.auditTaskMapper.listAuditTaskByTaskStatus(AuditTaskStatusEnum.FORWARDED_FAIL.getCode());
+        List<AuditTaskDO> requestReceivedList = this.auditTaskMapper
+                .listAuditTaskByTaskStatusAndRetryCount(AuditTaskStatusEnum.REQUEST_RECEIVED.getCode(), MAX_RETRY_COUNT);
+        List<AuditTaskDO> forwardedFailList = this.auditTaskMapper
+                .listAuditTaskByTaskStatusAndRetryCount(AuditTaskStatusEnum.FORWARDED_FAIL.getCode(), MAX_RETRY_COUNT);
         auditTaskList.addAll(requestReceivedList);
         auditTaskList.addAll(forwardedFailList);
-
         if (auditTaskList.isEmpty()) {
             return;
         }
         for (AuditTaskDO auditTask : auditTaskList) {
             Integer auditId = auditTask.getId();
+            Integer retryCount = auditTask.getRetryCount() + 1;
             AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditId);
             String inputRawParam = auditTaskParam.getInputRawParam();
             ApplyRequest applyRequest = JSON.parseObject(inputRawParam, ApplyRequest.class);
             ApiResponse<String> applyResponse = this.juryApi.apply(applyRequest);
             if (applyResponse.isSuccess()) {
-                this.updateAuditStatus(AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode(), auditId);
+                auditTask.setTaskStatus(AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode());
+            } else {
+                auditTask.setTaskStatus(AuditTaskStatusEnum.FORWARDED_FAIL.getCode());
             }
+            auditTask.setRetryCount(retryCount);
+            auditTask.setGmtModified(LocalDateTime.now());
+            this.auditTaskMapper.update(auditTask);
         }
     }
 
@@ -184,12 +213,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public void auditVariable() {
-        List<AuditTaskDO> auditTaskList = new ArrayList<>();
-        List<AuditTaskDO> varAcceptedSuccessList = this.auditTaskMapper.listAuditTaskByTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode());
-        List<AuditTaskDO> auditCompleteFailList = this.auditTaskMapper.listAuditTaskByTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode());
-        auditTaskList.addAll(varAcceptedSuccessList);
-        auditTaskList.addAll(auditCompleteFailList);
-
+        List<AuditTaskDO> auditTaskList = this.auditTaskMapper.listAuditTaskByTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode());
         if (auditTaskList.isEmpty()) {
             return;
         }
