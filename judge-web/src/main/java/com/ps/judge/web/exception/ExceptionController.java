@@ -34,9 +34,9 @@ public class ExceptionController implements ErrorController {
     /**
      * JSON格式错误信息
      */
-    @RequestMapping(value = path_default,  produces = {MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(value = path_default, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ApiResponse error(HttpServletRequest request) {
-        log.info("ct:"+Thread.currentThread().getId());
+        log.info("ct:" + Thread.currentThread().getId());
         WebRequest webRequest = new ServletWebRequest(request);
         Map<String, Object> body = this.errorAttributes.getErrorAttributes(webRequest, true);
 //        Arrays.asList(webRequest.getAttributeNames(RequestAttributes.SCOPE_REQUEST)).forEach(System.out::println);

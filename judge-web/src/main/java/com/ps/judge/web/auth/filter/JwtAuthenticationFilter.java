@@ -2,10 +2,8 @@ package com.ps.judge.web.auth.filter;
 
 import com.ps.judge.web.auth.objects.AuthUserBO;
 import com.ps.judge.web.auth.utils.JWTHelper;
-import com.ps.judge.web.models.ConfigProductBO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
