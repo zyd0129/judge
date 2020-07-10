@@ -53,9 +53,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     }
                 } catch (Exception e) {
-                    /**
-                     * 目前无效，无所传递过去
-                     */
                     response.sendError(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
                     return;
                 }
