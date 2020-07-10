@@ -3,7 +3,7 @@ package com.ps.judge.web.auth.filter;
 import com.ps.judge.web.auth.objects.AuthUserBO;
 import com.ps.judge.web.auth.utils.JWTHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,10 +51,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     }
                 } catch (Exception e) {
-                    /**
-                     * 目前无效，无所传递过去
-                     */
-                    throw new AuthenticationServiceException(e.getMessage());
+                    response.sendError(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
+                    return;
                 }
             }
         }
