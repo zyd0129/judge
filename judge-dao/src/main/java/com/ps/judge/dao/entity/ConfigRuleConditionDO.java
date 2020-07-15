@@ -5,14 +5,15 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class ConfigRuleConditionalDO {
+public class ConfigRuleConditionDO {
     private Integer id;
-    private String ruleCode;
-    private Integer ruleVersion;
-    private String expression;
-    private String conditionValue;
+    private Integer ruleId;
+    private String name;
+    private String operator;
+    private String operand;
     private String function;
     private Integer variableId;
-    private LocalDateTime gmtCreate;
+    private Integer status;
+    private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;
 }

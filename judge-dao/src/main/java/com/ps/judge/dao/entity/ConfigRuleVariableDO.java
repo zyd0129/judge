@@ -16,6 +16,6 @@ public class ConfigRuleVariableDO {
     private String name;
     private Integer type;
     private Integer status;
-    private LocalDateTime gmtCreate;
+    private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;
 }

@@ -10,12 +10,13 @@ public class ConfigRuleDO {
     private String tenantCode;
     private Integer rulePackageId;
     private String code;
+    private String name;
     private Integer version;
     private String conditionalTemplate;
     private Integer salience;
     private Integer status;
     private Integer score;
     private String result;
-    private LocalDateTime gmtCreate;
+    private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;
 }

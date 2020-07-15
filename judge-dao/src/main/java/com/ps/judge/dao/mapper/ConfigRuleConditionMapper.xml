@@ -2,14 +2,15 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ps.judge.dao.mapper.ConfigRuleVariableGroupMapper">
-    <resultMap id="resultMap" type="com.ps.judge.dao.entity.ConfigRuleVariableGroupDO">
+<mapper namespace="com.ps.judge.dao.mapper.ConfigRuleConditionMapper">
+    <resultMap id="resultMap" type="com.ps.judge.dao.entity.ConfigRuleConditionDO">
         <id column="id" property="id" jdbcType="INTEGER" />
-        <result column="tenant_code" property="tenantCode" jdbcType="VARCHAR" />
-        <result column="level_id" property="levelId" jdbcType="INTEGER" />
-        <result column="level_code" property="levelCode" jdbcType="VARCHAR" />
-        <result column="code" property="code" jdbcType="VARCHAR" />
+        <result column="rule_id" property="ruleId" jdbcType="INTEGER" />
         <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="operator" property="operator" jdbcType="VARCHAR" />
+        <result column="operand" property="operand" jdbcType="VARCHAR" />
+        <result column="function" property="function" jdbcType="VARCHAR" />
+        <result column="variable_id" property="variableId" jdbcType="INTEGER" />
         <result column="status" property="status" jdbcType="INTEGER" />
         <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP" />
         <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />

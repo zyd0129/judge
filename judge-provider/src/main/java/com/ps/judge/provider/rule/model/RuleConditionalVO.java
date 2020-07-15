@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class RuleConditionalVO {
-    private String expression;
-    private String conditionValue;
+    private String operator;
+    private String operand;
     private String function;
     private RuleVariableVO ruleVariable;
 }

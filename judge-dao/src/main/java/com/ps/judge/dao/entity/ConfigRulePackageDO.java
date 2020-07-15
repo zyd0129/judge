@@ -11,6 +11,6 @@ public class ConfigRulePackageDO {
     private String code;
     private String name;
     private Integer version;
-    private LocalDateTime gmtCreate;
+    private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;
 }
