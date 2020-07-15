@@ -21,6 +21,8 @@ public interface ConfigFlowMapper {
             @Result(column = "package_url", property = "packageUrl", jdbcType = JdbcType.VARCHAR),
             @Result(column = "package_name", property = "packageName", jdbcType = JdbcType.VARCHAR),
             @Result(column = "package_version", property = "packageVersion", jdbcType = JdbcType.VARCHAR),
+            @Result(column = "rule_package_id", property = "rulePackageId", jdbcType = JdbcType.INTEGER),
+            @Result(column = "load_method", property = "loadMethod", jdbcType = JdbcType.INTEGER),
             @Result(column = "status", property = "status", jdbcType = JdbcType.INTEGER),
             @Result(column = "operator", property = "operator", jdbcType = JdbcType.TINYINT),
             @Result(column = "gmt_created", property = "gmtCreated", jdbcType = JdbcType.TIMESTAMP),

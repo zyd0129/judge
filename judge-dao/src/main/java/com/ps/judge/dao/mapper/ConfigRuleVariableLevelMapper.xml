@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ps.judge.dao.mapper.ConfigRuleVariableLevelMapper">
+    <resultMap id="resultMap" type="com.ps.judge.dao.entity.ConfigRuleVariableLevelDO">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="managerId" column="manager_id"/>
+        <result property="operator" column="operator"/>
+        <result property="gmtCreated" column="gmt_created"/>
+        <result property="gmtModified" column="gmt_modified"/>
+    </resultMap>
+
+
+
+
+
+
+
+
+</mapper>

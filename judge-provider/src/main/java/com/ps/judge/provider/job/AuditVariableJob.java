@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 /**
- * 定时请求jury，查询变量结果
+ * 定时进行规则判断
  *
  * @author ：zhangqian9044.
  * @date ：2020/5/19
@@ -22,7 +22,7 @@ public class AuditVariableJob extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-        log.info("start auditVariable job ");
+        log.info("start auditVariable job");
         long startTime = System.currentTimeMillis();
         this.processService.auditVariable();
         long endTime = System.currentTimeMillis();

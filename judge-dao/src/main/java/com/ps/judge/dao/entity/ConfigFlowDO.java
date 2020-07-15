@@ -18,8 +18,13 @@ public class ConfigFlowDO {
     private String packageName;
     private String packageVersion;
     private String packageUrl;
-    private String remark;
 
+
+
+    private Integer rulePackageId;
+    private String loadMethod;
+
+    private String remark;
     private String operator;
     private Integer status;
     private LocalDateTime gmtCreated;

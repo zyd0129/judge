@@ -14,7 +14,7 @@ rule "GR0004"
 	ruleflow-group "ZRX01"
 	when
 		$arrayList : ArrayList( )
-		ProductLevel( greyListInfo != null , $param : Integer.parseInt(greyListInfo.mobileIdCardBankCardHitsGrayListForOverdueTime) <= 30 , Integer.parseInt(greyListInfo.mobileIdCardBankCardHitsGrayListForOverdueTime) >= 15 )
+		ProductLevel( greyListInfo != null , $param : greyListInfo.mobileIdCardBankCardHitsGrayListForOverdueTime == "1")
 	then
 		AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();
 		triggeredRule.setRuleCode("GR0004");
@@ -23,9 +23,9 @@ rule "GR0004"
 		triggeredRule.setRulePackageCode("ZRX01");
 		triggeredRule.setRulePackageName("");
 		triggeredRule.setRulePackageVersion("1.0.0");
-		triggeredRule.setExpression("＞＝and＜=");
-		triggeredRule.setCondition("[15,30]");
-		triggeredRule.setParam(String.valueOf($param));
+		triggeredRule.setExpression("==");
+		triggeredRule.setCondition("1");
+		triggeredRule.setParam($param);
 		triggeredRule.setResult("1");
 		$arrayList.add( triggeredRule );
 end
