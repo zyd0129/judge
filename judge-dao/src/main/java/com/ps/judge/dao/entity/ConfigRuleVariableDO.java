@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 @Data
 public class ConfigRuleVariableDO {
     private Integer id;
-    private String tenantCode;
     private Integer levelId;
     private Integer groupId;
     private String code;

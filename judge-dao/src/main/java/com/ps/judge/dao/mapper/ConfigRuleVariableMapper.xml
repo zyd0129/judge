@@ -5,7 +5,6 @@
 <mapper namespace="com.ps.judge.dao.mapper.ConfigRuleVariableMapper">
     <resultMap id="resultMap" type="com.ps.judge.dao.entity.ConfigRuleVariableDO">
         <id column="id" property="id" jdbcType="INTEGER" />
-        <result column="tenant_code" property="tenantCode" jdbcType="VARCHAR" />
         <result column="level_id" property="levelId" jdbcType="INTEGER" />
         <result column="group_id" property="groupId" jdbcType="INTEGER" />
         <result column="code" property="code" jdbcType="VARCHAR" />
