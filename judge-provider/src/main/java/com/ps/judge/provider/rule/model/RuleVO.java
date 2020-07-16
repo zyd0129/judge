@@ -10,7 +10,6 @@ public class RuleVO {
     private String ruleFlowGroup;
     private String agendaGroup;
     private Integer salience;
-    private String conditionalTemplate;
     private Integer score;
     private String result;
     List<RuleConditionalVO> ruleConditionalList;

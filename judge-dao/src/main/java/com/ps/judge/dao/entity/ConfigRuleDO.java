@@ -12,7 +12,6 @@ public class ConfigRuleDO {
     private String code;
     private String name;
     private Integer version;
-    private String conditionalTemplate;
     private Integer salience;
     private Integer status;
     private Integer score;

@@ -9,9 +9,7 @@ public class ConfigRuleVariableDO {
     private Integer id;
     private String tenantCode;
     private Integer levelId;
-    private String levelCode;
     private Integer groupId;
-    private String groupCode;
     private String code;
     private String name;
     private Integer type;

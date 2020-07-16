@@ -10,7 +10,6 @@
         <result column="code" property="code" jdbcType="VARCHAR" />
         <result column="name" property="name" jdbcType="VARCHAR" />
         <result column="version" property="version" jdbcType="VARCHAR" />
-        <result column="conditional_template" property="conditionalTemplate" jdbcType="VARCHAR" />
         <result column="salience" property="salience" jdbcType="INTEGER" />
         <result column="status" property="status" jdbcType="INTEGER" />
         <result column="score" property="score" jdbcType="INTEGER" />
