@@ -11,15 +11,21 @@
         <result column="name" property="name" jdbcType="VARCHAR" />
         <result column="type" property="type" jdbcType="INTEGER" />
         <result column="status" property="status" jdbcType="INTEGER" />
-        <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP" />
+        <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP"/>
         <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
     </resultMap>
 
-
-
-
-
-
-
+    <select id="query" parameterType="com.ps.judge.dao.entity.ConfigRuleVariableDO" resultMap="resultMap">
+            select * from judge.config_rule_variable
+           <where>
+               <if test="levelId!=null">
+                   level_id=#{levelId}
+               </if>
+               <if test="groupId!=null">
+                   group_id=#{groupId}
+               </if>
+           </where>
+            order by gmt_modified
+    </select>
 
 </mapper>
