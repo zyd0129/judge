@@ -23,7 +23,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class KSessionManagerImpl implements KSessionManager {
     private KieServices kieServices = KieServices.Factory.get();
-
     private Map<String, KieContainer> kieContainerHashMap = new ConcurrentHashMap<>();
 
     @Override

@@ -10,7 +10,7 @@
         <result column="operator" property="operator" jdbcType="VARCHAR" />
         <result column="operand" property="operand" jdbcType="VARCHAR" />
         <result column="function" property="function" jdbcType="VARCHAR" />
-        <result column="variable_id" property="variableId" jdbcType="INTEGER" />
+        <result column="variable_code" property="variableCode" jdbcType="VARCHAR" />
         <result column="status" property="status" jdbcType="INTEGER" />
         <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP" />
         <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />

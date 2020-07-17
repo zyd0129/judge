@@ -22,6 +22,7 @@ public class AuditTaskTriggeredRuleDO {
     private String condition;
     private String param;
     private String result;
+    private Integer score;
     private LocalDateTime gmtCreate;
 
 }

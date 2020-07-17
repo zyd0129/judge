@@ -3,9 +3,9 @@ package com.ps.judge.provider.rule.model;
 import lombok.Data;
 
 @Data
-public class RuleConditionalVO {
+public class ConditionVO {
     private String operator;
     private String operand;
-    private String function;
-    private RuleVariableVO ruleVariable;
+    private String variableCode;
+    private Integer variableType;
 }

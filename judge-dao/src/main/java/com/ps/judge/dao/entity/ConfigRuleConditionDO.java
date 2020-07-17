@@ -12,7 +12,7 @@ public class ConfigRuleConditionDO {
     private String operator;
     private String operand;
     private String function;
-    private Integer variableId;
+    private String variableCode;
     private Integer status;
     private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;
