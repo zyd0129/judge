@@ -1,5 +1,7 @@
 package com.ps.judge.provider.rule.manager;
 
+import org.kie.api.runtime.KieSession;
+
 import java.util.List;
 
 /**
@@ -9,6 +11,8 @@ import java.util.List;
  * @date ：2020/7/16
  */
 public interface RuleManager {
+
+    KieSession getKieSession(String flowCode);
 
     boolean add(String flowCode, String ruleStr);
 

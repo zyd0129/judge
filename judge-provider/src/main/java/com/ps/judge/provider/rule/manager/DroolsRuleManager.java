@@ -24,6 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DroolsRuleManager implements RuleManager {
     private final Map<String, InternalKnowledgeBase> ruleContext = new ConcurrentHashMap<>();
 
+    @Override
     public KieSession getKieSession(String flowCode) {
         InternalKnowledgeBase internalKnowledgeBase = this.ruleContext.get(flowCode);
         return internalKnowledgeBase.newKieSession();

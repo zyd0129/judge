@@ -24,5 +24,4 @@ public class AuditTaskTriggeredRuleDO {
     private String result;
     private Integer score;
     private LocalDateTime gmtCreate;
-
 }

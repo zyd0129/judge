@@ -22,7 +22,7 @@ public class AuditTaskTriggeredRuleDO implements java.io.Serializable {
 	private String expression;
 	private String param;
 	private String condition;
-
+	private Integer score;
 	private String result;
 
 	public AuditTaskTriggeredRuleDO() {
