@@ -18,12 +18,8 @@ public class ConfigFlowDO {
     private String packageName;
     private String packageVersion;
     private String packageUrl;
-
-
-
     private Integer rulePackageId;
-    private String loadMethod;
-
+    private Integer loadMethod;
     private String remark;
     private String operator;
     private Integer status;

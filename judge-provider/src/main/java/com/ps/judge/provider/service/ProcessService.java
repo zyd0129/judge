@@ -5,7 +5,8 @@ import com.ps.judge.api.entity.AuditResultVO;
 import com.ps.judge.dao.entity.AuditTaskDO;
 import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.request.ApplyRequest;
-import com.ps.jury.api.response.VarResult;
+
+import java.util.Map;
 
 public interface ProcessService {
     AuditTaskDO getAuditTask(int id);
@@ -18,7 +19,7 @@ public interface ProcessService {
 
     ApiResponse<ApplyResultVO> retryAudit(AuditTaskDO auditTask);
 
-    ApiResponse<String> saveVarResult(AuditTaskDO auditTask, VarResult varResult);
+    ApiResponse<String> saveVarResult(AuditTaskDO auditTask, Map map);
 
     ApiResponse<AuditResultVO> getAuditResult(AuditTaskDO audit);
 

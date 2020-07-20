@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Component
@@ -18,12 +17,15 @@ public class KieContainerInitialization {
     @Autowired
     KSessionManager kSessionManager;
 
-    @PostConstruct
+    //@PostConstruct
     public void init() {
         log.info("start initiating kieContainerHashMap ");
         long startTime = System.currentTimeMillis();
         List<ConfigFlowDO> configFlowList = this.configFlowService.getAllEnable();
         for (ConfigFlowDO configFlow : configFlowList) {
+            if (configFlow.getLoadMethod() == 0) {
+                continue;
+            }
             try {
                 this.kSessionManager.addContainer(configFlow);
                 log.info("container for {} start success", configFlow.getFlowCode());

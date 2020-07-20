@@ -15,7 +15,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <judge.api.version>0.0.1</judge.api.version>
+        <judge.api.version>0.0.2-SNAPSHOT</judge.api.version>
         <judge.dao.version>0.0.1</judge.dao.version>
         <drools.version>7.36.0.Final</drools.version>
     </properties>

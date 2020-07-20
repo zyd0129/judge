@@ -7,8 +7,9 @@ import com.ps.judge.api.entity.AuditResultVO;
 import com.ps.judge.api.entity.LoadFlowVO;
 import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.request.ApplyRequest;
-import com.ps.jury.api.response.VarResult;
 import org.springframework.http.HttpStatus;
+
+import java.util.Map;
 
 public class ApiFeignFallback implements JudgeApi {
     private final Throwable throwable;
@@ -19,26 +20,26 @@ public class ApiFeignFallback implements JudgeApi {
 
     @Override
     public ApiResponse<ApplyResultVO> applyAudit(ApplyRequest applyRequest) {
-        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), throwable.getMessage());
+        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), this.throwable.getMessage());
     }
 
     @Override
     public ApiResponse<ApplyResultVO> retryAudit(Integer taskId) {
-        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), throwable.getMessage());
+        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), this.throwable.getMessage());
     }
 
     @Override
     public ApiResponse<String> loadFlow(LoadFlowVO loadFlowVO) {
-        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), throwable.getMessage());
+        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), this.throwable.getMessage());
     }
 
     @Override
-    public ApiResponse<String> submitVar(ApiResponse<VarResult> apiResponse) {
-        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), throwable.getMessage());
+    public ApiResponse<String> submitVar(ApiResponse<Map> apiResponse) {
+        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), this.throwable.getMessage());
     }
 
     @Override
     public ApiResponse<AuditResultVO> getAuditResult(AuditResultQuery auditResultQuery) {
-        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), throwable.getMessage());
+        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), this.throwable.getMessage());
     }
 }

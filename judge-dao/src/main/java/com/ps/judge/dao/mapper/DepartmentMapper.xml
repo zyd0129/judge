@@ -10,7 +10,7 @@
         <result property="operator" column="operator"/>
         <result property="gmtCreated" column="gmt_created"/>
         <result property="gmtModified" column="gmt_modified"/>
-        <association property="manager" javaType="AuthUserDO">
+        <association property="ruleManager" javaType="AuthUserDO">
             <result property="id" column="uid"/>
             <result property="username" column="username"/>
             <result property="name" column="uname"/>

@@ -13,11 +13,8 @@
         <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
     </resultMap>
 
-
-
-
-
-
-
+    <select id="getConfigRulePackageById" resultMap="resultMap">
+        select * from config_rule_package where id = #{id}
+    </select>
 
 </mapper>

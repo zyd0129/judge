@@ -24,7 +24,6 @@ import com.ps.judge.provider.listener.RuleRuntimeEventListenerImpl;
 import com.ps.jury.api.JuryApi;
 import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.request.ApplyRequest;
-import com.ps.jury.api.response.VarResult;
 import org.apache.commons.lang.StringUtils;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +68,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
 
     @Override
     @Async
-    public void startProcess(AuditTaskDO auditTask, VarResult varResult) {
+    public void startProcess(AuditTaskDO auditTask, Map map) {
         if (!syncAuditTaskStatus(auditTask)) {
             return;
         }
@@ -96,9 +95,11 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         Map<String, Object> parameters = new HashMap<>();
         List<AuditTaskTriggeredRuleDO> auditTaskTriggeredRuleDOList = new ArrayList<>();
         ScoreCardVO scoreCard = new ScoreCardVO();
-        parameters.put("platform", varResult.getPlatform());
-        parameters.put("merchant", varResult.getMerchant());
-        parameters.put("product", varResult.getProduct());
+        Map varResultMap = (Map) map.get("varResult");
+
+        parameters.put("map", varResultMap);
+        //parameters.put("merchant", map.get("merchant"));
+        //parameters.put("product", map.get("product"));
         parameters.put("triggeredRuleList", auditTaskTriggeredRuleDOList);
         parameters.put("scoreCard", scoreCard);
 
@@ -115,7 +116,6 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
                 kieSession.destroy();
             }
         }
-
         auditTask.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_SUCCESS.getCode());
         auditTask.setCompleteTime(LocalDateTime.now());
         auditTask.setGmtModified(LocalDateTime.now());

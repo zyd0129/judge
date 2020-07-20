@@ -13,13 +13,13 @@ import com.ps.judge.provider.service.ConfigFlowService;
 import com.ps.judge.provider.service.ProcessService;
 import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.request.ApplyRequest;
-import com.ps.jury.api.response.VarResult;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -84,25 +84,25 @@ public class ProcessController implements JudgeApi {
     }
 
     @Override
-    public ApiResponse<String> submitVar(ApiResponse<VarResult> apiResponse) {
-        VarResult varResult = apiResponse.getData();
-        if (Objects.isNull(varResult)) {
+    public ApiResponse<String> submitVar(ApiResponse<Map> apiResponse) {
+        Map varResultMap = apiResponse.getData();
+        if (varResultMap.isEmpty()) {
             return ApiResponse.success("varResult 信息不存在");
         }
-        String tenantCode = varResult.getTenantCode();
-        String applyId = varResult.getApplyId();
+        String tenantCode = (String) varResultMap.get("tenantCode");
+        String applyId =  (String) varResultMap.get("applyId");
         AuditTaskDO auditTask = this.processService.getAuditTask(tenantCode, applyId);
         if (Objects.isNull(auditTask)) {
             return ApiResponse.success("订单不存在");
         }
-        if (!StringUtils.equals(auditTask.getFlowCode(), varResult.getFlowCode())) {
+        if (!StringUtils.equals(auditTask.getFlowCode(), (String) varResultMap.get("flowCode"))) {
             return ApiResponse.success("规则流不一致");
         }
         if (!apiResponse.isSuccess()) {
             this.processService.updateAuditStatus(AuditTaskStatusEnum.VAR_COMPUTE_FAIL.getCode(), auditTask.getId());
             return ApiResponse.success("变量计算失败");
         }
-        return this.processService.saveVarResult(auditTask, varResult);
+        return this.processService.saveVarResult(auditTask, varResultMap);
     }
 
     @Override

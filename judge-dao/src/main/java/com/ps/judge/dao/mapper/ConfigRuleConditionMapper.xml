@@ -11,16 +11,14 @@
         <result column="operand" property="operand" jdbcType="VARCHAR" />
         <result column="function" property="function" jdbcType="VARCHAR" />
         <result column="variable_code" property="variableCode" jdbcType="VARCHAR" />
+        <result column="variable_type" property="variableType" jdbcType="INTEGER" />
         <result column="status" property="status" jdbcType="INTEGER" />
         <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP" />
         <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
     </resultMap>
 
-
-
-
-
-
-
+    <select id="getConfigRuleCondition" resultMap="resultMap">
+        select * from config_rule_condition where rule_id = #{ruleId}
+    </select>
 
 </mapper>

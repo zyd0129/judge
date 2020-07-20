@@ -18,11 +18,8 @@
         <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
     </resultMap>
 
-
-
-
-
-
-
+    <select id="listConfigRule" resultMap="resultMap">
+        select * from config_rule where rule_package_id = #{rulePackageId}
+    </select>
 
 </mapper>

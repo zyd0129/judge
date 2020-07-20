@@ -2,6 +2,7 @@ package com.ps.judge.provider;
 
 import com.ps.judge.provider.rule.builder.DroolsRuleTemplate;
 import com.ps.judge.provider.rule.builder.RuleTemplate;
+import com.ps.judge.provider.rule.model.ConditionVO;
 import com.ps.judge.provider.rule.model.RuleVO;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
@@ -18,27 +19,15 @@ import java.util.List;
 public class JudgeProviderApplicationTests {
     @Test
     public void contextLoads() {
-        VariableVO var1  = new VariableVO();
-        var1.setLevelCode("person");
-        var1.setGroupCode("sex");
-        var1.setVarCode("s");
-        var1.setType(0);
-
-        VariableVO var2  = new VariableVO();
-        var2.setLevelCode("person");
-        var2.setGroupCode("sex");
-        var2.setVarCode("s");
-        var2.setType(0);
-
         ConditionVO condition1 = new ConditionVO();
         condition1.setOperator(">");
         condition1.setOperand("1");
-        condition1.setVariable(var1);
+        condition1.setVariableCode("person_name");
 
         ConditionVO condition2 = new ConditionVO();
         condition2.setOperator("<");
         condition2.setOperand("5");
-        condition2.setVariable(var2);
+        condition2.setVariableCode("person_age");
 
         List<ConditionVO> conditionList = new ArrayList<>();
         conditionList.add(condition1);

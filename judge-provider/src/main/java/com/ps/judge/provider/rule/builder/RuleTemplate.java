@@ -30,7 +30,7 @@ public abstract class RuleTemplate {
         return new String(ruleStr);
     }
 
-    private String buildRule(RuleVO rule){
+    private String buildRule(RuleVO rule) {
         StringBuilder sb = new StringBuilder();
         sb.append(this.buildAttributes(rule));
         sb.append(this.buildLHS(rule.getConditionList()));

@@ -16,7 +16,6 @@ import com.ps.judge.provider.task.AsyncProcessTask;
 import com.ps.jury.api.JuryApi;
 import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.request.ApplyRequest;
-import com.ps.jury.api.response.VarResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -119,8 +119,8 @@ public class ProcessServiceImpl implements ProcessService {
 
         if (auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode()) {
             AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditId);
-            VarResult varResult = JSON.parseObject(auditTaskParam.getVarResult(), VarResult.class);
-            this.asyncProcessTask.startProcess(auditTask, varResult);
+            Map varResultMap = JSON.parseObject(auditTaskParam.getVarResult(), Map.class);
+            this.asyncProcessTask.startProcess(auditTask, varResultMap);
         }
 
         ApplyResultVO applyResultVO = new ApplyResultVO();
@@ -130,15 +130,17 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     @Transactional
-    public ApiResponse<String> saveVarResult(AuditTaskDO auditTask, VarResult varResult) {
+    public ApiResponse<String> saveVarResult(AuditTaskDO auditTask, Map map) {
         if (auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode()
                 || auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.getCode()) {
             Integer auditId = auditTask.getId();
             auditTask.setTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode());
             this.updateAuditStatus(auditTask.getTaskStatus(), auditId);
-            String varResultString = JSON.toJSONString(varResult, SerializerFeature.WriteMapNullValue);
+
+            String varResultString = JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
             this.auditTaskParamMapper.updateVarResult(varResultString, auditId, LocalDateTime.now());
-            this.asyncProcessTask.startProcess(auditTask, varResult);
+
+            this.asyncProcessTask.startProcess(auditTask, map);
         }
         return ApiResponse.success();
     }
@@ -204,7 +206,7 @@ public class ProcessServiceImpl implements ProcessService {
             return;
         }
         for (AuditTaskDO auditTask : auditTaskList) {
-            ApiResponse<VarResult> apiResponse = this.juryApi.getVarResult(auditTask.getApplyId(), auditTask.getTenantCode());
+            ApiResponse<Map> apiResponse = this.juryApi.getVarResult(auditTask.getApplyId(), auditTask.getTenantCode());
             if (apiResponse.isSuccess()) {
                 this.saveVarResult(auditTask, apiResponse.getData());
             }
@@ -219,9 +221,8 @@ public class ProcessServiceImpl implements ProcessService {
         }
         for (AuditTaskDO auditTask : auditTaskList) {
             AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditTask.getId());
-            String varResultString = auditTaskParam.getVarResult();
-            VarResult varResult = JSON.parseObject(varResultString, VarResult.class);
-            this.asyncProcessTask.startProcess(auditTask, varResult);
+            Map varResultMap = JSON.parseObject(auditTaskParam.getVarResult(), Map.class);
+            this.asyncProcessTask.startProcess(auditTask, varResultMap);
         }
     }
 

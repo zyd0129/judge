@@ -45,11 +45,6 @@
       <version>1.4.11.1</version>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>com.ps.jury</groupId>
-          <artifactId>jury-api</artifactId>
-          <version>0.0.2</version>
-      </dependency>
   </dependencies>
   <build>
     <plugins>

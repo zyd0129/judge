@@ -7,10 +7,11 @@ import com.ps.judge.api.entity.LoadFlowVO;
 import com.ps.judge.api.feign.ApiFeignFallbackFactory;
 import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.request.ApplyRequest;
-import com.ps.jury.api.response.VarResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.Map;
 
 @FeignClient(name = "judge-provider", fallbackFactory = ApiFeignFallbackFactory.class)
 public interface JudgeApi {
@@ -24,7 +25,7 @@ public interface JudgeApi {
     ApiResponse<String> loadFlow(@RequestBody LoadFlowVO loadFlowVO);
 
     @PostMapping("/judge/var/submit")
-    ApiResponse<String> submitVar(@RequestBody ApiResponse<VarResult> apiResponse);
+    ApiResponse<String> submitVar(@RequestBody ApiResponse<Map> apiResponse);
 
     @PostMapping("/judge/audit/result")
     ApiResponse<AuditResultVO> getAuditResult(@RequestBody AuditResultQuery auditResultQuery);
