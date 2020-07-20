@@ -14,8 +14,7 @@ import com.ps.judge.provider.rule.builder.RuleTemplate;
 import com.ps.judge.provider.rule.manager.RuleManager;
 import com.ps.judge.provider.rule.model.ConditionVO;
 import com.ps.judge.provider.rule.model.RuleVO;
-import com.ps.judge.provider.service.ConfigFlowService;
-import org.drools.core.impl.InternalKnowledgeBase;
+import com.ps.judge.provider.service.FlowService;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,8 +22,14 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * flow管理服务
+ *
+ * @author ：zhangqian9044.
+ * @date ：2020/7/20
+ */
 @Service
-public class ConfigFlowServiceImpl implements ConfigFlowService {
+public class FlowServiceImpl implements FlowService {
     @Autowired
     ConfigFlowMapper configFlowMapper;
     @Autowired
@@ -37,7 +42,6 @@ public class ConfigFlowServiceImpl implements ConfigFlowService {
     ConfigRuleConditionMapper configRuleConditionMapper;
     @Autowired
     RuleManager ruleManager;
-
 
     @Override
     public ConfigFlowDO getByFlowCode(String flowCode) {
