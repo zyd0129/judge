@@ -53,13 +53,13 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
 
     @Override
     @Async
-    public void applyJury(int auditId, ApplyRequest request) {
+    public void applyJury(AuditTaskDO auditTask, ApplyRequest request) {
         ApiResponse<String> applyResponse = this.juryApi.apply(request);
         if (!applyResponse.isSuccess()) {
-            this.updateAuditStatus(AuditTaskStatusEnum.FORWARDED_FAIL.getCode(), auditId);
+            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.FORWARDED_FAIL.getCode());
             return;
         }
-        this.updateAuditStatus(AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode(), auditId);
+        this.updateAuditStatus(auditTask, AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode());
     }
 
     @Override
@@ -73,11 +73,11 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         String flowCode = auditTask.getFlowCode();
         ConfigFlowDO configFlow = this.configFlowMapper.getByFlowCode(flowCode);
         if (Objects.isNull(configFlow)) {
-            this.updateAuditStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode(), taskId);
+            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode());
             return;
         }
         if (configFlow.getStatus() != StatusEnum.ENABLE.getStatus()) {
-            this.updateAuditStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode(), taskId);
+            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode());
             return;
         }
 
@@ -96,7 +96,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
 
         KieSession kieSession = this.kSessionManager.getKieSession(flowCode);
         if (Objects.isNull(kieSession)) {
-            this.updateAuditStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode(), taskId);
+            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode());
             return;
         }
 
@@ -144,7 +144,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         auditTask = this.auditTaskMapper.getAuditTaskByIdForUpdate(auditTask.getId());
         if (auditTask.getTaskStatus() == AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode()
                 || auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode()) {
-            return this.updateAuditStatus(AuditTaskStatusEnum.AUDIT.getCode(), auditTask.getId());
+            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT.getCode());
         }
         return false;
     }
@@ -294,9 +294,9 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         return apiResponse;
     }
 
-
-    private boolean updateAuditStatus(int status, int taskId) {
-        return this.auditTaskMapper.updateTaskStatus(status, taskId, LocalDateTime.now()) > 0;
+    private boolean updateAuditStatus(AuditTaskDO auditTask, int status) {
+        auditTask.setTaskStatus(status);
+        auditTask.setGmtModified(LocalDateTime.now());
+        return this.auditTaskMapper.update(auditTask) > 0;
     }
-
 }

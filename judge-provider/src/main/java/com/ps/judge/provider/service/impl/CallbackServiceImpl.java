@@ -40,10 +40,11 @@ public class CallbackServiceImpl implements CallbackService {
 
     @Override
     public void sendAuditTaskResult(AuditTaskDO auditTask, ApiResponse<AuditResultVO> apiResponse) {
-        Integer auditId = auditTask.getId();
         int callbackCount = auditTask.getCallbackCount();
         if (callbackCount >= MAX_CALLBACK_COUNT) {
-            this.updateAuditStatus(AuditTaskStatusEnum.CALLBACK_FAIL.getCode(), auditId);
+            auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK_FAIL.getCode());
+            auditTask.setGmtModified(LocalDateTime.now());
+            this.auditTaskMapper.update(auditTask);
             return;
         }
         auditTask.setCallbackCount(++callbackCount);
@@ -88,9 +89,5 @@ public class CallbackServiceImpl implements CallbackService {
             AuditResultVO auditResultVO = JSON.toJavaObject(apiResponse.getData(), AuditResultVO.class);
             this.sendAuditTaskResult(auditTask, ApiResponse.success(auditResultVO));
         }
-    }
-
-    private boolean updateAuditStatus(int status, int taskId) {
-        return this.auditTaskMapper.updateTaskStatus(status, taskId, LocalDateTime.now()) > 0;
     }
 }

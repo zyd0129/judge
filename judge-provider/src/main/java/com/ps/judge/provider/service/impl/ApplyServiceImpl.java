@@ -77,8 +77,7 @@ public class ApplyServiceImpl implements ApplyService {
         auditTaskParam.setGmtCreate(LocalDateTime.now());
         auditTaskParam.setGmtModified(LocalDateTime.now());
         this.auditTaskParamMapper.insert(auditTaskParam);
-
-        this.asyncProcessTask.applyJury(auditId, request);
+        this.asyncProcessTask.applyJury(auditTask, request);
         ApplyResultVO applyResultVO = new ApplyResultVO();
         applyResultVO.setApplyId(request.getApplyId());
         return ApiResponse.success(applyResultVO);
@@ -98,7 +97,7 @@ public class ApplyServiceImpl implements ApplyService {
                 || auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.getCode()) {
             AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditId);
             ApplyRequest request = JSON.parseObject(auditTaskParam.getInputRawParam(), ApplyRequest.class);
-            this.asyncProcessTask.applyJury(auditId, request);
+            this.asyncProcessTask.applyJury(auditTask, request);
         }
 
         if (auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode()) {
