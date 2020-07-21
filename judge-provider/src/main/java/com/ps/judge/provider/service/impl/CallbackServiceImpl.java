@@ -27,6 +27,8 @@ import java.util.Objects;
  */
 @Service
 public class CallbackServiceImpl implements CallbackService {
+    private static final int MAX_CALLBACK_COUNT = 3;
+
     @Autowired
     AuditTaskMapper auditTaskMapper;
     @Autowired
@@ -40,7 +42,7 @@ public class CallbackServiceImpl implements CallbackService {
     public void sendAuditTaskResult(AuditTaskDO auditTask, ApiResponse<AuditResultVO> apiResponse) {
         Integer auditId = auditTask.getId();
         int callbackCount = auditTask.getCallbackCount();
-        if (callbackCount >= 3) {
+        if (callbackCount >= MAX_CALLBACK_COUNT) {
             this.updateAuditStatus(AuditTaskStatusEnum.CALLBACK_FAIL.getCode(), auditId);
             return;
         }
@@ -56,7 +58,7 @@ public class CallbackServiceImpl implements CallbackService {
 
     private boolean sendPost(String url, ApiResponse<AuditResultVO> apiResponse) {
         HttpEntity<ApiResponse<AuditResultVO>> requestEntity = new HttpEntity<>(apiResponse, this.httpHeaders);
-        ResponseEntity<JSONObject> result = this.restTemplate.exchange(url , HttpMethod.POST, requestEntity, JSONObject.class);
+        ResponseEntity<JSONObject> result = this.restTemplate.exchange(url, HttpMethod.POST, requestEntity, JSONObject.class);
         if (result.getStatusCode() == HttpStatus.OK) {
             JSONObject body = result.getBody();
             if (Objects.isNull(body)) {

@@ -9,7 +9,6 @@ import com.ps.judge.provider.rule.manager.RuleManager;
 import com.ps.judge.provider.rule.model.ConditionVO;
 import com.ps.judge.provider.rule.model.RuleVO;
 import com.ps.judge.provider.service.FlowService;
-import org.apache.ibatis.annotations.Param;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,7 +57,8 @@ public class FlowServiceImpl implements FlowService {
             if (configFlow.getLoadMethod() == 1) {
                 continue;
             }
-            List<ConfigRuleDO> configRuleList = this.configRuleMapper.listConfigRule(configFlow.getRulePackageVersionId());
+            List<ConfigRuleDO> configRuleList =
+                    this.configRuleMapper.listConfigRule(configFlow.getRulePackageVersionId());
             if (configRuleList.isEmpty()) {
                 continue;
             }
@@ -78,13 +78,11 @@ public class FlowServiceImpl implements FlowService {
             if (configRuleConditionList.isEmpty()) {
                 continue;
             }
-            List<ConditionVO> conditionList = this. getConditionVOList(configRuleConditionList);
-
-            ConfigRulePackageVersionDO configRulePackageVersionDO = this.configRulePackageVersionMapper
-                    .getConfigRulePackageVersionById(configRule.getRulePackageVersionId());
-            ConfigRulePackageDO configRulePackage = this.configRulePackageMapper
-                    .getConfigRulePackageById(configRulePackageVersionDO.getPackageId());
-
+            ConfigRulePackageVersionDO configRulePackageVersion =
+                    this.configRulePackageVersionMapper.getConfigRulePackageVersionById(configRule.getRulePackageVersionId());
+            ConfigRulePackageDO configRulePackage =
+                    this.configRulePackageMapper.getConfigRulePackageById(configRulePackageVersion.getPackageId());
+            List<ConditionVO> conditionList = this.getConditionVOList(configRuleConditionList);
             RuleVO rule = new RuleVO();
             rule.setRuleCode(configRule.getCode());
             rule.setRuleName(configRule.getName());
