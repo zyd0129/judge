@@ -1,6 +1,6 @@
 package com.ps.judge.provider.job;
 
-import com.ps.judge.provider.service.ProcessService;
+import com.ps.judge.provider.service.ApplyService;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
@@ -18,13 +18,13 @@ import org.springframework.scheduling.quartz.QuartzJobBean;
 @Slf4j
 public class ReapplyJuryJob extends QuartzJobBean {
     @Autowired
-    ProcessService processService;
+    ApplyService applyService;
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         log.info("start reapplyJury job");
         long startTime = System.currentTimeMillis();
-        this.processService.reapplyJury();
+        this.applyService.reapplyJury();
         long endTime = System.currentTimeMillis();
         log.info("end reapplyJury job, time cost: {}", endTime - startTime);
     }

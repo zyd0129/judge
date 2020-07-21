@@ -1,7 +1,6 @@
 package com.ps.judge.provider.task;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ps.judge.api.entity.AuditResultVO;
 import com.ps.judge.api.entity.NodeResultVO;
@@ -18,21 +17,17 @@ import com.ps.judge.provider.entity.ScoreCardVO;
 import com.ps.judge.provider.enums.AuditCodeEnum;
 import com.ps.judge.provider.enums.AuditTaskStatusEnum;
 import com.ps.judge.provider.enums.StatusEnum;
-import com.ps.judge.provider.listener.AgendaEventListenerImpl;
-import com.ps.judge.provider.listener.ProcessEventListenerImpl;
-import com.ps.judge.provider.listener.RuleRuntimeEventListenerImpl;
-import com.ps.judge.provider.service.ConfigFlowService;
+import com.ps.judge.provider.service.CallbackService;
+import com.ps.judge.provider.service.FlowService;
 import com.ps.jury.api.JuryApi;
 import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.request.ApplyRequest;
 import org.apache.commons.lang.StringUtils;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -50,13 +45,11 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
     @Autowired
     ConfigFlowMapper configFlowMapper;
     @Autowired
-    ConfigFlowService configFlowService;
+    FlowService flowService;
     @Autowired
     KSessionManager kSessionManager;
     @Autowired
-    RestTemplate restTemplate;
-    @Autowired
-    HttpHeaders httpHeaders;
+    CallbackService callbackService;
 
     @Override
     @Async
@@ -78,7 +71,6 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
 
         Integer taskId = auditTask.getId();
         String flowCode = auditTask.getFlowCode();
-
         ConfigFlowDO configFlow = this.configFlowMapper.getByFlowCode(flowCode);
         if (Objects.isNull(configFlow)) {
             this.updateAuditStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode(), taskId);
@@ -94,7 +86,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         List<AuditTaskTriggeredRuleDO> auditTaskTriggeredRuleDOList = new ArrayList<>();
 
         if (configFlow.getLoadMethod() == 0) {
-            KieSession kieSession = configFlowService.getKieSession(configFlow.getFlowCode());
+            KieSession kieSession = flowService.getKieSession(configFlow.getFlowCode());
             kieSession.insert(varResultMap);
             kieSession.insert(auditTaskTriggeredRuleDOList);
             kieSession.fireAllRules();
@@ -107,10 +99,6 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             this.updateAuditStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode(), taskId);
             return;
         }
-
-        kieSession.addEventListener(new AgendaEventListenerImpl());
-        kieSession.addEventListener(new ProcessEventListenerImpl());
-        kieSession.addEventListener(new RuleRuntimeEventListenerImpl());
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("map", varResultMap);
@@ -137,23 +125,16 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         this.processResult(auditTask, parameters);
     }
 
-    private Map<String, Object> getVarResultMap(Map levelMap){
+    private Map<String, Object> getVarResultMap(Map levelMap) {
         Map<String, Object> varResultMap = new HashMap();
-
         for (Object level : levelMap.keySet()) {
-
             Map groupMap = (Map) levelMap.get(level);
-
             for (Object group : groupMap.keySet()) {
-
                 Map varMap = (Map) groupMap.get(group);
-
                 for (Object var : varMap.keySet()) {
                     varResultMap.put((String) level + group + var , varMap.get(var));
                 }
-
             }
-
         }
         return varResultMap;
     }
@@ -216,7 +197,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK.getCode());
         auditTask.setGmtModified(LocalDateTime.now());
         this.auditTaskMapper.update(auditTask);
-        this.sendAuditResult(auditTask, apiResponse);
+        this.callbackService.sendAuditTaskResult(auditTask, apiResponse);
     }
 
     @Transactional
@@ -285,7 +266,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK.getCode());
         auditTask.setGmtModified(LocalDateTime.now());
         this.auditTaskMapper.update(auditTask);
-        this.sendAuditResult(auditTask, apiResponse);
+        this.callbackService.sendAuditTaskResult(auditTask, apiResponse);
     }
 
     private ApiResponse<AuditResultVO> saveOutputRawParam(AuditTaskDO auditTask, List<NodeResultVO> nodeResult) {
@@ -313,42 +294,6 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         return apiResponse;
     }
 
-    @Override
-    public void sendAuditResult(AuditTaskDO auditTask, ApiResponse<AuditResultVO> apiResponse) {
-        Integer auditId = auditTask.getId();
-        int callbackCount = auditTask.getCallbackCount();
-        if (callbackCount >= 3) {
-            this.updateAuditStatus(AuditTaskStatusEnum.CALLBACK_FAIL.getCode(), auditId);
-            return;
-        }
-        auditTask.setCallbackCount(++callbackCount);
-        auditTask.setGmtModified(LocalDateTime.now());
-        this.auditTaskMapper.update(auditTask);
-        if (this.sendPost(auditTask.getCallbackUrl(), apiResponse)) {
-            auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK_SUCCESS.getCode());
-            auditTask.setGmtModified(LocalDateTime.now());
-            this.auditTaskMapper.update(auditTask);
-        }
-    }
-
-    private boolean sendPost(String url, ApiResponse<AuditResultVO> apiResponse) {
-        HttpEntity<ApiResponse<AuditResultVO>> requestEntity = new HttpEntity<>(apiResponse, this.httpHeaders);
-        ResponseEntity<JSONObject> result = this.restTemplate.exchange(url , HttpMethod.POST, requestEntity, JSONObject.class);
-        if (result.getStatusCode() == HttpStatus.OK) {
-            JSONObject body = result.getBody();
-            if (Objects.isNull(body)) {
-                return false;
-            }
-            Integer resultCode = body.getInteger("code");
-            if (Objects.isNull(resultCode)) {
-                return false;
-            }
-            if (resultCode == ApiResponse.success().getCode()) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     private boolean updateAuditStatus(int status, int taskId) {
         return this.auditTaskMapper.updateTaskStatus(status, taskId, LocalDateTime.now()) > 0;

@@ -8,7 +8,6 @@
         <result column="tenant_code" property="tenantCode" jdbcType="VARCHAR"/>
         <result column="code" property="code" jdbcType="VARCHAR"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
-        <result column="version" property="version" jdbcType="VARCHAR"/>
         <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP"/>
         <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP"/>
     </resultMap>
@@ -34,7 +33,7 @@
 
 
     <insert id="insert" parameterType="ConfigRulePackageDO" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-        insert into config_rule_package(name, code,tenant_code, gmt_created, gmt_modified)
+        insert into config_rule_package(name, code, tenant_code, gmt_created, gmt_modified)
         values (#{name}, #{code}, #{tenantCode}, #{gmtCreated}, #{gmtModified})
     </insert>
 

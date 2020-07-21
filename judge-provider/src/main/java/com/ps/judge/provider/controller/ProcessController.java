@@ -9,7 +9,8 @@ import com.ps.judge.dao.entity.AuditTaskDO;
 import com.ps.judge.dao.entity.ConfigFlowDO;
 import com.ps.judge.provider.enums.AuditTaskStatusEnum;
 import com.ps.judge.provider.enums.StatusEnum;
-import com.ps.judge.provider.service.ConfigFlowService;
+import com.ps.judge.provider.service.ApplyService;
+import com.ps.judge.provider.service.FlowService;
 import com.ps.judge.provider.service.ProcessService;
 import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.request.ApplyRequest;
@@ -25,9 +26,11 @@ import java.util.Objects;
 @RestController
 public class ProcessController implements JudgeApi {
     @Autowired
-    ProcessService processService;
+    FlowService flowService;
     @Autowired
-    ConfigFlowService configFlowService;
+    ApplyService applyService;
+    @Autowired
+    ProcessService processService;
 
     @Override
     public ApiResponse<ApplyResultVO> applyAudit(@Validated ApplyRequest applyRequest) {
@@ -35,14 +38,14 @@ public class ProcessController implements JudgeApi {
         if (Objects.nonNull(audit)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "申请订单已存在");
         }
-        ConfigFlowDO configFlow = this.configFlowService.getByFlowCode(applyRequest.getFlowCode());
+        ConfigFlowDO configFlow = this.flowService.getByFlowCode(applyRequest.getFlowCode());
         if (Objects.isNull(configFlow)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不存在");
         }
         if (configFlow.getStatus() != StatusEnum.ENABLE.getStatus()) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流未启用");
         }
-        return this.processService.apply(applyRequest);
+        return this.applyService.apply(applyRequest);
     }
 
     @Override
@@ -62,21 +65,21 @@ public class ProcessController implements JudgeApi {
                 && auditTask.getTaskStatus() != AuditTaskStatusEnum.FORWARDED_FAIL.getCode()) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单未失败，不能重试");
         }
-        return this.processService.retryAudit(auditTask);
+        return this.applyService.retryAudit(auditTask);
     }
 
     @Override
     public ApiResponse<String> loadFlow(@Validated LoadFlowVO loadFlowVO) {
-        ConfigFlowDO configFlow = this.configFlowService.getByFlowCode(loadFlowVO.getFlowCode());
+        ConfigFlowDO configFlow = this.flowService.getByFlowCode(loadFlowVO.getFlowCode());
         if (Objects.isNull(configFlow)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不存在");
         }
         if (loadFlowVO.isLoad()) {
-            if (this.configFlowService.loadFlow(configFlow)) {
+            if (this.flowService.loadFlow(configFlow)) {
                 return ApiResponse.success();
             }
         } else {
-            if (this.configFlowService.removeFlow(configFlow)) {
+            if (this.flowService.removeFlow(configFlow)) {
                 return ApiResponse.success();
             }
         }
