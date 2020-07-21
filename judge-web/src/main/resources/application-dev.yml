@@ -1,4 +1,7 @@
-
+logging:
+  level:
+    root: info
+    com.ps.judge.dao.mapper: debug
 spring:
   application:
     name: judge-web

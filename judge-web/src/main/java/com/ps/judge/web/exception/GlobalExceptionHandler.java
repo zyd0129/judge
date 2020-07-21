@@ -15,11 +15,6 @@ import java.io.IOException;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(RuntimeException.class)
-    public ApiResponse handleRuntimeException(RuntimeException e) {
-        log.error(e.getMessage(), e);
-        return ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
-    }
 
     @ExceptionHandler(NullPointerException.class)
     public ApiResponse handleNullPointerException(NullPointerException e) {
@@ -53,9 +48,9 @@ public class GlobalExceptionHandler {
         return ApiResponse.error(600, e.getMessage());
     }
 
-    @ExceptionHandler(Exception.class)
-    public ApiResponse handle(Exception e) {
-        log.error(e.getMessage(), e);
-        return ApiResponse.error(600, e.getMessage());
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ApiResponse handle(Exception e) {
+//        log.error(e.getMessage(), e);
+//        return ApiResponse.error(600, e.getMessage());
+//    }
 }
