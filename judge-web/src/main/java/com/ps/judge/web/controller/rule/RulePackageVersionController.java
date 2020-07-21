@@ -30,7 +30,7 @@ public class RulePackageVersionController {
     public ApiResponse modify(@Valid @RequestBody RulePackageVersionModifyReq modifyReq) {
         ConfigRulePackageVersionBO rulePackageVersionBO = modifyReq.convertToBO();
         rulePackageVersionService.modify(rulePackageVersionBO);
-        return ApiResponse.success(rulePackageVersionBO);
+        return ApiResponse.success();
     }
 
 }

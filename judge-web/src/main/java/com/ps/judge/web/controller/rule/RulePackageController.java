@@ -53,24 +53,4 @@ public class RulePackageController {
         rulePackageService.modify(rulePackageBO);
         return ApiResponse.success();
     }
-
-    /**
-     * 创建版本
-     * @param rulePackageVersionCreateReq
-     * @return
-     */
-
-    @PostMapping("createVersion")
-    public ApiResponse create(@Valid @RequestBody RulePackageVersionCreateReq rulePackageVersionCreateReq) {
-        ConfigRulePackageVersionBO rulePackageVersionBO = rulePackageVersionCreateReq.convertToBO();
-        rulePackageVersionService.create(rulePackageVersionBO);
-        return ApiResponse.success(rulePackageVersionBO);
-    }
-
-    @PostMapping("modifyVersion")
-    public ApiResponse modify(@Valid @RequestBody RulePackageVersionCreateReq rulePackageVersionCreateReq) {
-        ConfigRulePackageVersionBO rulePackageVersionBO = rulePackageVersionCreateReq.convertToBO();
-        rulePackageVersionService.create(rulePackageVersionBO);
-        return ApiResponse.success(rulePackageVersionBO);
-    }
 }
