@@ -8,4 +8,10 @@ import java.util.List;
 public interface ConfigRuleMapper {
 
     List<ConfigRuleDO> listConfigRule(@Param("rulePackageVersionId")int rulePackageVersionId);
+
+    void insert(ConfigRuleDO ruleDO);
+
+    List<ConfigRuleDO> query(ConfigRuleDO ruleDO);
+
+    void update(ConfigRuleDO ruleDO);
 }

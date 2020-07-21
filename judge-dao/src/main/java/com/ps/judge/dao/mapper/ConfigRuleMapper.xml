@@ -22,4 +22,47 @@
         select * from config_rule where rule_package_version_id = #{rulePackageVersionId}
     </select>
 
+    <insert id="insert" parameterType="ConfigRuleDO" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into config_rule(name, code, salience, score,result,tenant_code,rule_package_version_id,gmt_created, gmt_modified)
+        values (#{name}, #{code}, #{salience}, #{score},#{result},#{tenantCode},#{rulePackageVersionId},#{gmtCreated}, #{gmtModified})
+    </insert>
+
+    <select id="query" parameterType="ConfigRuleDO" resultMap="resultMap">
+        select *
+        from config_rule
+        <where>
+            <if test="name!=null">
+                and name=#{name}
+            </if>
+            <if test="rulePackageVersionId!=null">
+                and rule_package_version_id=#{rulePackageVersionId}
+            </if>
+        </where>
+    </select>
+
+    <update id="update" parameterType="ConfigRuleDO">
+        update config_rule
+        <set>
+            <if test="name!=null">
+                name=#{name},
+            </if>
+            <if test="code!=null">
+                code=#{code},
+            </if>
+            <if test="salience!=null">
+                salience=#{salience},
+            </if>
+            <if test="score!=null">
+                score=#{score},
+            </if>
+            <if test="result!=null">
+                result=#{result},
+            </if>
+            <if test="gmtModified!=null">
+                gmt_modified=#{gmtModified},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
 </mapper>
