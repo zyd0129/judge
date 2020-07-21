@@ -11,6 +11,10 @@
         <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP"/>
     </resultMap>
 
+    <select id="getConfigRulePackageVersionById" resultMap="resultMap">
+        select * from config_rule_package_version where id = #{id}
+    </select>
+
     <insert id="insert" parameterType="ConfigRulePackageVersionDO" useGeneratedKeys="true" keyProperty="id"
             keyColumn="id">
         insert into config_rule_package_version(package_id, version, gmt_created, gmt_modified)

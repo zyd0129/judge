@@ -125,11 +125,11 @@
             <artifactId>kie-api</artifactId>
             <version>${drools.version}</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.kie.server</groupId>
             <artifactId>kie-server-client</artifactId>
             <version>${drools.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-bpmn2</artifactId>

@@ -1,13 +1,7 @@
 package com.ps.judge.provider.service.impl;
 
-import com.ps.judge.dao.entity.ConfigFlowDO;
-import com.ps.judge.dao.entity.ConfigRuleConditionDO;
-import com.ps.judge.dao.entity.ConfigRuleDO;
-import com.ps.judge.dao.entity.ConfigRulePackageDO;
-import com.ps.judge.dao.mapper.ConfigFlowMapper;
-import com.ps.judge.dao.mapper.ConfigRuleConditionMapper;
-import com.ps.judge.dao.mapper.ConfigRuleMapper;
-import com.ps.judge.dao.mapper.ConfigRulePackageMapper;
+import com.ps.judge.dao.entity.*;
+import com.ps.judge.dao.mapper.*;
 import com.ps.judge.provider.drools.KSessionManager;
 import com.ps.judge.provider.rule.builder.DroolsRuleTemplate;
 import com.ps.judge.provider.rule.builder.RuleTemplate;
@@ -37,6 +31,8 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     ConfigRulePackageMapper configRulePackageMapper;
     @Autowired
+    ConfigRulePackageVersionMapper configRulePackageVersionMapper;
+    @Autowired
     ConfigRuleMapper configRuleMapper;
     @Autowired
     ConfigRuleConditionMapper configRuleConditionMapper;
@@ -61,7 +57,8 @@ public class FlowServiceImpl implements FlowService {
             if (configFlow.getLoadMethod() == 1) {
                 continue;
             }
-            List<ConfigRuleDO> configRuleList = this.configRuleMapper.listConfigRule(configFlow.getRulePackageId());
+            List<ConfigRuleDO> configRuleList =
+                    this.configRuleMapper.listConfigRule(configFlow.getRulePackageVersionId());
             if (configRuleList.isEmpty()) {
                 continue;
             }
@@ -81,9 +78,11 @@ public class FlowServiceImpl implements FlowService {
             if (configRuleConditionList.isEmpty()) {
                 continue;
             }
-            List<ConditionVO> conditionList = this. getConditionVOList(configRuleConditionList);
-            ConfigRulePackageDO configRulePackage = this.configRulePackageMapper
-                    .getConfigRulePackageById(configRule.getRulePackageId());
+            ConfigRulePackageVersionDO configRulePackageVersion =
+                    this.configRulePackageVersionMapper.getConfigRulePackageVersionById(configRule.getRulePackageVersionId());
+            ConfigRulePackageDO configRulePackage =
+                    this.configRulePackageMapper.getConfigRulePackageById(configRulePackageVersion.getPackageId());
+            List<ConditionVO> conditionList = this.getConditionVOList(configRuleConditionList);
             RuleVO rule = new RuleVO();
             rule.setRuleCode(configRule.getCode());
             rule.setRuleName(configRule.getName());

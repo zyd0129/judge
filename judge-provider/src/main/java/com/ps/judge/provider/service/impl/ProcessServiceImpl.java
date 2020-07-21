@@ -66,10 +66,8 @@ public class ProcessServiceImpl implements ProcessService {
             Integer auditId = auditTask.getId();
             auditTask.setTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode());
             this.updateAuditStatus(auditTask.getTaskStatus(), auditId);
-
             String varResultString = JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
             this.auditTaskParamMapper.updateVarResult(varResultString, auditId, LocalDateTime.now());
-
             this.asyncProcessTask.startProcess(auditTask, map);
         }
         return ApiResponse.success();
