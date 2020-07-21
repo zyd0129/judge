@@ -1,10 +1,10 @@
-package com.ps.judge.web.service.rule;
+package com.ps.judge.web.service.pkg.impl;
 
 import com.ps.judge.dao.entity.ConfigRulePackageVersionDO;
 import com.ps.judge.dao.mapper.ConfigRulePackageVersionMapper;
 import com.ps.judge.dao.mapper.ConfigRulePackageVersionSequenceMapper;
 import com.ps.judge.web.pojo.bo.ConfigRulePackageVersionBO;
-import com.ps.judge.web.pojo.req.RulePackageVersionModifyReq;
+import com.ps.judge.web.service.pkg.RulePackageVersionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

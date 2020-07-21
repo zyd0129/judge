@@ -1,4 +1,4 @@
-package com.ps.judge.web.service.rule;
+package com.ps.judge.web.service.pkg.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -8,6 +8,7 @@ import com.ps.judge.dao.mapper.ConfigRulePackageMapper;
 import com.ps.judge.dao.mapper.ConfigRulePackageVersionSequenceMapper;
 import com.ps.judge.web.pojo.bo.ConfigRulePackageBO;
 import com.ps.judge.web.pojo.query.RulePackageQuery;
+import com.ps.judge.web.service.pkg.RulePackageService;
 import com.ps.judge.web.util.PageUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

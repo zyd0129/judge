@@ -1,4 +1,4 @@
-package com.ps.judge.web.service.rule;
+package com.ps.judge.web.service.pkg;
 
 import com.github.pagehelper.PageInfo;
 import com.ps.judge.web.pojo.bo.ConfigRulePackageBO;
