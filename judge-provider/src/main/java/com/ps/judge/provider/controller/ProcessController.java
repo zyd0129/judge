@@ -10,6 +10,7 @@ import com.ps.judge.dao.entity.ConfigFlowDO;
 import com.ps.judge.provider.enums.AuditTaskStatusEnum;
 import com.ps.judge.provider.enums.StatusEnum;
 import com.ps.judge.provider.service.ApplyService;
+import com.ps.judge.provider.service.AuditTaskService;
 import com.ps.judge.provider.service.FlowService;
 import com.ps.judge.provider.service.ProcessService;
 import com.ps.jury.api.common.ApiResponse;
@@ -26,6 +27,8 @@ import java.util.Objects;
 @RestController
 public class ProcessController implements JudgeApi {
     @Autowired
+    AuditTaskService auditTaskService;
+    @Autowired
     FlowService flowService;
     @Autowired
     ApplyService applyService;
@@ -34,7 +37,7 @@ public class ProcessController implements JudgeApi {
 
     @Override
     public ApiResponse<ApplyResultVO> applyAudit(@Validated ApplyRequest applyRequest) {
-        AuditTaskDO audit = this.processService.getAuditTask(applyRequest.getTenantCode(), applyRequest.getApplyId());
+        AuditTaskDO audit = this.auditTaskService.getAuditTask(applyRequest.getTenantCode(), applyRequest.getApplyId());
         if (Objects.nonNull(audit)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "申请订单已存在");
         }
@@ -56,7 +59,7 @@ public class ProcessController implements JudgeApi {
         if (taskId <= 0) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "taskId 不能小于等于0");
         }
-        AuditTaskDO auditTask = this.processService.getAuditTask(taskId);
+        AuditTaskDO auditTask = this.auditTaskService.getAuditTask(taskId);
         if (Objects.isNull(auditTask)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单不存在");
         }
@@ -94,7 +97,7 @@ public class ProcessController implements JudgeApi {
         }
         String tenantCode = (String) varResultMap.get("tenantCode");
         String applyId =  (String) varResultMap.get("applyId");
-        AuditTaskDO auditTask = this.processService.getAuditTask(tenantCode, applyId);
+        AuditTaskDO auditTask = this.auditTaskService.getAuditTask(tenantCode, applyId);
         if (Objects.isNull(auditTask)) {
             return ApiResponse.success("订单不存在");
         }
@@ -102,7 +105,8 @@ public class ProcessController implements JudgeApi {
             return ApiResponse.success("规则流不一致");
         }
         if (!apiResponse.isSuccess()) {
-            this.processService.updateAuditStatus(AuditTaskStatusEnum.VAR_COMPUTE_FAIL.getCode(), auditTask.getId());
+            auditTask.setTaskStatus(AuditTaskStatusEnum.VAR_COMPUTE_FAIL.getCode());
+            this.auditTaskService.updateAuditTask(auditTask);
             return ApiResponse.success("变量计算失败");
         }
         return this.processService.saveVarResult(auditTask, varResultMap);
@@ -112,11 +116,10 @@ public class ProcessController implements JudgeApi {
     public ApiResponse<AuditResultVO> getAuditResult(@Validated AuditResultQuery auditResultQuery) {
         String tenantCode = auditResultQuery.getTenantCode();
         String applyId = auditResultQuery.getApplyId();
-        AuditTaskDO auditTask = this.processService.getAuditTask(tenantCode, applyId);
+        AuditTaskDO auditTask = this.auditTaskService.getAuditTask(tenantCode, applyId);
         if (Objects.isNull(auditTask)) {
             return ApiResponse.error(HttpStatus.NOT_FOUND.value(), "订单不存在");
         }
-        return this.processService.getAuditResult(auditTask);
+        return this.auditTaskService.getAuditResult(auditTask);
     }
-
 }

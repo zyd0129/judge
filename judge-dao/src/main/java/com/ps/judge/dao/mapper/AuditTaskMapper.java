@@ -56,13 +56,10 @@ public interface AuditTaskMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(AuditTaskDO auditTask);
 
-    @Update("update audit_task set task_status = #{taskStatus,jdbcType=TINYINT}, gmt_modified = #{gmtModified, jdbcType=TIMESTAMP} where id = #{id,jdbcType=INTEGER}")
-    int updateTaskStatus(@Param("taskStatus") int taskStatus, @Param("id") int id, @Param("gmtModified") LocalDateTime gmtModified);
-
     @Update("UPDATE audit_task SET task_status = #{taskStatus,jdbcType=TINYINT}, audit_code = #{auditCode,jdbcType=VARCHAR},"
             + "callback_count = #{callbackCount,jdbcType=TINYINT}, retry_count = #{retryCount,jdbcType=TINYINT}, "
             + "complete_time = #{completeTime, jdbcType=TIMESTAMP}, gmt_modified = #{gmtModified, jdbcType=TIMESTAMP} where id=#{id}")
-    void update(AuditTaskDO auditTask);
+    int update(AuditTaskDO auditTask);
 
     @Select({"<script>",
             "select * from audit_task",

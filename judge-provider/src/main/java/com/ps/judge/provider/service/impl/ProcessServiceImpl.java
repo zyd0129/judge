@@ -2,19 +2,16 @@ package com.ps.judge.provider.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.ps.judge.api.entity.AuditResultVO;
 import com.ps.judge.dao.entity.AuditTaskDO;
 import com.ps.judge.dao.entity.AuditTaskParamDO;
 import com.ps.judge.dao.mapper.AuditTaskMapper;
 import com.ps.judge.dao.mapper.AuditTaskParamMapper;
-import com.ps.judge.dao.mapper.AuditTaskTriggeredRuleMapper;
 import com.ps.judge.provider.enums.AuditTaskStatusEnum;
 import com.ps.judge.provider.service.ProcessService;
 import com.ps.judge.provider.task.AsyncProcessTask;
 import com.ps.jury.api.JuryApi;
 import com.ps.jury.api.common.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,24 +36,7 @@ public class ProcessServiceImpl implements ProcessService {
     @Autowired
     AuditTaskParamMapper auditTaskParamMapper;
     @Autowired
-    AuditTaskTriggeredRuleMapper auditTaskTriggeredRuleMapper;
-    @Autowired
     AsyncProcessTask asyncProcessTask;
-
-    @Override
-    public AuditTaskDO getAuditTask(int id) {
-        return this.auditTaskMapper.getAuditTaskById(id);
-    }
-
-    @Override
-    public AuditTaskDO getAuditTask(String tenantCode, String applyId) {
-        return this.auditTaskMapper.getAuditTask(tenantCode, applyId);
-    }
-
-    @Override
-    public boolean updateAuditStatus(int status, int taskId) {
-        return this.auditTaskMapper.updateTaskStatus(status, taskId, LocalDateTime.now()) > 0;
-    }
 
     @Override
     @Transactional
@@ -65,36 +45,12 @@ public class ProcessServiceImpl implements ProcessService {
                 || auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.getCode()) {
             Integer auditId = auditTask.getId();
             auditTask.setTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode());
-            this.updateAuditStatus(auditTask.getTaskStatus(), auditId);
+            this.auditTaskMapper.update(auditTask);
             String varResultString = JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
             this.auditTaskParamMapper.updateVarResult(varResultString, auditId, LocalDateTime.now());
             this.asyncProcessTask.startProcess(auditTask, map);
         }
         return ApiResponse.success();
-    }
-
-    @Override
-    public ApiResponse<AuditResultVO> getAuditResult(AuditTaskDO auditTask) {
-        AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditTask.getId());
-        if (StringUtils.isNotEmpty(auditTaskParam.getOutputRawParam())) {
-            return JSON.parseObject(auditTaskParam.getOutputRawParam(), ApiResponse.class);
-        }
-        AuditResultVO auditResult = new AuditResultVO();
-        auditResult.setApplyId(auditTask.getApplyId());
-        auditResult.setFlowCode(auditTask.getFlowCode());
-        auditResult.setTenantCode(auditTask.getTenantCode());
-        auditResult.setProductCode(auditTask.getProductCode());
-        auditResult.setUserId(auditTask.getUserId());
-        auditResult.setUserName(auditTask.getUserName());
-        auditResult.setMobile(auditTask.getMobile());
-        auditResult.setIdCard(auditTask.getIdCard());
-        auditResult.setOrderId(auditTask.getOrderId());
-        auditResult.setIp(auditTask.getIp());
-        auditResult.setDeviceFingerPrint(auditTask.getDeviceFingerPrint());
-        auditResult.setTransactionTime(auditTask.getTransactionTime());
-        auditResult.setCallbackUrl(auditTask.getCallbackUrl());
-        auditResult.setTaskStatus(auditTask.getTaskStatus());
-        return ApiResponse.success(auditResult);
     }
 
     @Override
@@ -123,6 +79,4 @@ public class ProcessServiceImpl implements ProcessService {
             this.asyncProcessTask.startProcess(auditTask, varResultMap);
         }
     }
-
-
 }
