@@ -4,13 +4,11 @@ import com.github.pagehelper.PageInfo;
 import com.ps.common.ApiResponse;
 import com.ps.common.query.QueryVo;
 import com.ps.judge.web.pojo.bo.ConfigRulePackageBO;
-import com.ps.judge.web.pojo.bo.ConfigRulePackageVersionBO;
 import com.ps.judge.web.pojo.query.RulePackageQuery;
 import com.ps.judge.web.pojo.req.RulePackageCreateReq;
 import com.ps.judge.web.pojo.req.RulePackageModifyReq;
-import com.ps.judge.web.pojo.req.RulePackageVersionCreateReq;
-import com.ps.judge.web.service.rule.RulePackageService;
-import com.ps.judge.web.service.rule.RulePackageVersionService;
+import com.ps.judge.web.service.pkg.RulePackageService;
+import com.ps.judge.web.service.pkg.RulePackageVersionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

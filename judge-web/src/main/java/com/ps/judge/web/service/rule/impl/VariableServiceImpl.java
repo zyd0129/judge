@@ -1,7 +1,8 @@
-package com.ps.judge.web.service.rule;
+package com.ps.judge.web.service.rule.impl;
 
 import com.ps.common.query.VariableQuery;
 import com.ps.judge.web.models.ConfigRuleVariableBO;
+import com.ps.judge.web.service.rule.VariableService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

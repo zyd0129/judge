@@ -4,7 +4,7 @@ import com.ps.common.ApiResponse;
 import com.ps.judge.web.pojo.bo.ConfigRulePackageVersionBO;
 import com.ps.judge.web.pojo.req.RulePackageVersionCreateReq;
 import com.ps.judge.web.pojo.req.RulePackageVersionModifyReq;
-import com.ps.judge.web.service.rule.RulePackageVersionService;
+import com.ps.judge.web.service.pkg.RulePackageVersionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
