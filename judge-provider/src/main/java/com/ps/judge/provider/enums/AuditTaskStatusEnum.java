@@ -1,8 +1,5 @@
 package com.ps.judge.provider.enums;
 
-import lombok.Getter;
-
-@Getter
 public enum AuditTaskStatusEnum {
     REQUEST_RECEIVED(0, "请求已接收"),
     FORWARDED_SUCCESS(1, "请求转发成功"),
@@ -22,5 +19,9 @@ public enum AuditTaskStatusEnum {
     AuditTaskStatusEnum(int code, String name) {
         this.code = code;
         this.name = name;
+    }
+
+    public int value() {
+        return this.code;
     }
 }

@@ -42,7 +42,7 @@ public class CallbackServiceImpl implements CallbackService {
     public void sendAuditTaskResult(AuditTaskDO auditTask, ApiResponse<AuditResultVO> apiResponse) {
         int callbackCount = auditTask.getCallbackCount();
         if (callbackCount >= MAX_CALLBACK_COUNT) {
-            auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK_FAIL.getCode());
+            auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK_FAIL.value());
             auditTask.setGmtModified(LocalDateTime.now());
             this.auditTaskMapper.update(auditTask);
             return;
@@ -51,7 +51,7 @@ public class CallbackServiceImpl implements CallbackService {
         auditTask.setGmtModified(LocalDateTime.now());
         this.auditTaskMapper.update(auditTask);
         if (this.sendPost(auditTask.getCallbackUrl(), apiResponse)) {
-            auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK_SUCCESS.getCode());
+            auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK_SUCCESS.value());
             auditTask.setGmtModified(LocalDateTime.now());
             this.auditTaskMapper.update(auditTask);
         }
@@ -78,7 +78,7 @@ public class CallbackServiceImpl implements CallbackService {
 
     @Override
     public void callbackTenant() {
-        List<AuditTaskDO> auditTaskList = this.auditTaskMapper.listAuditTaskByTaskStatus(AuditTaskStatusEnum.CALLBACK.getCode());
+        List<AuditTaskDO> auditTaskList = this.auditTaskMapper.listAuditTaskByTaskStatus(AuditTaskStatusEnum.CALLBACK.value());
         if (auditTaskList.isEmpty()) {
             return;
         }

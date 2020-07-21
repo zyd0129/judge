@@ -24,6 +24,7 @@ import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.request.ApplyRequest;
 import org.apache.commons.lang.StringUtils;
 import org.kie.api.runtime.KieSession;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -56,10 +57,10 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
     public void applyJury(AuditTaskDO auditTask, ApplyRequest request) {
         ApiResponse<String> applyResponse = this.juryApi.apply(request);
         if (!applyResponse.isSuccess()) {
-            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.FORWARDED_FAIL.getCode());
+            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.FORWARDED_FAIL.value());
             return;
         }
-        this.updateAuditStatus(auditTask, AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode());
+        this.updateAuditStatus(auditTask, AuditTaskStatusEnum.FORWARDED_SUCCESS.value());
     }
 
     @Override
@@ -69,15 +70,14 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             return;
         }
 
-        Integer taskId = auditTask.getId();
         String flowCode = auditTask.getFlowCode();
         ConfigFlowDO configFlow = this.configFlowMapper.getByFlowCode(flowCode);
         if (Objects.isNull(configFlow)) {
-            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode());
+            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
             return;
         }
         if (configFlow.getStatus() != StatusEnum.ENABLE.getStatus()) {
-            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode());
+            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
             return;
         }
 
@@ -96,7 +96,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
 
         KieSession kieSession = this.kSessionManager.getKieSession(flowCode);
         if (Objects.isNull(kieSession)) {
-            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode());
+            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
             return;
         }
 
@@ -108,17 +108,15 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         try {
             kieSession.startProcess(flowCode, parameters);
         } catch (Exception e) {
-            auditTask.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode());
+            auditTask.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
             auditTask.setCompleteTime(LocalDateTime.now());
             auditTask.setGmtModified(LocalDateTime.now());
             this.auditTaskMapper.update(auditTask);
             throw new RuntimeException(e);
         } finally {
-            if (Objects.nonNull(kieSession)) {
-                kieSession.destroy();
-            }
+            kieSession.destroy();
         }
-        auditTask.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_SUCCESS.getCode());
+        auditTask.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_SUCCESS.value());
         auditTask.setCompleteTime(LocalDateTime.now());
         auditTask.setGmtModified(LocalDateTime.now());
         this.auditTaskMapper.update(auditTask);
@@ -142,9 +140,9 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
     @Transactional
     public boolean syncAuditTaskStatus(AuditTaskDO auditTask) {
         auditTask = this.auditTaskMapper.getAuditTaskByIdForUpdate(auditTask.getId());
-        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode()
-                || auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode()) {
-            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT.getCode());
+        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.value()
+                || auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value()) {
+            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT.value());
         }
         return false;
     }
@@ -152,7 +150,6 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
     @Transactional
     public void processResult(AuditTaskDO auditTask, List<AuditTaskTriggeredRuleDO> auditTaskTriggeredRuleDOList) {
         List<NodeResultVO> nodeResult = new ArrayList<>();
-
         NodeResultVO node1 = new NodeResultVO();
         if (auditTaskTriggeredRuleDOList.isEmpty()) {
             node1.setIndex(1);
@@ -165,25 +162,21 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             int resultCode = 1;
             List<TriggeredRuleVO> triggeredRuleVOList = new ArrayList<>();
             for (AuditTaskTriggeredRuleDO auditTaskTriggeredRuleDO : auditTaskTriggeredRuleDOList) {
+                BeanUtils.copyProperties(auditTask, auditTaskTriggeredRuleDO);
                 auditTaskTriggeredRuleDO.setTaskId(auditTask.getId());
-                auditTaskTriggeredRuleDO.setTenantCode(auditTask.getTenantCode());
-                auditTaskTriggeredRuleDO.setApplyId(auditTask.getApplyId());
-                auditTaskTriggeredRuleDO.setFlowCode(auditTask.getFlowCode());
                 auditTaskTriggeredRuleDO.setIndex(1);
                 auditTaskTriggeredRuleDO.setGmtCreate(LocalDateTime.now());
                 this.auditTaskTriggeredRuleMapper.insert(auditTaskTriggeredRuleDO);
 
                 TriggeredRuleVO triggeredRuleVO = new TriggeredRuleVO();
-                triggeredRuleVO.setRuleCode(auditTaskTriggeredRuleDO.getRuleCode());
-                triggeredRuleVO.setRuleName(auditTaskTriggeredRuleDO.getRuleName());
+                BeanUtils.copyProperties(auditTaskTriggeredRuleDO, triggeredRuleVO);
                 triggeredRuleVOList.add(triggeredRuleVO);
-                if (StringUtils.equals(auditTaskTriggeredRuleDO.getRulePackageCode(), "ZRX01")) {
+                if (StringUtils.equals(auditTaskTriggeredRuleDO.getRulePackageCode(), "")) {
                     resultCode = resultCode & Integer.parseInt(auditTaskTriggeredRuleDO.getResult());
                 } else {
                     resultCode = Integer.parseInt(auditTaskTriggeredRuleDO.getResult());
                 }
             }
-
             node1.setIndex(1);
             node1.setRulePackageCode(auditTaskTriggeredRuleDOList.get(0).getRulePackageCode());
             node1.setAuditCode(AuditCodeEnum.getAuditCode(resultCode));
@@ -194,7 +187,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
 
         auditTask.setAuditCode(node1.getAuditCode());
         ApiResponse<AuditResultVO> apiResponse = this.saveOutputRawParam(auditTask, nodeResult);
-        auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK.getCode());
+        auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK.value());
         auditTask.setGmtModified(LocalDateTime.now());
         this.auditTaskMapper.update(auditTask);
         this.callbackService.sendAuditTaskResult(auditTask, apiResponse);
@@ -234,17 +227,14 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             int resultCode = 1;
             List<TriggeredRuleVO> triggeredRuleVOList = new ArrayList<>();
             for (AuditTaskTriggeredRuleDO auditTaskTriggeredRuleDO : auditTaskTriggeredRuleDOList) {
+                BeanUtils.copyProperties(auditTask, auditTaskTriggeredRuleDO);
                 auditTaskTriggeredRuleDO.setTaskId(auditTask.getId());
-                auditTaskTriggeredRuleDO.setTenantCode(auditTask.getTenantCode());
-                auditTaskTriggeredRuleDO.setApplyId(auditTask.getApplyId());
-                auditTaskTriggeredRuleDO.setFlowCode(auditTask.getFlowCode());
                 auditTaskTriggeredRuleDO.setIndex(1);
                 auditTaskTriggeredRuleDO.setGmtCreate(LocalDateTime.now());
                 this.auditTaskTriggeredRuleMapper.insert(auditTaskTriggeredRuleDO);
 
                 TriggeredRuleVO triggeredRuleVO = new TriggeredRuleVO();
-                triggeredRuleVO.setRuleCode(auditTaskTriggeredRuleDO.getRuleCode());
-                triggeredRuleVO.setRuleName(auditTaskTriggeredRuleDO.getRuleName());
+                BeanUtils.copyProperties(auditTaskTriggeredRuleDO, triggeredRuleVO);
                 triggeredRuleVOList.add(triggeredRuleVO);
                 if (StringUtils.equals(auditTaskTriggeredRuleDO.getRulePackageCode(), "ZRX01")) {
                     resultCode = resultCode & Integer.parseInt(auditTaskTriggeredRuleDO.getResult());
@@ -263,7 +253,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
 
         auditTask.setAuditCode(node1.getAuditCode());
         ApiResponse<AuditResultVO> apiResponse = this.saveOutputRawParam(auditTask, nodeResult);
-        auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK.getCode());
+        auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK.value());
         auditTask.setGmtModified(LocalDateTime.now());
         this.auditTaskMapper.update(auditTask);
         this.callbackService.sendAuditTaskResult(auditTask, apiResponse);
@@ -271,22 +261,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
 
     private ApiResponse<AuditResultVO> saveOutputRawParam(AuditTaskDO auditTask, List<NodeResultVO> nodeResult) {
         AuditResultVO auditResult = new AuditResultVO();
-        auditResult.setApplyId(auditTask.getApplyId());
-        auditResult.setFlowCode(auditTask.getFlowCode());
-        auditResult.setTenantCode(auditTask.getTenantCode());
-        auditResult.setProductCode(auditTask.getProductCode());
-        auditResult.setUserId(auditTask.getUserId());
-        auditResult.setUserName(auditTask.getUserName());
-        auditResult.setMobile(auditTask.getMobile());
-        auditResult.setIdCard(auditTask.getIdCard());
-        auditResult.setOrderId(auditTask.getOrderId());
-        auditResult.setIp(auditTask.getIp());
-        auditResult.setDeviceFingerPrint(auditTask.getDeviceFingerPrint());
-        auditResult.setTransactionTime(auditTask.getTransactionTime());
-        auditResult.setCallbackUrl(auditTask.getCallbackUrl());
-        auditResult.setTaskStatus(auditTask.getTaskStatus());
-        auditResult.setAuditCode(auditTask.getAuditCode());
-        auditResult.setAuditScore(auditTask.getAuditScore());
+        BeanUtils.copyProperties(auditTask, auditResult);
         auditResult.setNodeResult(nodeResult);
         ApiResponse<AuditResultVO> apiResponse = ApiResponse.success(auditResult);
         String apiResponseString = JSON.toJSONString(apiResponse, SerializerFeature.WriteMapNullValue);

@@ -41,10 +41,10 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     @Transactional
     public ApiResponse<String> saveVarResult(AuditTaskDO auditTask, Map map) {
-        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode()
-                || auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.getCode()) {
+        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_SUCCESS.value()
+                || auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.value()) {
             Integer auditId = auditTask.getId();
-            auditTask.setTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode());
+            auditTask.setTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.value());
             this.auditTaskMapper.update(auditTask);
             String varResultString = JSON.toJSONString(map, SerializerFeature.WriteMapNullValue);
             this.auditTaskParamMapper.updateVarResult(varResultString, auditId, LocalDateTime.now());
@@ -55,21 +55,23 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public void varResultQuery() {
-        List<AuditTaskDO> auditTaskList = this.auditTaskMapper.listAuditTaskByTaskStatus(AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode());
+        List<AuditTaskDO> auditTaskList =
+                this.auditTaskMapper.listAuditTaskByTaskStatus(AuditTaskStatusEnum.FORWARDED_SUCCESS.value());
         if (auditTaskList.isEmpty()) {
             return;
         }
-        for (AuditTaskDO auditTask : auditTaskList) {
+       /* for (AuditTaskDO auditTask : auditTaskList) {
             ApiResponse<Map> apiResponse = this.juryApi.getVarResult(auditTask.getApplyId(), auditTask.getTenantCode());
             if (apiResponse.isSuccess()) {
                 this.saveVarResult(auditTask, apiResponse.getData());
             }
-        }
+        }*/
     }
 
     @Override
     public void auditVariable() {
-        List<AuditTaskDO> auditTaskList = this.auditTaskMapper.listAuditTaskByTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.getCode());
+        List<AuditTaskDO> auditTaskList =
+                this.auditTaskMapper.listAuditTaskByTaskStatus(AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.value());
         if (auditTaskList.isEmpty()) {
             return;
         }

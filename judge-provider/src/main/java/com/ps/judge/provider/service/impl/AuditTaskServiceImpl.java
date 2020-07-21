@@ -9,13 +9,14 @@ import com.ps.judge.dao.mapper.AuditTaskParamMapper;
 import com.ps.judge.provider.service.AuditTaskService;
 import com.ps.jury.api.common.ApiResponse;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
 /**
- * 功能描述
+ * AuditTask 业务订单服务
  *
  * @author ：zhangqian9044.
  * @date ：2020/7/21
@@ -50,20 +51,7 @@ public class AuditTaskServiceImpl implements AuditTaskService {
             return JSON.parseObject(auditTaskParam.getOutputRawParam(), ApiResponse.class);
         }
         AuditResultVO auditResult = new AuditResultVO();
-        auditResult.setApplyId(auditTask.getApplyId());
-        auditResult.setFlowCode(auditTask.getFlowCode());
-        auditResult.setTenantCode(auditTask.getTenantCode());
-        auditResult.setProductCode(auditTask.getProductCode());
-        auditResult.setUserId(auditTask.getUserId());
-        auditResult.setUserName(auditTask.getUserName());
-        auditResult.setMobile(auditTask.getMobile());
-        auditResult.setIdCard(auditTask.getIdCard());
-        auditResult.setOrderId(auditTask.getOrderId());
-        auditResult.setIp(auditTask.getIp());
-        auditResult.setDeviceFingerPrint(auditTask.getDeviceFingerPrint());
-        auditResult.setTransactionTime(auditTask.getTransactionTime());
-        auditResult.setCallbackUrl(auditTask.getCallbackUrl());
-        auditResult.setTaskStatus(auditTask.getTaskStatus());
+        BeanUtils.copyProperties(auditTask, auditResult);
         return ApiResponse.success(auditResult);
     }
 }

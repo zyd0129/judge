@@ -63,9 +63,9 @@ public class ProcessController implements JudgeApi {
         if (Objects.isNull(auditTask)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单不存在");
         }
-        if (auditTask.getTaskStatus() != AuditTaskStatusEnum.VAR_COMPUTE_FAIL.getCode()
-                && auditTask.getTaskStatus() != AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode()
-                && auditTask.getTaskStatus() != AuditTaskStatusEnum.FORWARDED_FAIL.getCode()) {
+        if (auditTask.getTaskStatus() != AuditTaskStatusEnum.VAR_COMPUTE_FAIL.value()
+                && auditTask.getTaskStatus() != AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value()
+                && auditTask.getTaskStatus() != AuditTaskStatusEnum.FORWARDED_FAIL.value()) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单未失败，不能重试");
         }
         return this.applyService.retryAudit(auditTask);
@@ -105,7 +105,7 @@ public class ProcessController implements JudgeApi {
             return ApiResponse.success("规则流不一致");
         }
         if (!apiResponse.isSuccess()) {
-            auditTask.setTaskStatus(AuditTaskStatusEnum.VAR_COMPUTE_FAIL.getCode());
+            auditTask.setTaskStatus(AuditTaskStatusEnum.VAR_COMPUTE_FAIL.value());
             this.auditTaskService.updateAuditTask(auditTask);
             return ApiResponse.success("变量计算失败");
         }

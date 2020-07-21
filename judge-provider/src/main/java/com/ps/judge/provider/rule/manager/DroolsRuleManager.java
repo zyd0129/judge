@@ -7,7 +7,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -20,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author ：zhangqian9044.
  * @date ：2020/7/16
  */
-@Component
 public class DroolsRuleManager implements RuleManager {
     private final Map<String, InternalKnowledgeBase> ruleContext = new ConcurrentHashMap<>();
 

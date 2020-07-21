@@ -10,6 +10,7 @@ import com.ps.judge.provider.rule.model.ConditionVO;
 import com.ps.judge.provider.rule.model.RuleVO;
 import com.ps.judge.provider.service.FlowService;
 import org.kie.api.runtime.KieSession;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,8 @@ public class FlowServiceImpl implements FlowService {
     ConfigRuleConditionMapper configRuleConditionMapper;
     @Autowired
     RuleManager ruleManager;
+    @Autowired
+    RuleTemplate ruleTemplate;
 
     @Override
     public ConfigFlowDO getByFlowCode(String flowCode) {
@@ -51,23 +54,46 @@ public class FlowServiceImpl implements FlowService {
 
     @Override
     public boolean initFlow() {
-        RuleTemplate ruleTemplate = new DroolsRuleTemplate();
         List<ConfigFlowDO> configFlowList = this.getAllEnable();
         for (ConfigFlowDO configFlow : configFlowList) {
             if (configFlow.getLoadMethod() == 1) {
                 continue;
             }
-            List<ConfigRuleDO> configRuleList =
-                    this.configRuleMapper.listConfigRule(configFlow.getRulePackageVersionId());
-            if (configRuleList.isEmpty()) {
-                continue;
-            }
-            List<RuleVO> ruleList = this.getRuleVOList(configRuleList);
-            String ruleStr = ruleTemplate.build(ruleList);
-            System.err.println(ruleStr);
-            this.ruleManager.add(configFlow.getFlowCode(), ruleStr);
+            this.loadFlow(configFlow);
         }
         return true;
+    }
+
+    @Override
+    public boolean loadFlow(ConfigFlowDO configFlow) {
+        List<ConfigRuleDO> configRuleList =
+                this.configRuleMapper.listConfigRule(configFlow.getRulePackageVersionId());
+        if (configRuleList.isEmpty()) {
+            return false;
+        }
+        List<RuleVO> ruleList = this.getRuleVOList(configRuleList);
+        String ruleStr = this.ruleTemplate.build(ruleList);
+        System.err.println(ruleStr);
+        this.ruleManager.add(configFlow.getFlowCode(), ruleStr);
+        return true;
+    }
+
+    @Override
+    public boolean removeFlow(ConfigFlowDO configFlow) {
+        if (configFlow.getLoadMethod() == 0) {
+            return this.ruleManager.remove(configFlow.getFlowCode());
+        }
+        return this.kSessionManager.removeContainer(configFlow);
+    }
+
+    @Override
+    public boolean existedFlow(ConfigFlowDO configFlow) {
+        return this.ruleManager.existed(configFlow.getFlowCode());
+    }
+
+    @Override
+    public KieSession getKieSession(String flowCode) {
+        return this.ruleManager.getKieSession(flowCode);
     }
 
     private List<RuleVO> getRuleVOList(List<ConfigRuleDO> configRuleList) {
@@ -84,14 +110,12 @@ public class FlowServiceImpl implements FlowService {
                     this.configRulePackageMapper.getConfigRulePackageById(configRulePackageVersion.getPackageId());
             List<ConditionVO> conditionList = this.getConditionVOList(configRuleConditionList);
             RuleVO rule = new RuleVO();
+            BeanUtils.copyProperties(configRule, rule);
             rule.setRuleCode(configRule.getCode());
             rule.setRuleName(configRule.getName());
             rule.setRuleVersion(String.valueOf(configRule.getVersion()));
             rule.setRuleFlowGroup(configRulePackage.getCode());
             rule.setAgendaGroup(configRulePackage.getCode());
-            rule.setSalience(configRule.getSalience());
-            rule.setScore(configRule.getScore());
-            rule.setResult(configRule.getResult());
             rule.setConditionList(conditionList);
             ruleList.add(rule);
         }
@@ -102,27 +126,9 @@ public class FlowServiceImpl implements FlowService {
         List<ConditionVO> conditionList = new ArrayList<>(configRuleConditionList.size());
         for (ConfigRuleConditionDO configRuleCondition : configRuleConditionList) {
             ConditionVO condition = new ConditionVO();
-            condition.setOperator(configRuleCondition.getOperator());
-            condition.setOperand(configRuleCondition.getOperand());
-            condition.setVariableCode(configRuleCondition.getVariableCode());
-            condition.setVariableType(configRuleCondition.getVariableType());
+            BeanUtils.copyProperties(configRuleCondition, condition);
             conditionList.add(condition);
         }
         return conditionList;
-    }
-
-    @Override
-    public boolean loadFlow(ConfigFlowDO configFlow) {
-        return this.kSessionManager.addContainer(configFlow);
-    }
-
-    @Override
-    public boolean removeFlow(ConfigFlowDO configFlow) {
-        return this.kSessionManager.removeContainer(configFlow);
-    }
-
-    @Override
-    public KieSession getKieSession(String flowCode) {
-        return this.ruleManager.getKieSession(flowCode);
     }
 }

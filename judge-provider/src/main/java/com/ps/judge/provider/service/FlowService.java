@@ -22,5 +22,7 @@ public interface FlowService {
 
     boolean removeFlow(ConfigFlowDO configFlow);
 
+    boolean existedFlow(ConfigFlowDO configFlow);
+
     KieSession getKieSession(String flowCode);
 }

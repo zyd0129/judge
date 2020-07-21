@@ -14,6 +14,7 @@ import com.ps.jury.api.JuryApi;
 import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.request.ApplyRequest;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -47,31 +48,30 @@ public class ApplyServiceImpl implements ApplyService {
     @Transactional
     public ApiResponse<ApplyResultVO> apply(ApplyRequest request) {
         AuditTaskDO auditTask = new AuditTaskDO();
-        auditTask.setApplyId(request.getApplyId());
-        auditTask.setFlowCode(request.getFlowCode());
-        auditTask.setTenantCode(request.getTenantCode());
-        auditTask.setProductCode(request.getProductCode());
-        auditTask.setUserId(request.getUserId());
-        auditTask.setUserName(request.getUserName());
-        auditTask.setMobile(request.getMobile());
-        auditTask.setIdCard(request.getIdCard());
-        auditTask.setOrderId(request.getOrderId());
-        auditTask.setIp(request.getIp());
-        auditTask.setDeviceFingerPrint(request.getDeviceFingerPrint());
-        auditTask.setTransactionTime(request.getTransactionTime());
-        auditTask.setTaskStatus(AuditTaskStatusEnum.REQUEST_RECEIVED.getCode());
-        auditTask.setCallbackUrl(request.getCallbackUrl());
+        BeanUtils.copyProperties(request, auditTask);
+        //auditTask.setApplyId(request.getApplyId());
+        //auditTask.setFlowCode(request.getFlowCode());
+        //auditTask.setTenantCode(request.getTenantCode());
+        //auditTask.setProductCode(request.getProductCode());
+       // auditTask.setUserId(request.getUserId());
+       // auditTask.setUserName(request.getUserName());
+       // auditTask.setMobile(request.getMobile());
+        //auditTask.setIdCard(request.getIdCard());
+       // auditTask.setOrderId(request.getOrderId());
+       // auditTask.setIp(request.getIp());
+        //auditTask.setDeviceFingerPrint(request.getDeviceFingerPrint());
+        //auditTask.setTransactionTime(request.getTransactionTime());
+        //auditTask.setCallbackUrl(request.getCallbackUrl());
+        auditTask.setTaskStatus(AuditTaskStatusEnum.REQUEST_RECEIVED.value());
         auditTask.setGmtCreate(LocalDateTime.now());
         auditTask.setGmtModified(LocalDateTime.now());
         this.auditTaskMapper.insert(auditTask);
 
-        String requestString = JSON.toJSONString(request, SerializerFeature.WriteMapNullValue);
-        Integer auditId = auditTask.getId();
         AuditTaskParamDO auditTaskParam = new AuditTaskParamDO();
+        auditTaskParam.setTaskId(auditTask.getId());
         auditTaskParam.setTenantCode(request.getTenantCode());
-        auditTaskParam.setTaskId(auditId);
         auditTaskParam.setApplyId(request.getApplyId());
-        auditTaskParam.setInputRawParam(requestString);
+        auditTaskParam.setInputRawParam(JSON.toJSONString(request, SerializerFeature.WriteMapNullValue));
         auditTaskParam.setOutputRawParam(StringUtils.EMPTY);
         auditTaskParam.setVarResult(StringUtils.EMPTY);
         auditTaskParam.setGmtCreate(LocalDateTime.now());
@@ -87,20 +87,20 @@ public class ApplyServiceImpl implements ApplyService {
     public ApiResponse<ApplyResultVO> retryAudit(AuditTaskDO auditTask) {
         int auditId = auditTask.getId();
 
-        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.getCode()) {
+        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.value()) {
             if (auditTask.getRetryCount() < MAX_RETRY_COUNT) {
                 return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单自动重试中，不能手动重试");
             }
         }
 
-        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.VAR_COMPUTE_FAIL.getCode()
-                || auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.getCode()) {
+        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.VAR_COMPUTE_FAIL.value()
+                || auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.value()) {
             AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditId);
             ApplyRequest request = JSON.parseObject(auditTaskParam.getInputRawParam(), ApplyRequest.class);
             this.asyncProcessTask.applyJury(auditTask, request);
         }
 
-        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.getCode()) {
+        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value()) {
             AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditId);
             Map varResultMap = JSON.parseObject(auditTaskParam.getVarResult(), Map.class);
             this.asyncProcessTask.startProcess(auditTask, varResultMap);
@@ -115,9 +115,9 @@ public class ApplyServiceImpl implements ApplyService {
     public void reapplyJury() {
         List<AuditTaskDO> auditTaskList = new ArrayList<>();
         List<AuditTaskDO> requestReceivedList = this.auditTaskMapper
-                .listAuditTaskByTaskStatusAndRetryCount(AuditTaskStatusEnum.REQUEST_RECEIVED.getCode(), MAX_RETRY_COUNT);
+                .listAuditTaskByTaskStatusAndRetryCount(AuditTaskStatusEnum.REQUEST_RECEIVED.value(), MAX_RETRY_COUNT);
         List<AuditTaskDO> forwardedFailList = this.auditTaskMapper
-                .listAuditTaskByTaskStatusAndRetryCount(AuditTaskStatusEnum.FORWARDED_FAIL.getCode(), MAX_RETRY_COUNT);
+                .listAuditTaskByTaskStatusAndRetryCount(AuditTaskStatusEnum.FORWARDED_FAIL.value(), MAX_RETRY_COUNT);
         auditTaskList.addAll(requestReceivedList);
         auditTaskList.addAll(forwardedFailList);
         if (auditTaskList.isEmpty()) {
@@ -131,9 +131,9 @@ public class ApplyServiceImpl implements ApplyService {
             ApplyRequest applyRequest = JSON.parseObject(inputRawParam, ApplyRequest.class);
             ApiResponse<String> applyResponse = this.juryApi.apply(applyRequest);
             if (applyResponse.isSuccess()) {
-                auditTask.setTaskStatus(AuditTaskStatusEnum.FORWARDED_SUCCESS.getCode());
+                auditTask.setTaskStatus(AuditTaskStatusEnum.FORWARDED_SUCCESS.value());
             } else {
-                auditTask.setTaskStatus(AuditTaskStatusEnum.FORWARDED_FAIL.getCode());
+                auditTask.setTaskStatus(AuditTaskStatusEnum.FORWARDED_FAIL.value());
             }
             auditTask.setRetryCount(retryCount);
             auditTask.setGmtModified(LocalDateTime.now());
