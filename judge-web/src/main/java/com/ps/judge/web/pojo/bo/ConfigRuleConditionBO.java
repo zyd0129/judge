@@ -1,6 +1,8 @@
 package com.ps.judge.web.pojo.bo;
 
+import com.ps.judge.dao.entity.ConfigRuleConditionDO;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDateTime;
 
@@ -17,4 +19,21 @@ public class ConfigRuleConditionBO {
     private Integer status;
     private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;
+
+    public ConfigRuleConditionDO convertToDo() {
+
+        ConfigRuleConditionDO conditionDO = new ConfigRuleConditionDO();
+        if (id == null) {
+            setGmtCreated(LocalDateTime.now());
+        }
+        setGmtModified(LocalDateTime.now());
+        BeanUtils.copyProperties(this, conditionDO);
+        return conditionDO;
+    }
+
+    public static ConfigRuleConditionBO convertFromDo(ConfigRuleConditionDO conditionDO) {
+        ConfigRuleConditionBO conditionBO = new ConfigRuleConditionBO();
+        BeanUtils.copyProperties(conditionDO, conditionBO);
+        return conditionBO;
+    }
 }

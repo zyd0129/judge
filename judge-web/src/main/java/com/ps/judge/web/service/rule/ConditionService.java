@@ -1,14 +1,14 @@
 package com.ps.judge.web.service.rule;
 
 import com.github.pagehelper.PageInfo;
-import com.ps.judge.web.pojo.bo.ConfigRuleBO;
-import com.ps.judge.web.pojo.query.RuleQuery;
+import com.ps.judge.web.pojo.bo.ConfigRuleConditionBO;
+import com.ps.judge.web.pojo.query.ConditionQuery;
 
 public interface ConditionService {
 
-    void create(ConfigRuleBO ruleBO);
+    void create(ConfigRuleConditionBO ruleBO);
 
-    PageInfo<ConfigRuleBO> queryByPage(RuleQuery query, int curPage, int pageSize);
+    PageInfo<ConfigRuleConditionBO> queryByPage(ConditionQuery query, int curPage, int pageSize);
 
-    void modify(ConfigRuleBO ruleBO);
+    void modify(ConfigRuleConditionBO ruleBO);
 }

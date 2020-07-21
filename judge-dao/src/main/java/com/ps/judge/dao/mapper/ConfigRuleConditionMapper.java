@@ -7,4 +7,10 @@ import java.util.List;
 
 public interface ConfigRuleConditionMapper {
     List<ConfigRuleConditionDO> getConfigRuleCondition(@Param("ruleId")int ruleId);
+
+    void update(ConfigRuleConditionDO conditionDO);
+
+    void insert(ConfigRuleConditionDO conditionDO);
+
+    List<ConfigRuleConditionDO> query(ConfigRuleConditionDO conditionDO);
 }

@@ -4,21 +4,70 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ps.judge.dao.mapper.ConfigRuleConditionMapper">
     <resultMap id="resultMap" type="com.ps.judge.dao.entity.ConfigRuleConditionDO">
-        <id column="id" property="id" jdbcType="INTEGER" />
-        <result column="rule_id" property="ruleId" jdbcType="INTEGER" />
-        <result column="name" property="name" jdbcType="VARCHAR" />
-        <result column="operator" property="operator" jdbcType="VARCHAR" />
-        <result column="operand" property="operand" jdbcType="VARCHAR" />
-        <result column="function" property="function" jdbcType="VARCHAR" />
-        <result column="variable_code" property="variableCode" jdbcType="VARCHAR" />
-        <result column="variable_type" property="variableType" jdbcType="INTEGER" />
-        <result column="status" property="status" jdbcType="INTEGER" />
-        <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP" />
-        <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="rule_id" property="ruleId" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="operator" property="operator" jdbcType="VARCHAR"/>
+        <result column="operand" property="operand" jdbcType="VARCHAR"/>
+        <result column="function" property="function" jdbcType="VARCHAR"/>
+        <result column="variable_code" property="variableCode" jdbcType="VARCHAR"/>
+        <result column="variable_type" property="variableType" jdbcType="INTEGER"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP"/>
+        <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <select id="getConfigRuleCondition" resultMap="resultMap">
-        select * from config_rule_condition where rule_id = #{ruleId}
+        select *
+        from config_rule_condition
+        where rule_id = #{ruleId}
     </select>
+
+
+    <insert id="insert" parameterType="ConfigRuleConditionDO" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into config_rule_condition(rule_id, name, operator, operand,`function`, variable_code, variable_type,status, gmt_created, gmt_modified)
+        values (#{ruleId}, #{name}, #{operator}, #{operand}, #{function}, #{variableCode}, #{variableType}, #{status},#{gmtCreated}, #{gmtModified})
+    </insert>
+
+    <select id="query" parameterType="ConfigRuleConditionDO" resultMap="resultMap">
+        select *
+        from config_rule_condition
+        <where>
+            <if test="name!=null">
+                and name=#{name}
+            </if>
+            <if test="ruleId!=null">
+                and rule_id=#{ruleId}
+            </if>
+        </where>
+    </select>
+
+    <update id="update" parameterType="ConfigRuleConditionDO">
+        update config_rule_condition
+        <set>
+            <if test="name!=null">
+                name=#{name},
+            </if>
+            <if test="operator!=null">
+                operator=#{operator},
+            </if>
+            <if test="operand!=null">
+                operand=#{operand},
+            </if>
+            <if test="function!=null">
+                `function`=#{function},
+            </if>
+            <if test="variableCode!=null">
+                variable_code=#{variableCode},
+            </if>
+            <if test="variableType!=null">
+                variable_type=#{variableType},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
 
 </mapper>
