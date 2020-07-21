@@ -2,8 +2,8 @@ package com.ps.judge.web.controller.rule;
 
 import com.github.pagehelper.PageInfo;
 import com.ps.common.ApiResponse;
-import com.ps.common.query.QueryVo;
 import com.ps.judge.web.pojo.bo.ConfigRulePackageBO;
+import com.ps.judge.web.pojo.query.PageQuery;
 import com.ps.judge.web.pojo.query.RulePackageQuery;
 import com.ps.judge.web.pojo.req.RulePackageCreateReq;
 import com.ps.judge.web.pojo.req.RulePackageModifyReq;
@@ -26,7 +26,7 @@ public class RulePackageController {
     private RulePackageVersionService rulePackageVersionService;
 
     @RequestMapping("query")
-    public ApiResponse<PageInfo<ConfigRulePackageBO>> query(@RequestBody QueryVo<RulePackageQuery> queryVo) {
+    public ApiResponse<PageInfo<ConfigRulePackageBO>> query(@RequestBody PageQuery<RulePackageQuery> queryVo) {
         PageInfo<ConfigRulePackageBO> configRulePackageBOPageInfo = rulePackageService.queryByPage(queryVo.getQuery(), queryVo.getCurPage(), queryVo.getPageSize());
         return ApiResponse.success(configRulePackageBOPageInfo);
     }
