@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class ConfigRuleDO {
     private Integer id;
     private String tenantCode;
-    private Integer rulePackageId;
+    private Integer rulePackageVersionId;
     private String code;
     private String name;
     private Integer version;

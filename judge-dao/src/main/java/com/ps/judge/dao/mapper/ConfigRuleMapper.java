@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ConfigRuleMapper {
 
-    List<ConfigRuleDO> listConfigRule(@Param("rulePackageId")int rulePackageId);
+    List<ConfigRuleDO> listConfigRule(@Param("rulePackageVersionId")int rulePackageVersionId);
 }
