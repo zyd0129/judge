@@ -17,4 +17,26 @@
         values (#{packageId}, #{version}, #{gmtCreated}, #{gmtModified})
     </insert>
 
+    <update id="update" parameterType="ConfigRulePackageVersionDO">
+        update config_rule_package_version
+        <set>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="gmtModified!=null">
+                gmt_modified=#{gmtModified},
+            </if>
+            <if test="operatorId!=null">
+                operator_id=#{operatorId},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <select id="queryByPackageId" parameterType="ConfigRulePackageVersionDO" resultMap="resultMap">
+        select *
+        from config_rule_package_version
+        where package_id=#{packageId}
+    </select>
+
 </mapper>

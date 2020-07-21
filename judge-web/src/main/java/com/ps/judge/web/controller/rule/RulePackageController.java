@@ -66,4 +66,11 @@ public class RulePackageController {
         rulePackageVersionService.create(rulePackageVersionBO);
         return ApiResponse.success(rulePackageVersionBO);
     }
+
+    @PostMapping("modifyVersion")
+    public ApiResponse modify(@Valid @RequestBody RulePackageVersionCreateReq rulePackageVersionCreateReq) {
+        ConfigRulePackageVersionBO rulePackageVersionBO = rulePackageVersionCreateReq.convertToBO();
+        rulePackageVersionService.create(rulePackageVersionBO);
+        return ApiResponse.success(rulePackageVersionBO);
+    }
 }
