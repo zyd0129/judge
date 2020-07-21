@@ -8,7 +8,6 @@
         <result column="tenant_code" property="tenantCode" jdbcType="VARCHAR" />
         <result column="code" property="code" jdbcType="VARCHAR" />
         <result column="name" property="name" jdbcType="VARCHAR" />
-        <result column="version" property="version" jdbcType="VARCHAR" />
         <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP" />
         <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
     </resultMap>

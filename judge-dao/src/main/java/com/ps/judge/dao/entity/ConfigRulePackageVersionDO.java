@@ -5,11 +5,10 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class ConfigRulePackageDO {
+public class ConfigRulePackageVersionDO {
     private Integer id;
-    private String tenantCode;
-    private String code;
-    private String name;
+    private Integer packageId;
+    private Integer version;
     private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;
 }
