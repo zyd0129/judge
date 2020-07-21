@@ -8,6 +8,7 @@
         <result column="tenant_code" property="tenantCode" jdbcType="VARCHAR"/>
         <result column="code" property="code" jdbcType="VARCHAR"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="operator_id" property="operatorId" jdbcType="INTEGER"/>
         <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP"/>
         <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP"/>
     </resultMap>
@@ -35,6 +36,22 @@
     <insert id="insert" parameterType="ConfigRulePackageDO" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         insert into config_rule_package(name, code, tenant_code, gmt_created, gmt_modified)
         values (#{name}, #{code}, #{tenantCode}, #{gmtCreated}, #{gmtModified})
+    </insert>
+
+    <insert id="update" parameterType="ConfigRulePackageDO">
+        update config_rule_package
+        <set>
+            <if test="name!=null">
+                name=#{name},
+            </if>
+            <if test="gmtModified!=null">
+                gmt_modified=#{gmtModified},
+            </if>
+            <if test="operatorId!=null">
+                operator_id=#{operatorId},
+            </if>
+        </set>
+        where id=#{id}
     </insert>
 
 </mapper>

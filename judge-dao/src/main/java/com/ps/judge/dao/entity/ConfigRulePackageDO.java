@@ -10,6 +10,7 @@ public class ConfigRulePackageDO {
     private String tenantCode;
     private String code;
     private String name;
+    private Integer operatorId;
     private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;
 }

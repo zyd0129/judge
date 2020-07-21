@@ -9,6 +9,7 @@ public class ConfigRulePackageVersionDO {
     private Integer id;
     private Integer packageId;
     private Integer version;
+    private Integer operatorId;
     private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;
 }

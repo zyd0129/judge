@@ -9,6 +9,10 @@ import java.util.List;
 public interface RulePackageService {
 
     List<ConfigRulePackageBO> query(RulePackageQuery rulePackageQuery);
+
     PageInfo<ConfigRulePackageBO> queryByPage(RulePackageQuery rulePackageQuery, int curPage, int pageSize);
+
     void create(ConfigRulePackageBO rulePackageBO);
+
+    void modify(ConfigRulePackageBO rulePackageBO);
 }

@@ -4,11 +4,17 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ps.judge.dao.mapper.ConfigRulePackageVersionMapper">
     <resultMap id="resultMap" type="com.ps.judge.dao.entity.ConfigRulePackageVersionDO">
-        <id column="id" property="id" jdbcType="INTEGER" />
-        <result column="package_id" property="packageId" jdbcType="INTEGER" />
-        <result column="version" property="version" jdbcType="INTEGER" />
-        <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP" />
-        <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="package_id" property="packageId" jdbcType="INTEGER"/>
+        <result column="version" property="version" jdbcType="INTEGER"/>
+        <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP"/>
+        <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP"/>
     </resultMap>
+
+    <insert id="insert" parameterType="ConfigRulePackageVersionDO" useGeneratedKeys="true" keyProperty="id"
+            keyColumn="id">
+        insert into config_rule_package_version(package_id, version, gmt_created, gmt_modified)
+        values (#{packageId}, #{version}, #{gmtCreated}, #{gmtModified})
+    </insert>
 
 </mapper>

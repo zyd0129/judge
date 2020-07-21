@@ -12,4 +12,6 @@ public interface ConfigRulePackageMapper {
     void insert(ConfigRulePackageDO rulePackageDO);
 
     List<ConfigRulePackageDO> query(ConfigRulePackageDO configRulePackageDO);
+
+    void update(ConfigRulePackageDO rulePackageDO);
 }

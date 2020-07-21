@@ -7,11 +7,12 @@ import org.springframework.beans.BeanUtils;
 import java.time.LocalDateTime;
 
 @Data
-public class ConfigRulePackageBO{
+public class ConfigRulePackageBO {
     private Integer id;
     private String tenantCode;
     private String code;
     private String name;
+    private Integer operatorId;
     private LocalDateTime gmtCreated;
     private LocalDateTime gmtModified;
 
@@ -26,7 +27,9 @@ public class ConfigRulePackageBO{
 
     public ConfigRulePackageDO convertToDo() {
         ConfigRulePackageDO rulePackageDO = new ConfigRulePackageDO();
-        BeanUtils.copyProperties(this,rulePackageDO);
+        setGmtModified(LocalDateTime.now());
+        setGmtCreated(LocalDateTime.now());
+        BeanUtils.copyProperties(this, rulePackageDO);
         return rulePackageDO;
     }
 }
