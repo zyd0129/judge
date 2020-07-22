@@ -3,6 +3,8 @@ package com.ps.judge.provider.config;
 import com.ps.judge.provider.handler.RestResponseErrorHandler;
 import com.ps.judge.provider.rule.builder.DroolsRuleTemplate;
 import com.ps.judge.provider.rule.builder.RuleTemplate;
+import com.ps.judge.provider.rule.executor.DroolsRuleExecutor;
+import com.ps.judge.provider.rule.executor.RuleExecutor;
 import com.ps.judge.provider.rule.manager.DroolsRuleManager;
 import com.ps.judge.provider.rule.manager.RuleManager;
 import com.ps.jury.api.feign.ApiFeignFallbackFactory;
@@ -28,6 +30,12 @@ public class JudgeAutoConfiguration {
     @ConditionalOnMissingBean(RuleManager.class)
     public RuleManager ruleManager() {
         return new DroolsRuleManager();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(RuleExecutor.class)
+    public RuleExecutor ruleExecutor() {
+        return new DroolsRuleExecutor();
     }
 
     @Bean

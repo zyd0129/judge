@@ -40,19 +40,20 @@ public class CallbackServiceImpl implements CallbackService {
 
     @Override
     public void sendAuditTaskResult(AuditTaskDO auditTask, ApiResponse<AuditResultVO> apiResponse) {
+        LocalDateTime now = LocalDateTime.now();
         int callbackCount = auditTask.getCallbackCount();
         if (callbackCount >= MAX_CALLBACK_COUNT) {
             auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK_FAIL.value());
-            auditTask.setGmtModified(LocalDateTime.now());
+            auditTask.setGmtModified(now);
             this.auditTaskMapper.update(auditTask);
             return;
         }
         auditTask.setCallbackCount(++callbackCount);
-        auditTask.setGmtModified(LocalDateTime.now());
+        auditTask.setGmtModified(now);
         this.auditTaskMapper.update(auditTask);
         if (this.sendPost(auditTask.getCallbackUrl(), apiResponse)) {
             auditTask.setTaskStatus(AuditTaskStatusEnum.CALLBACK_SUCCESS.value());
-            auditTask.setGmtModified(LocalDateTime.now());
+            auditTask.setGmtModified(now);
             this.auditTaskMapper.update(auditTask);
         }
     }

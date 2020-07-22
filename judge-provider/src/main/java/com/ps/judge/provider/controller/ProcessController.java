@@ -81,12 +81,12 @@ public class ProcessController implements JudgeApi {
             if (this.flowService.loadFlow(configFlow)) {
                 return ApiResponse.success();
             }
-        } else {
-            if (this.flowService.removeFlow(configFlow)) {
-                return ApiResponse.success();
-            }
+            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流加载失败");
         }
-        return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流加载失败");
+        if (this.flowService.removeFlow(configFlow)) {
+            return ApiResponse.success();
+        }
+        return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流移除失败");
     }
 
     @Override

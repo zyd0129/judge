@@ -26,6 +26,7 @@ public class DroolsRuleTemplate extends RuleTemplate {
         StringBuilder attributesStr = new StringBuilder();
         attributesStr.append(LINE_SEPARATOR);
         attributesStr.append("rule \"").append(rule.getRuleCode()).append("\"").append(LINE_SEPARATOR);
+        attributesStr.append("dialect \"java\"").append(LINE_SEPARATOR);
         //attributesStr.append("agenda-group \"").append(rule.getAgendaGroup()).append("\"").append(LINE_SEPARATOR);
         //attributesStr.append("ruleflow-group \"").append(rule.getRuleFlowGroup()).append("\"").append(LINE_SEPARATOR);
         attributesStr.append("salience ").append(rule.getSalience()).append(LINE_SEPARATOR);
@@ -57,8 +58,8 @@ public class DroolsRuleTemplate extends RuleTemplate {
         rhsStr.append("triggeredRule.setRuleName(\"").append(rule.getRuleName()).append("\");").append(LINE_SEPARATOR);
         rhsStr.append("triggeredRule.setRuleVersion(\"").append(rule.getRuleVersion()).append("\");").append(LINE_SEPARATOR);
         rhsStr.append("triggeredRule.setRulePackageCode(\"").append(rule.getRuleFlowGroup()).append("\");").append(LINE_SEPARATOR);
-        rhsStr.append("triggeredRule.setRulePackageName(\"\");").append(LINE_SEPARATOR);
-        rhsStr.append("triggeredRule.setRulePackageVersion(\"\");").append(LINE_SEPARATOR);
+        rhsStr.append("triggeredRule.setRulePackageName(\"").append(rule.getRulePackageName()).append("\");").append(LINE_SEPARATOR);
+        rhsStr.append("triggeredRule.setRulePackageVersion(\"").append(rule.getRulePackageVersion()).append("\");").append(LINE_SEPARATOR);
 
         StringBuilder expression = new StringBuilder();
         StringBuilder conditionValue = new StringBuilder();
@@ -76,7 +77,6 @@ public class DroolsRuleTemplate extends RuleTemplate {
         rhsStr.append("triggeredRule.setExpression(\"").append(expression).append("\");").append(LINE_SEPARATOR);
         rhsStr.append("triggeredRule.setCondition(\"").append(conditionValue).append("\");").append(LINE_SEPARATOR);
         rhsStr.append("triggeredRule.setParam(").append(param).append(");").append(LINE_SEPARATOR);
-
         rhsStr.append("triggeredRule.setResult(\"").append(rule.getResult()).append("\");").append(LINE_SEPARATOR);
         rhsStr.append("triggeredRule.setScore(").append(rule.getScore()).append(");").append(LINE_SEPARATOR);
         rhsStr.append("$arrayList.add(triggeredRule);").append(LINE_SEPARATOR);

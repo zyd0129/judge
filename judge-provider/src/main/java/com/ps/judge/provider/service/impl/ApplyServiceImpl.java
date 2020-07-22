@@ -12,6 +12,7 @@ import com.ps.judge.provider.service.ApplyService;
 import com.ps.judge.provider.task.AsyncProcessTask;
 import com.ps.jury.api.JuryApi;
 import com.ps.jury.api.common.ApiResponse;
+import com.ps.jury.api.common.JuryApply;
 import com.ps.jury.api.request.ApplyRequest;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -47,24 +48,12 @@ public class ApplyServiceImpl implements ApplyService {
     @Override
     @Transactional
     public ApiResponse<ApplyResultVO> apply(ApplyRequest request) {
+        LocalDateTime now = LocalDateTime.now();
         AuditTaskDO auditTask = new AuditTaskDO();
         BeanUtils.copyProperties(request, auditTask);
-        //auditTask.setApplyId(request.getApplyId());
-        //auditTask.setFlowCode(request.getFlowCode());
-        //auditTask.setTenantCode(request.getTenantCode());
-        //auditTask.setProductCode(request.getProductCode());
-       // auditTask.setUserId(request.getUserId());
-       // auditTask.setUserName(request.getUserName());
-       // auditTask.setMobile(request.getMobile());
-        //auditTask.setIdCard(request.getIdCard());
-       // auditTask.setOrderId(request.getOrderId());
-       // auditTask.setIp(request.getIp());
-        //auditTask.setDeviceFingerPrint(request.getDeviceFingerPrint());
-        //auditTask.setTransactionTime(request.getTransactionTime());
-        //auditTask.setCallbackUrl(request.getCallbackUrl());
         auditTask.setTaskStatus(AuditTaskStatusEnum.REQUEST_RECEIVED.value());
-        auditTask.setGmtCreate(LocalDateTime.now());
-        auditTask.setGmtModified(LocalDateTime.now());
+        auditTask.setGmtCreate(now);
+        auditTask.setGmtModified(now);
         this.auditTaskMapper.insert(auditTask);
 
         AuditTaskParamDO auditTaskParam = new AuditTaskParamDO();
@@ -74,8 +63,8 @@ public class ApplyServiceImpl implements ApplyService {
         auditTaskParam.setInputRawParam(JSON.toJSONString(request, SerializerFeature.WriteMapNullValue));
         auditTaskParam.setOutputRawParam(StringUtils.EMPTY);
         auditTaskParam.setVarResult(StringUtils.EMPTY);
-        auditTaskParam.setGmtCreate(LocalDateTime.now());
-        auditTaskParam.setGmtModified(LocalDateTime.now());
+        auditTaskParam.setGmtCreate(now);
+        auditTaskParam.setGmtModified(now);
         this.auditTaskParamMapper.insert(auditTaskParam);
         this.asyncProcessTask.applyJury(auditTask, request);
         ApplyResultVO applyResultVO = new ApplyResultVO();
@@ -87,10 +76,9 @@ public class ApplyServiceImpl implements ApplyService {
     public ApiResponse<ApplyResultVO> retryAudit(AuditTaskDO auditTask) {
         int auditId = auditTask.getId();
 
-        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.value()) {
-            if (auditTask.getRetryCount() < MAX_RETRY_COUNT) {
-                return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单自动重试中，不能手动重试");
-            }
+        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.value()
+                && auditTask.getRetryCount() < MAX_RETRY_COUNT) {
+            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单自动重试中，不能手动重试");
         }
 
         if (auditTask.getTaskStatus() == AuditTaskStatusEnum.VAR_COMPUTE_FAIL.value()
@@ -129,7 +117,7 @@ public class ApplyServiceImpl implements ApplyService {
             AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditId);
             String inputRawParam = auditTaskParam.getInputRawParam();
             ApplyRequest applyRequest = JSON.parseObject(inputRawParam, ApplyRequest.class);
-            ApiResponse<String> applyResponse = this.juryApi.apply(applyRequest);
+            ApiResponse<JuryApply> applyResponse = this.juryApi.apply(applyRequest);
             if (applyResponse.isSuccess()) {
                 auditTask.setTaskStatus(AuditTaskStatusEnum.FORWARDED_SUCCESS.value());
             } else {

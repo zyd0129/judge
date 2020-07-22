@@ -60,12 +60,12 @@ public class ProcessServiceImpl implements ProcessService {
         if (auditTaskList.isEmpty()) {
             return;
         }
-       /* for (AuditTaskDO auditTask : auditTaskList) {
+        for (AuditTaskDO auditTask : auditTaskList) {
             ApiResponse<Map> apiResponse = this.juryApi.getVarResult(auditTask.getApplyId(), auditTask.getTenantCode());
             if (apiResponse.isSuccess()) {
                 this.saveVarResult(auditTask, apiResponse.getData());
             }
-        }*/
+        }
     }
 
     @Override

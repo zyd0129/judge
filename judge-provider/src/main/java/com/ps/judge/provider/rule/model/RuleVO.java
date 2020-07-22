@@ -11,6 +11,8 @@ public class RuleVO {
     private String ruleVersion;
     private String ruleFlowGroup;
     private String agendaGroup;
+    private String rulePackageName;
+    private String rulePackageVersion;
     private Integer salience;
     private Integer score;
     private String result;

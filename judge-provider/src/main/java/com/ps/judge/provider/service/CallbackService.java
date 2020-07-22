@@ -11,7 +11,6 @@ import com.ps.jury.api.common.ApiResponse;
  * @date ：2020/7/20
  */
 public interface CallbackService {
-
     void sendAuditTaskResult(AuditTaskDO auditTask, ApiResponse<AuditResultVO> apiResponse);
 
     void callbackTenant();

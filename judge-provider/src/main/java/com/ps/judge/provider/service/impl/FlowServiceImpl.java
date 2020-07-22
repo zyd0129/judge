@@ -3,12 +3,12 @@ package com.ps.judge.provider.service.impl;
 import com.ps.judge.dao.entity.*;
 import com.ps.judge.dao.mapper.*;
 import com.ps.judge.provider.drools.KSessionManager;
-import com.ps.judge.provider.rule.builder.DroolsRuleTemplate;
 import com.ps.judge.provider.rule.builder.RuleTemplate;
 import com.ps.judge.provider.rule.manager.RuleManager;
 import com.ps.judge.provider.rule.model.ConditionVO;
 import com.ps.judge.provider.rule.model.RuleVO;
 import com.ps.judge.provider.service.FlowService;
+import lombok.extern.slf4j.Slf4j;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,7 @@ import java.util.List;
  * @author ：zhangqian9044.
  * @date ：2020/7/20
  */
+@Slf4j
 @Service
 public class FlowServiceImpl implements FlowService {
     @Autowired
@@ -59,23 +60,26 @@ public class FlowServiceImpl implements FlowService {
             if (configFlow.getLoadMethod() == 1) {
                 continue;
             }
-            this.loadFlow(configFlow);
+            if (!this.loadFlow(configFlow)) {
+                log.error("flow :{}, 加载失败 ", configFlow.getFlowCode());
+            }
         }
         return true;
     }
 
     @Override
     public boolean loadFlow(ConfigFlowDO configFlow) {
-        List<ConfigRuleDO> configRuleList =
-                this.configRuleMapper.listConfigRule(configFlow.getRulePackageVersionId());
-        if (configRuleList.isEmpty()) {
-            return false;
+        if (configFlow.getLoadMethod() == 0) {
+            List<ConfigRuleDO> configRuleList =
+                    this.configRuleMapper.listConfigRule(configFlow.getRulePackageVersionId());
+            if (configRuleList.isEmpty()) {
+                return false;
+            }
+            List<RuleVO> ruleList = this.getRuleVOList(configRuleList);
+            String ruleStr = this.ruleTemplate.build(ruleList);
+            return this.ruleManager.add(configFlow.getFlowCode(), ruleStr);
         }
-        List<RuleVO> ruleList = this.getRuleVOList(configRuleList);
-        String ruleStr = this.ruleTemplate.build(ruleList);
-        System.err.println(ruleStr);
-        this.ruleManager.add(configFlow.getFlowCode(), ruleStr);
-        return true;
+        return this.kSessionManager.addContainer(configFlow);
     }
 
     @Override
@@ -116,6 +120,8 @@ public class FlowServiceImpl implements FlowService {
             rule.setRuleVersion(String.valueOf(configRule.getVersion()));
             rule.setRuleFlowGroup(configRulePackage.getCode());
             rule.setAgendaGroup(configRulePackage.getCode());
+            rule.setRulePackageName(configRulePackage.getName());
+            rule.setRulePackageVersion(String.valueOf(configRulePackageVersion.getVersion()));
             rule.setConditionList(conditionList);
             ruleList.add(rule);
         }

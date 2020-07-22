@@ -12,9 +12,6 @@ import java.util.Map;
  * @date ：2020/7/20
  */
 public interface ProcessService {
-
-
-
     ApiResponse<String> saveVarResult(AuditTaskDO auditTask, Map map);
 
     void varResultQuery();

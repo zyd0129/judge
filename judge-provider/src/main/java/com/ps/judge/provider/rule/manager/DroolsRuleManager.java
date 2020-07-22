@@ -1,5 +1,6 @@
 package com.ps.judge.provider.rule.manager;
 
+import lombok.extern.slf4j.Slf4j;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.api.io.ResourceType;
@@ -11,6 +12,7 @@ import org.kie.internal.io.ResourceFactory;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -19,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author ：zhangqian9044.
  * @date ：2020/7/16
  */
+@Slf4j
 public class DroolsRuleManager implements RuleManager {
     private final Map<String, InternalKnowledgeBase> ruleContext = new ConcurrentHashMap<>();
 
@@ -31,6 +34,9 @@ public class DroolsRuleManager implements RuleManager {
     @Override
     public boolean add(String flowCode, String ruleStr) {
         InternalKnowledgeBase internalKnowledgeBase = this.load(ruleStr);
+        if (Objects.isNull(internalKnowledgeBase)) {
+            return false;
+        }
         this.ruleContext.put(flowCode, internalKnowledgeBase);
         return true;
     }
@@ -58,7 +64,9 @@ public class DroolsRuleManager implements RuleManager {
         knowledgeBuilder.add(ResourceFactory.newByteArrayResource(ruleStr.getBytes(StandardCharsets.UTF_8)), ResourceType.RDRL);
         // Check the builder for errors
         if (knowledgeBuilder.hasErrors()) {
-            //System.err.println("规则错误 ：" + knowledgeBuilder.getErrors().toString());
+            log.error("规则文件错误 ：{}", knowledgeBuilder.getErrors().toString());
+            System.err.println("规则文件错误 ：" + knowledgeBuilder.getErrors().toString());
+            return null;
         }
         InternalKnowledgeBase internalKnowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
         internalKnowledgeBase.addPackages(knowledgeBuilder.getKnowledgePackages());
@@ -72,7 +80,9 @@ public class DroolsRuleManager implements RuleManager {
         }
         // Check the builder for errors
         if (knowledgeBuilder.hasErrors()) {
-            //System.err.println("规则错误 ：" + knowledgeBuilder.getErrors().toString());
+            System.err.println("规则文件错误 ：" + knowledgeBuilder.getErrors().toString());
+            log.error("规则文件错误 ：{}", knowledgeBuilder.getErrors().toString());
+            return null;
         }
         InternalKnowledgeBase internalKnowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
         internalKnowledgeBase.addPackages(knowledgeBuilder.getKnowledgePackages());
