@@ -66,8 +66,14 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
 
     @Override
     @Async
+    @Transactional
     public void startProcess(AuditTaskDO auditTask, Map map) {
         if (!syncAuditTaskStatus(auditTask)) {
+            return;
+        }
+        Map<String, Object> varResultMap = this.getVarResultMap((Map) map.get("varResult"));
+        if (Objects.isNull(varResultMap)) {
+            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
             return;
         }
         String flowCode = auditTask.getFlowCode();
@@ -76,7 +82,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
             return;
         }
-        if (configFlow.getStatus() != StatusEnum.ENABLE.getStatus()) {
+        if (configFlow.getStatus() != StatusEnum.ENABLE.value()) {
             this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
             return;
         }
@@ -92,12 +98,11 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             return;
         }
 
-        Map<String, Object> varResultMap = this.getVarResultMap((Map) map.get("varResult"));
         ScoreCardVO scoreCard = new ScoreCardVO();
         List<AuditTaskTriggeredRuleDO> auditTaskTriggeredRuleDOList = new ArrayList<>();
 
         if (configFlow.getLoadMethod() == 0) {
-            List paramList = new ArrayList();
+            List<Object> paramList = new ArrayList<>();
             paramList.add(varResultMap);
             paramList.add(auditTaskTriggeredRuleDOList);
             try {
@@ -107,11 +112,9 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
                 auditTask.setCompleteTime(LocalDateTime.now());
                 auditTask.setGmtModified(LocalDateTime.now());
                 this.auditTaskMapper.update(auditTask);
-                throw new RuntimeException(e);
             } finally {
                 kieSession.destroy();
             }
-
             this.processResult(auditTask, auditTaskTriggeredRuleDOList);
             return;
         }
@@ -128,7 +131,6 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             auditTask.setCompleteTime(LocalDateTime.now());
             auditTask.setGmtModified(LocalDateTime.now());
             this.auditTaskMapper.update(auditTask);
-            throw new RuntimeException(e);
         } finally {
             kieSession.destroy();
         }
@@ -140,6 +142,10 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
     }
 
     private Map<String, Object> getVarResultMap(Map<String, Object> levelMap) {
+        if (Objects.isNull(levelMap)) {
+            return null;
+        }
+
         Map<String, Object> varResultMap = new HashMap<>();
         for (Map.Entry<String, Object> level : levelMap.entrySet()) {
             if (Objects.isNull(level.getValue())) {
@@ -172,7 +178,6 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         return false;
     }
 
-    @Transactional
     public void processResult(AuditTaskDO auditTask, List<AuditTaskTriggeredRuleDO> auditTaskTriggeredRuleDOList) {
         List<NodeResultVO> nodeResult = new ArrayList<>();
         NodeResultVO node1 = new NodeResultVO();
@@ -200,6 +205,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             }
             node1.setIndex(1);
             node1.setRulePackageCode(auditTaskTriggeredRuleDOList.get(0).getRulePackageCode());
+
             node1.setAuditCode(AuditCodeEnum.getAuditCode(resultCode));
             node1.setAuditScore(0);
             node1.setTriggeredRules(triggeredRuleVOList);
@@ -214,7 +220,6 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         this.callbackService.sendAuditTaskResult(auditTask, apiResponse);
     }
 
-    @Transactional
     public void processResult(AuditTaskDO auditTask, Map<String, Object> parameters) {
         List<NodeResultVO> nodeResult = new ArrayList<>();
         ScoreCardVO scoreCard = (ScoreCardVO) parameters.get("scoreCard");

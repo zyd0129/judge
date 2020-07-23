@@ -45,7 +45,7 @@ public class ProcessController implements JudgeApi {
         if (Objects.isNull(configFlow)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不存在");
         }
-        if (configFlow.getStatus() != StatusEnum.ENABLE.getStatus()) {
+        if (configFlow.getStatus() != StatusEnum.ENABLE.value()) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流未启用");
         }
         return this.applyService.apply(applyRequest);
@@ -91,6 +91,7 @@ public class ProcessController implements JudgeApi {
 
     @Override
     public ApiResponse<String> submitVar(ApiResponse<Map> apiResponse) {
+        System.err.println(apiResponse);
         Map varResultMap = apiResponse.getData();
         if (varResultMap.isEmpty()) {
             return ApiResponse.success("varResult 信息不存在");

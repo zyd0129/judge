@@ -1,9 +1,7 @@
 package com.ps.judge.provider.enums;
 
-import lombok.Getter;
 import org.apache.commons.lang.StringUtils;
 
-@Getter
 public enum AuditCodeEnum {
     REJECT(0, "拒绝"),
     MANUAL_REVIEW(1, "人工初审"),
@@ -16,6 +14,10 @@ public enum AuditCodeEnum {
     AuditCodeEnum(int code, String name) {
         this.code = code;
         this.name = name;
+    }
+
+    public int value() {
+        return this.code;
     }
 
     public static String getAuditCode(int code) {

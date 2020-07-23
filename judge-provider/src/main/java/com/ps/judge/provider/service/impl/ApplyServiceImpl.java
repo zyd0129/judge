@@ -55,6 +55,7 @@ public class ApplyServiceImpl implements ApplyService {
         auditTask.setGmtCreate(now);
         auditTask.setGmtModified(now);
         this.auditTaskMapper.insert(auditTask);
+        auditTask = this.auditTaskMapper.getAuditTaskById(auditTask.getId());
 
         AuditTaskParamDO auditTaskParam = new AuditTaskParamDO();
         auditTaskParam.setTaskId(auditTask.getId());
@@ -75,19 +76,19 @@ public class ApplyServiceImpl implements ApplyService {
     @Override
     public ApiResponse<ApplyResultVO> retryAudit(AuditTaskDO auditTask) {
         int auditId = auditTask.getId();
-
+        //申请计算变量失败5次后，web端可手动发起重试
         if (auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.value()
                 && auditTask.getRetryCount() < MAX_RETRY_COUNT) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单自动重试中，不能手动重试");
         }
-
+        //规则计算失败，重新申请计算变量
         if (auditTask.getTaskStatus() == AuditTaskStatusEnum.VAR_COMPUTE_FAIL.value()
                 || auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.value()) {
             AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditId);
             ApplyRequest request = JSON.parseObject(auditTaskParam.getInputRawParam(), ApplyRequest.class);
             this.asyncProcessTask.applyJury(auditTask, request);
         }
-
+        //规则执行失败，重新执行
         if (auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value()) {
             AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditId);
             Map varResultMap = JSON.parseObject(auditTaskParam.getVarResult(), Map.class);
@@ -115,8 +116,8 @@ public class ApplyServiceImpl implements ApplyService {
             Integer auditId = auditTask.getId();
             Integer retryCount = auditTask.getRetryCount() + 1;
             AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditId);
-            String inputRawParam = auditTaskParam.getInputRawParam();
-            ApplyRequest applyRequest = JSON.parseObject(inputRawParam, ApplyRequest.class);
+            ApplyRequest applyRequest = JSON.parseObject(auditTaskParam.getInputRawParam(), ApplyRequest.class);
+
             ApiResponse<JuryApply> applyResponse = this.juryApi.apply(applyRequest);
             if (applyResponse.isSuccess()) {
                 auditTask.setTaskStatus(AuditTaskStatusEnum.FORWARDED_SUCCESS.value());
