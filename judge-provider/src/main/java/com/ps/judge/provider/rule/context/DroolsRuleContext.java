@@ -1,4 +1,4 @@
-package com.ps.judge.provider.rule.manager;
+package com.ps.judge.provider.rule.context;
 
 import lombok.extern.slf4j.Slf4j;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date ：2020/7/16
  */
 @Slf4j
-public class DroolsRuleManager implements RuleManager {
+public class DroolsRuleContext implements RuleContext {
     private final Map<String, InternalKnowledgeBase> ruleContext = new ConcurrentHashMap<>();
 
     @Override

@@ -4,7 +4,7 @@ import com.ps.judge.dao.entity.*;
 import com.ps.judge.dao.mapper.*;
 import com.ps.judge.provider.drools.KSessionManager;
 import com.ps.judge.provider.rule.builder.RuleTemplate;
-import com.ps.judge.provider.rule.manager.RuleManager;
+import com.ps.judge.provider.rule.context.RuleContext;
 import com.ps.judge.provider.rule.model.ConditionVO;
 import com.ps.judge.provider.rule.model.RuleVO;
 import com.ps.judge.provider.service.FlowService;
@@ -39,7 +39,7 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     ConfigRuleConditionMapper configRuleConditionMapper;
     @Autowired
-    RuleManager ruleManager;
+    RuleContext ruleContext;
     @Autowired
     RuleTemplate ruleTemplate;
 
@@ -77,7 +77,7 @@ public class FlowServiceImpl implements FlowService {
             }
             List<RuleVO> ruleList = this.getRuleVOList(configRuleList);
             String ruleStr = this.ruleTemplate.build(ruleList);
-            return this.ruleManager.add(configFlow.getFlowCode(), ruleStr);
+            return this.ruleContext.add(configFlow.getFlowCode(), ruleStr);
         }
         return this.kSessionManager.addContainer(configFlow);
     }
@@ -85,19 +85,19 @@ public class FlowServiceImpl implements FlowService {
     @Override
     public boolean removeFlow(ConfigFlowDO configFlow) {
         if (configFlow.getLoadMethod() == 0) {
-            return this.ruleManager.remove(configFlow.getFlowCode());
+            return this.ruleContext.remove(configFlow.getFlowCode());
         }
         return this.kSessionManager.removeContainer(configFlow);
     }
 
     @Override
     public boolean existedFlow(ConfigFlowDO configFlow) {
-        return this.ruleManager.existed(configFlow.getFlowCode());
+        return this.ruleContext.existed(configFlow.getFlowCode());
     }
 
     @Override
     public KieSession getKieSession(String flowCode) {
-        return this.ruleManager.getKieSession(flowCode);
+        return this.ruleContext.getKieSession(flowCode);
     }
 
     private List<RuleVO> getRuleVOList(List<ConfigRuleDO> configRuleList) {
@@ -111,7 +111,7 @@ public class FlowServiceImpl implements FlowService {
             ConfigRulePackageVersionDO configRulePackageVersion =
                     this.configRulePackageVersionMapper.getConfigRulePackageVersionById(configRule.getRulePackageVersionId());
             ConfigRulePackageDO configRulePackage =
-                    this.configRulePackageMapper.getConfigRulePackageById(configRulePackageVersion.getPackageId());
+                    this.configRulePackageMapper.getConfigRulePackageById(configRulePackageVersion.getRulePackageId());
             List<ConditionVO> conditionList = this.getConditionVOList(configRuleConditionList);
             RuleVO rule = new RuleVO();
             BeanUtils.copyProperties(configRule, rule);

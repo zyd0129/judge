@@ -13,7 +13,7 @@ import java.io.UnsupportedEncodingException;
 public class JudgeProviderApplicationTests {
     @Test
     public void contextLoads() {
-
+        System.out.println(System.currentTimeMillis());
     }
 
     private void verifyRule(String ruleString) {
