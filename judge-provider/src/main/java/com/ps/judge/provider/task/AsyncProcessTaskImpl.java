@@ -66,7 +66,6 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
 
     @Override
     @Async
-    @Transactional
     public void startProcess(AuditTaskDO auditTask, Map map) {
         if (!syncAuditTaskStatus(auditTask)) {
             return;

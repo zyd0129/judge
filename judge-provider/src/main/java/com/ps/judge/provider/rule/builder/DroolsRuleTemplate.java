@@ -34,7 +34,7 @@ public class DroolsRuleTemplate extends RuleTemplate {
     }
 
     @Override
-    String buildLHS(List<ConditionVO> conditionList) {
+    String buildLHS(Integer conditionRelation, List<ConditionVO> conditionList) {
         StringBuilder lhsStr = new StringBuilder();
         lhsStr.append("when").append(LINE_SEPARATOR);
         lhsStr.append("$arrayList : ArrayList( )").append(LINE_SEPARATOR);
@@ -42,9 +42,13 @@ public class DroolsRuleTemplate extends RuleTemplate {
         int index = 0;
         for (ConditionVO condition : conditionList) {
             index++;
-            lhsStr.append(this.buildCondition(index, condition));
+            lhsStr.append(this.buildCondition(index, conditionRelation, condition));
         }
-        lhsStr.deleteCharAt(lhsStr.length() - 1);
+        if (conditionRelation == 1) {
+            lhsStr.deleteCharAt(lhsStr.length() - 1);
+        } else {
+            lhsStr.deleteCharAt(lhsStr.length() - 2);
+        }
         lhsStr.append(")").append(LINE_SEPARATOR);
         return new String(lhsStr);
     }
@@ -84,13 +88,17 @@ public class DroolsRuleTemplate extends RuleTemplate {
         return new String(rhsStr);
     }
 
-    private String buildCondition(int index, ConditionVO condition) {
+    private String buildCondition(int index, Integer conditionRelation, ConditionVO condition) {
         StringBuilder conditionalStr = new StringBuilder();
         conditionalStr.append(" $param").append(index).append(" : ");
         conditionalStr.append("this.get(\"").append(condition.getVariableCode()).append("\") ");
         conditionalStr.append(condition.getOperator()).append(" ");
         conditionalStr.append(condition.getOperand()).append(" ");
-        conditionalStr.append(",");
+        if (conditionRelation == 1) {
+            conditionalStr.append(",");
+        } else {
+            conditionalStr.append("&&");
+        }
         return new String(conditionalStr);
     }
 }

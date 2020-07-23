@@ -27,8 +27,11 @@ public class DroolsRuleContext implements RuleContext {
 
     @Override
     public KieSession getKieSession(String flowCode) {
-        InternalKnowledgeBase internalKnowledgeBase = this.ruleContext.get(flowCode);
-        return internalKnowledgeBase.newKieSession();
+        if (this.existed(flowCode)) {
+            InternalKnowledgeBase internalKnowledgeBase = this.ruleContext.get(flowCode);
+            return internalKnowledgeBase.newKieSession();
+        }
+        return null;
     }
 
     @Override

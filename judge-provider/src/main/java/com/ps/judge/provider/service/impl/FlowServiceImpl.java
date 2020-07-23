@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * flow管理服务
@@ -103,15 +104,21 @@ public class FlowServiceImpl implements FlowService {
     private List<RuleVO> getRuleVOList(List<ConfigRuleDO> configRuleList) {
         List<RuleVO> ruleList = new ArrayList<>(configRuleList.size());
         for (ConfigRuleDO configRule : configRuleList) {
-            List<ConfigRuleConditionDO> configRuleConditionList = this.configRuleConditionMapper
-                    .getConfigRuleCondition(configRule.getId());
+            List<ConfigRuleConditionDO> configRuleConditionList =
+                    this.configRuleConditionMapper.getConfigRuleCondition(configRule.getId());
             if (configRuleConditionList.isEmpty()) {
                 continue;
             }
             ConfigRulePackageVersionDO configRulePackageVersion =
                     this.configRulePackageVersionMapper.getConfigRulePackageVersionById(configRule.getRulePackageVersionId());
+            if (Objects.isNull(configRulePackageVersion)) {
+                continue;
+            }
             ConfigRulePackageDO configRulePackage =
                     this.configRulePackageMapper.getConfigRulePackageById(configRulePackageVersion.getRulePackageId());
+            if (Objects.isNull(configRulePackage)) {
+                continue;
+            }
             List<ConditionVO> conditionList = this.getConditionVOList(configRuleConditionList);
             RuleVO rule = new RuleVO();
             BeanUtils.copyProperties(configRule, rule);

@@ -91,7 +91,6 @@ public class ProcessController implements JudgeApi {
 
     @Override
     public ApiResponse<String> submitVar(ApiResponse<Map> apiResponse) {
-        System.err.println(apiResponse);
         Map varResultMap = apiResponse.getData();
         if (varResultMap.isEmpty()) {
             return ApiResponse.success("varResult 信息不存在");
