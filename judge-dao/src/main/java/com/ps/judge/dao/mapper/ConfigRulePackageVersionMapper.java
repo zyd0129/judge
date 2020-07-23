@@ -12,5 +12,5 @@ public interface ConfigRulePackageVersionMapper {
 
     void update(ConfigRulePackageVersionDO versionDO);
 
-    List<ConfigRulePackageVersionDO> queryByPackageId(@Param("packageId") Integer packageId);
+    List<ConfigRulePackageVersionDO> queryByPackageId(@Param("rulePackageId") Integer rulePackageId);
 }

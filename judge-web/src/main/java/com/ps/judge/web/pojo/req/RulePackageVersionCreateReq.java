@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class RulePackageVersionCreateReq {
 
     @NotNull
-    private Integer packageId;
+    private Integer rulePackageId;
 
     public ConfigRulePackageVersionBO convertToBO() {
         ConfigRulePackageVersionBO bo = new ConfigRulePackageVersionBO();

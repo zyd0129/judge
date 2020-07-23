@@ -5,7 +5,7 @@
 <mapper namespace="com.ps.judge.dao.mapper.ConfigRulePackageVersionMapper">
     <resultMap id="resultMap" type="com.ps.judge.dao.entity.ConfigRulePackageVersionDO">
         <id column="id" property="id" jdbcType="INTEGER"/>
-        <result column="package_id" property="packageId" jdbcType="INTEGER"/>
+        <result column="rule_package_id" property="rulePackageId" jdbcType="INTEGER"/>
         <result column="version" property="version" jdbcType="INTEGER"/>
         <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP"/>
         <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP"/>
@@ -17,8 +17,8 @@
 
     <insert id="insert" parameterType="ConfigRulePackageVersionDO" useGeneratedKeys="true" keyProperty="id"
             keyColumn="id">
-        insert into config_rule_package_version(package_id, version, gmt_created, gmt_modified)
-        values (#{packageId}, #{version}, #{gmtCreated}, #{gmtModified})
+        insert into config_rule_package_version(rule_package_id, version, gmt_created, gmt_modified)
+        values (#{rulePackageId}, #{version}, #{gmtCreated}, #{gmtModified})
     </insert>
 
     <update id="update" parameterType="ConfigRulePackageVersionDO">
@@ -40,7 +40,7 @@
     <select id="queryByPackageId" parameterType="ConfigRulePackageVersionDO" resultMap="resultMap">
         select *
         from config_rule_package_version
-        where package_id=#{packageId}
+        where rule_package_id=#{rulePackageId}
     </select>
 
 </mapper>

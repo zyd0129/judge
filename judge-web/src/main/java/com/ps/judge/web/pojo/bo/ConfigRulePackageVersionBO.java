@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 public class ConfigRulePackageVersionBO {
     private Integer id;
-    private Integer packageId;
+    private Integer rulePackageId;
     private Integer version;
     private Integer status;
     private Integer operatorId;
