@@ -27,8 +27,8 @@ public class DroolsRuleTemplate extends RuleTemplate {
         attributesStr.append(LINE_SEPARATOR);
         attributesStr.append("rule \"").append(rule.getRuleCode()).append("\"").append(LINE_SEPARATOR);
         attributesStr.append("dialect \"java\"").append(LINE_SEPARATOR);
-        //attributesStr.append("agenda-group \"").append(rule.getAgendaGroup()).append("\"").append(LINE_SEPARATOR);
-        //attributesStr.append("ruleflow-group \"").append(rule.getRuleFlowGroup()).append("\"").append(LINE_SEPARATOR);
+        attributesStr.append("agenda-group \"").append(rule.getAgendaGroup()).append("\"").append(LINE_SEPARATOR);
+        attributesStr.append("ruleflow-group \"").append(rule.getRuleFlowGroup()).append("\"").append(LINE_SEPARATOR);
         attributesStr.append("salience ").append(rule.getSalience()).append(LINE_SEPARATOR);
         return new String(attributesStr);
     }

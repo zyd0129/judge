@@ -16,7 +16,7 @@ public class DroolsRuleExecutor implements RuleExecutor {
         for (Object param : paramList) {
             kieSession.insert(param);
         }
-        //kieSession.getAgenda().getAgendaGroup(ruleFlowGroup).setFocus();
+        kieSession.getAgenda().getAgendaGroup(ruleFlowGroup).setFocus();
         kieSession.fireAllRules();
     }
 }

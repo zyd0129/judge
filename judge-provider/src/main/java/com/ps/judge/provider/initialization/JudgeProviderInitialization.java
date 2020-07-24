@@ -1,6 +1,5 @@
 package com.ps.judge.provider.initialization;
 
-import com.ps.judge.provider.drools.KieContainerInitialization;
 import com.ps.judge.provider.service.FlowService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +17,12 @@ import javax.annotation.PostConstruct;
 @Slf4j
 public class JudgeProviderInitialization {
     @Autowired
-    KieContainerInitialization kieContainerInitialization;
-    @Autowired
     FlowService flowService;
 
     @PostConstruct
     public void init() {
         log.info("start provider initiating ");
         long startTime = System.currentTimeMillis();
-        this.kieContainerInitialization.init();
         this.flowService.initFlow();
         long endTime = System.currentTimeMillis();
         log.info("end provider initiating , time cost: {}", endTime - startTime);

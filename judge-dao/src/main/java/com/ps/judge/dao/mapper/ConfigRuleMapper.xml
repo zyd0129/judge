@@ -11,7 +11,8 @@
         <result column="name" property="name" jdbcType="VARCHAR" />
         <result column="version" property="version" jdbcType="VARCHAR" />
         <result column="salience" property="salience" jdbcType="INTEGER" />
-        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="condition_relation" property="conditionRelation" jdbcType="TINYINT" />
+        <result column="status" property="status" jdbcType="TINYINT" />
         <result column="score" property="score" jdbcType="INTEGER" />
         <result column="result" property="result" jdbcType="VARCHAR" />
         <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP" />

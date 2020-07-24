@@ -11,7 +11,6 @@ public class ConfigPackageDO {
     private String tenantName;
     private String productCode;
     private String productName;
-
     private String packageName;
     private String version;
     private String url;

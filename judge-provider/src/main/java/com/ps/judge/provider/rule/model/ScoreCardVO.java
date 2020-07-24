@@ -1,4 +1,4 @@
-package com.ps.judge.provider.entity;
+package com.ps.judge.provider.rule.model;
 
 import lombok.Data;
 
