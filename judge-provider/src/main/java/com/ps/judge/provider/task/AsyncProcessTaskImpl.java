@@ -5,21 +5,20 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ps.judge.api.entity.AuditResultVO;
 import com.ps.judge.api.entity.NodeResultVO;
 import com.ps.judge.api.entity.TriggeredRuleVO;
-import com.ps.judge.dao.entity.*;
+import com.ps.judge.dao.entity.AuditTaskDO;
+import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;
 import com.ps.judge.dao.mapper.AuditTaskMapper;
 import com.ps.judge.dao.mapper.AuditTaskParamMapper;
 import com.ps.judge.dao.mapper.AuditTaskTriggeredRuleMapper;
 import com.ps.judge.provider.enums.AuditCodeEnum;
 import com.ps.judge.provider.enums.AuditTaskStatusEnum;
-import com.ps.judge.provider.enums.StatusEnum;
-import com.ps.judge.provider.rule.executor.RuleExecutor;
 import com.ps.judge.provider.service.CallbackService;
 import com.ps.judge.provider.service.FlowService;
 import com.ps.jury.api.JuryApi;
 import com.ps.jury.api.common.ApiResponse;
 import com.ps.jury.api.common.JuryApply;
 import com.ps.jury.api.request.ApplyRequest;
-import org.kie.api.runtime.KieSession;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -29,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
+@Slf4j
 @Component
 public class AsyncProcessTaskImpl implements AsyncProcessTask {
     @Autowired
@@ -43,8 +43,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
     FlowService flowService;
     @Autowired
     CallbackService callbackService;
-    @Autowired
-    RuleExecutor ruleExecutor;
+
 
     @Override
     @Async
@@ -63,59 +62,38 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         if (!syncAuditTaskStatus(auditTask)) {
             return;
         }
+
         Map<String, Object> varResultMap = this.getVarResultMap((Map) map.get("varResult"));
         if (Objects.isNull(varResultMap)) {
             this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
             return;
         }
-
-        String flowCode = auditTask.getFlowCode();
-        if (!this.flowService.existedFlow(flowCode)) {
-            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
-            return;
-        }
-
-        ConfigFlowDO configFlow = this.flowService.getByFlowCode(flowCode);
-        if (configFlow.getStatus() == StatusEnum.DISABLE.value()) {
-            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
-            return;
-        }
-
-        List<ConfigFlowRulePackageDO> configFlowRulePackageList = this.flowService.getConfigFlowRulePackageList(flowCode);
-        if (configFlowRulePackageList.isEmpty()) {
-            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
-            return;
-        }
-
-        KieSession kieSession = this.flowService.getKieSession(configFlow.getFlowCode());
-        if (Objects.isNull(kieSession)) {
-            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
-            return;
-        }
-
         List<AuditTaskTriggeredRuleDO> auditTaskTriggeredRuleDOList = new ArrayList<>();
+
         List<Object> paramList = new ArrayList<>();
         paramList.add(varResultMap);
         paramList.add(auditTaskTriggeredRuleDOList);
         try {
-            for (ConfigFlowRulePackageDO configFlowRulePackage : configFlowRulePackageList) {
-                ConfigRulePackageDO configRulePackage =
-                        this.flowService.getConfigRulePackage(configFlowRulePackage.getRulePackageVersionId());
-                if (Objects.isNull(configRulePackage)) {
-                    continue;
-                }
-                this.ruleExecutor.executor(kieSession, paramList, configRulePackage.getCode());
+            if (!this.flowService.executorFlow(auditTask.getFlowCode(), paramList)) {
+                this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
+                return;
             }
+            this.processResult(auditTask, auditTaskTriggeredRuleDOList);
         } catch (Exception e) {
-            auditTask.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
-            auditTask.setCompleteTime(LocalDateTime.now());
-            auditTask.setGmtModified(LocalDateTime.now());
-            this.auditTaskMapper.update(auditTask);
-        } finally {
-            kieSession.destroy();
+            log.error("规则流flowCode : {} , 执行异常，异常原因 ：{}", auditTask.getFlowCode(), e.getMessage());
+            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
+            throw new RuntimeException(e);
         }
-        this.processResult(auditTask, auditTaskTriggeredRuleDOList);
+    }
 
+    @Transactional
+    public boolean syncAuditTaskStatus(AuditTaskDO auditTask) {
+        auditTask = this.auditTaskMapper.getAuditTaskByIdForUpdate(auditTask.getId());
+        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.value()
+                || auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value()) {
+            return this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT.value());
+        }
+        return false;
     }
 
     private Map<String, Object> getVarResultMap(Map<String, Object> levelMap) {
@@ -145,15 +123,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         return varResultMap;
     }
 
-    @Transactional
-    public boolean syncAuditTaskStatus(AuditTaskDO auditTask) {
-        auditTask = this.auditTaskMapper.getAuditTaskByIdForUpdate(auditTask.getId());
-        if (auditTask.getTaskStatus() == AuditTaskStatusEnum.VAR_ACCEPTED_SUCCESS.value()
-                || auditTask.getTaskStatus() == AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value()) {
-            return this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT.value());
-        }
-        return false;
-    }
+
 
     public void processResult(AuditTaskDO auditTask, List<AuditTaskTriggeredRuleDO> auditTaskTriggeredRuleDOList) {
         List<NodeResultVO> nodeResult = new ArrayList<>();

@@ -14,8 +14,8 @@ public class RuleVO {
     private String rulePackageName;
     private String rulePackageVersion;
     private Integer salience;
-    private Integer conditionRelation;
     private Integer score;
     private String result;
+    private String label;
     List<ConditionVO> conditionList;
 }

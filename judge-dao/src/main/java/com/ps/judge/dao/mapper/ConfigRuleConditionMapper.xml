@@ -18,11 +18,8 @@
     </resultMap>
 
     <select id="getConfigRuleCondition" resultMap="resultMap">
-        select *
-        from config_rule_condition
-        where rule_id = #{ruleId}
+        select * from config_rule_condition where rule_id = #{ruleId}
     </select>
-
 
     <insert id="insert" parameterType="ConfigRuleConditionDO" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         insert into config_rule_condition(rule_id, name, operator, operand,`function`, variable_code, variable_type,status, gmt_created, gmt_modified)

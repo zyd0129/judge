@@ -8,7 +8,6 @@ import com.ps.judge.api.entity.LoadFlowVO;
 import com.ps.judge.dao.entity.AuditTaskDO;
 import com.ps.judge.dao.entity.ConfigFlowDO;
 import com.ps.judge.provider.enums.AuditTaskStatusEnum;
-import com.ps.judge.provider.enums.StatusEnum;
 import com.ps.judge.provider.service.ApplyService;
 import com.ps.judge.provider.service.AuditTaskService;
 import com.ps.judge.provider.service.FlowService;
@@ -45,8 +44,8 @@ public class ProcessController implements JudgeApi {
         if (Objects.isNull(configFlow)) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不存在");
         }
-        if (configFlow.getStatus() != StatusEnum.ENABLE.value()) {
-            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流未启用");
+        if (!this.flowService.existedFlow(applyRequest.getFlowCode())) {
+            return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "规则流不可用");
         }
         return this.applyService.apply(applyRequest);
     }

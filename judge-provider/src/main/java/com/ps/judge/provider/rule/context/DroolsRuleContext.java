@@ -68,7 +68,6 @@ public class DroolsRuleContext implements RuleContext {
         // Check the builder for errors
         if (knowledgeBuilder.hasErrors()) {
             log.error("规则文件错误 ：{}", knowledgeBuilder.getErrors().toString());
-            System.err.println("规则文件错误 ：" + knowledgeBuilder.getErrors().toString());
             return null;
         }
         InternalKnowledgeBase internalKnowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -83,7 +82,6 @@ public class DroolsRuleContext implements RuleContext {
         }
         // Check the builder for errors
         if (knowledgeBuilder.hasErrors()) {
-            System.err.println("规则文件错误 ：" + knowledgeBuilder.getErrors().toString());
             log.error("规则文件错误 ：{}", knowledgeBuilder.getErrors().toString());
             return null;
         }

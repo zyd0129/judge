@@ -8,4 +8,5 @@ public class ConditionVO {
     private String operand;
     private String variableCode;
     private Integer variableType;
+    private Integer relation;
 }

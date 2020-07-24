@@ -1,5 +1,6 @@
 package com.ps.judge.provider.rule.builder;
 
+import com.ps.judge.provider.rule.model.ConditionRelationEnum;
 import com.ps.judge.provider.rule.model.ConditionVO;
 import com.ps.judge.provider.rule.model.RuleVO;
 
@@ -34,7 +35,7 @@ public class DroolsRuleTemplate extends RuleTemplate {
     }
 
     @Override
-    String buildLHS(Integer conditionRelation, List<ConditionVO> conditionList) {
+    String buildLHS(List<ConditionVO> conditionList) {
         StringBuilder lhsStr = new StringBuilder();
         lhsStr.append("when").append(LINE_SEPARATOR);
         lhsStr.append("$arrayList : ArrayList( )").append(LINE_SEPARATOR);
@@ -42,13 +43,17 @@ public class DroolsRuleTemplate extends RuleTemplate {
         int index = 0;
         for (ConditionVO condition : conditionList) {
             index++;
-            lhsStr.append(this.buildCondition(index, conditionRelation, condition));
+            lhsStr.append(this.buildCondition(index, condition));
         }
-        if (conditionRelation == 1) {
-            lhsStr.deleteCharAt(lhsStr.length() - 1);
-        } else {
-            lhsStr.deleteCharAt(lhsStr.length() - 2);
+
+        //除去最后一个多余的逻辑关系符合
+        ConditionVO lastCondition = conditionList.get(conditionList.size() - 1);
+        if (lastCondition.getRelation() == ConditionRelationEnum.AND.code()) {
+            lhsStr.deleteCharAt(lhsStr.length() - ConditionRelationEnum.AND.value().length());
+        }  else {
+            lhsStr.deleteCharAt(lhsStr.length() - ConditionRelationEnum.OR.value().length());
         }
+
         lhsStr.append(")").append(LINE_SEPARATOR);
         return new String(lhsStr);
     }
@@ -71,13 +76,17 @@ public class DroolsRuleTemplate extends RuleTemplate {
         int index = 0;
         for (ConditionVO condition : rule.getConditionList()) {
             index++;
-            expression.append(condition.getOperator()).append("|");
-            conditionValue.append(condition.getOperand()).append("|");
-            param.append("$param").append(index).append("+").append("\"|\"+");
+            if (index != rule.getConditionList().size()) {
+                expression.append(condition.getOperator()).append("|");
+                conditionValue.append(condition.getOperand()).append("|");
+                param.append("$param").append(index).append("+").append("\"|\"+");
+            } else {
+                expression.append(condition.getOperator());
+                conditionValue.append(condition.getOperand());
+                param.append("$param").append(index).append("+").append("\"\"");
+            }
         }
-        expression.deleteCharAt(expression.length() - 1);
-        conditionValue.deleteCharAt(conditionValue.length() - 1);
-        param.delete(param.length() - 5, param.length()).append("+").append("\"\"");
+
         rhsStr.append("triggeredRule.setExpression(\"").append(expression).append("\");").append(LINE_SEPARATOR);
         rhsStr.append("triggeredRule.setCondition(\"").append(conditionValue).append("\");").append(LINE_SEPARATOR);
         rhsStr.append("triggeredRule.setParam(").append(param).append(");").append(LINE_SEPARATOR);
@@ -88,16 +97,16 @@ public class DroolsRuleTemplate extends RuleTemplate {
         return new String(rhsStr);
     }
 
-    private String buildCondition(int index, Integer conditionRelation, ConditionVO condition) {
+    private String buildCondition(int index, ConditionVO condition) {
         StringBuilder conditionalStr = new StringBuilder();
         conditionalStr.append(" $param").append(index).append(" : ");
         conditionalStr.append("this.get(\"").append(condition.getVariableCode()).append("\") ");
         conditionalStr.append(condition.getOperator()).append(" ");
         conditionalStr.append(condition.getOperand()).append(" ");
-        if (conditionRelation == 1) {
-            conditionalStr.append(",");
-        } else {
-            conditionalStr.append("&&");
+        if (condition.getRelation() == ConditionRelationEnum.AND.code()) {
+            conditionalStr.append(ConditionRelationEnum.AND.value());
+        }  else {
+            conditionalStr.append(ConditionRelationEnum.OR.value());
         }
         return new String(conditionalStr);
     }
