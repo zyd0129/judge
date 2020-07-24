@@ -5,9 +5,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.ps.judge.api.entity.AuditResultVO;
 import com.ps.judge.api.entity.NodeResultVO;
 import com.ps.judge.api.entity.TriggeredRuleVO;
-import com.ps.judge.dao.entity.AuditTaskDO;
-import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;
-import com.ps.judge.dao.entity.ConfigFlowDO;
+import com.ps.judge.dao.entity.*;
 import com.ps.judge.dao.mapper.AuditTaskMapper;
 import com.ps.judge.dao.mapper.AuditTaskParamMapper;
 import com.ps.judge.dao.mapper.AuditTaskTriggeredRuleMapper;
@@ -70,18 +68,26 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
             return;
         }
-        String flowCode = auditTask.getFlowCode();
-        ConfigFlowDO configFlow = this.flowService.getByFlowCode(flowCode);
-        if (Objects.isNull(configFlow)) {
-            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
-            return;
-        }
-        if (configFlow.getStatus() != StatusEnum.ENABLE.value()) {
-            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
-            return;
-        }
-        KieSession kieSession = this.flowService.getKieSession(configFlow.getFlowCode());
 
+        String flowCode = auditTask.getFlowCode();
+        if (!this.flowService.existedFlow(flowCode)) {
+            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
+            return;
+        }
+
+        ConfigFlowDO configFlow = this.flowService.getByFlowCode(flowCode);
+        if (configFlow.getStatus() == StatusEnum.DISABLE.value()) {
+            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
+            return;
+        }
+
+        List<ConfigFlowRulePackageDO> configFlowRulePackageList = this.flowService.getConfigFlowRulePackageList(flowCode);
+        if (configFlowRulePackageList.isEmpty()) {
+            this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
+            return;
+        }
+
+        KieSession kieSession = this.flowService.getKieSession(configFlow.getFlowCode());
         if (Objects.isNull(kieSession)) {
             this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
             return;
@@ -92,7 +98,14 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         paramList.add(varResultMap);
         paramList.add(auditTaskTriggeredRuleDOList);
         try {
-            this.ruleExecutor.executor(kieSession, paramList, "");
+            for (ConfigFlowRulePackageDO configFlowRulePackage : configFlowRulePackageList) {
+                ConfigRulePackageDO configRulePackage =
+                        this.flowService.getConfigRulePackage(configFlowRulePackage.getRulePackageVersionId());
+                if (Objects.isNull(configRulePackage)) {
+                    continue;
+                }
+                this.ruleExecutor.executor(kieSession, paramList, configRulePackage.getCode());
+            }
         } catch (Exception e) {
             auditTask.setTaskStatus(AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
             auditTask.setCompleteTime(LocalDateTime.now());
@@ -102,6 +115,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             kieSession.destroy();
         }
         this.processResult(auditTask, auditTaskTriggeredRuleDOList);
+
     }
 
     private Map<String, Object> getVarResultMap(Map<String, Object> levelMap) {

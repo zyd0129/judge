@@ -2,6 +2,7 @@ package com.ps.judge.provider.service.impl;
 
 import com.ps.judge.dao.entity.*;
 import com.ps.judge.dao.mapper.*;
+import com.ps.judge.provider.enums.StatusEnum;
 import com.ps.judge.provider.rule.builder.RuleTemplate;
 import com.ps.judge.provider.rule.context.RuleContext;
 import com.ps.judge.provider.rule.model.ConditionVO;
@@ -49,13 +50,25 @@ public class FlowServiceImpl implements FlowService {
     }
 
     @Override
-    public List<ConfigFlowDO> getAllEnable() {
-        return  this.configFlowMapper.getAllEnable();
+    public List<ConfigFlowRulePackageDO> getConfigFlowRulePackageList(String flowCode) {
+        return this.configFlowRulePackageMapper.listConfigFlowRulePackageByFlowCode(flowCode);
+    }
+
+    @Override
+    public ConfigRulePackageDO getConfigRulePackage(int rulePackageVersionId) {
+        ConfigRulePackageVersionDO configRulePackageVersion =
+                this.configRulePackageVersionMapper.getConfigRulePackageVersionById(rulePackageVersionId);
+        if (Objects.isNull(configRulePackageVersion)) {
+            return null;
+        }
+        ConfigRulePackageDO configRulePackage =
+                this.configRulePackageMapper.getConfigRulePackageById(configRulePackageVersion.getRulePackageId());
+        return configRulePackage;
     }
 
     @Override
     public boolean initFlow() {
-        List<ConfigFlowDO> configFlowList = this.getAllEnable();
+        List<ConfigFlowDO> configFlowList = this.configFlowMapper.getAllEnable();
         for (ConfigFlowDO configFlow : configFlowList) {
             if (!this.loadFlow(configFlow)) {
                 log.error("flow :{}, 加载失败 ", configFlow.getFlowCode());
@@ -66,8 +79,11 @@ public class FlowServiceImpl implements FlowService {
 
     @Override
     public boolean loadFlow(ConfigFlowDO configFlow) {
+        if (configFlow.getStatus() == StatusEnum.DISABLE.value()) {
+            return false;
+        }
         List<ConfigFlowRulePackageDO> configFlowRulePackageList =
-                this.configFlowRulePackageMapper.listConfigFlowRulePackageByFlowCode(configFlow.getFlowCode());
+                this.getConfigFlowRulePackageList(configFlow.getFlowCode());
         if (configFlowRulePackageList.isEmpty()) {
             return false;
         }
@@ -87,13 +103,13 @@ public class FlowServiceImpl implements FlowService {
     }
 
     @Override
-    public boolean removeFlow(ConfigFlowDO configFlow) {
-        return this.ruleContext.remove(configFlow.getFlowCode());
+    public boolean removeFlow(String flowCode) {
+        return this.ruleContext.remove(flowCode);
     }
 
     @Override
-    public boolean existedFlow(ConfigFlowDO configFlow) {
-        return this.ruleContext.existed(configFlow.getFlowCode());
+    public boolean existedFlow(String flowCode) {
+        return this.ruleContext.existed(flowCode);
     }
 
     @Override
@@ -109,6 +125,7 @@ public class FlowServiceImpl implements FlowService {
             if (configRuleConditionList.isEmpty()) {
                 continue;
             }
+
             ConfigRulePackageVersionDO configRulePackageVersion =
                     this.configRulePackageVersionMapper.getConfigRulePackageVersionById(configRule.getRulePackageVersionId());
             if (Objects.isNull(configRulePackageVersion)) {

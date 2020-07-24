@@ -1,6 +1,8 @@
 package com.ps.judge.provider.service;
 
 import com.ps.judge.dao.entity.ConfigFlowDO;
+import com.ps.judge.dao.entity.ConfigFlowRulePackageDO;
+import com.ps.judge.dao.entity.ConfigRulePackageDO;
 import org.kie.api.runtime.KieSession;
 
 import java.util.List;
@@ -14,15 +16,17 @@ import java.util.List;
 public interface FlowService {
     ConfigFlowDO getByFlowCode(String flowCode);
 
-    List<ConfigFlowDO> getAllEnable();
+    List<ConfigFlowRulePackageDO> getConfigFlowRulePackageList(String flowCode);
+
+    ConfigRulePackageDO getConfigRulePackage(int rulePackageVersionId);
 
     boolean initFlow();
 
     boolean loadFlow(ConfigFlowDO configFlow);
 
-    boolean removeFlow(ConfigFlowDO configFlow);
+    boolean removeFlow(String flowCode);
 
-    boolean existedFlow(ConfigFlowDO configFlow);
+    boolean existedFlow(String flowCode);
 
     KieSession getKieSession(String flowCode);
 }

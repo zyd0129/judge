@@ -13,7 +13,7 @@
     </resultMap>
 
     <select id="listConfigFlowRulePackageByFlowCode" resultMap="resultMap">
-        select * from config_flow_rule_package  where flow_code = #{flowCode}
+        select * from config_flow_rule_package where flow_code = #{flowCode} order by sort
     </select>
 
 </mapper>
