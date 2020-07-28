@@ -12,7 +12,7 @@ import com.ps.judge.dao.mapper.AuditTaskParamMapper;
 import com.ps.judge.dao.mapper.AuditTaskTriggeredRuleMapper;
 import com.ps.judge.provider.enums.AuditCodeEnum;
 import com.ps.judge.provider.enums.AuditTaskStatusEnum;
-import com.ps.judge.provider.rule.model.HitRuleVO;
+import com.ps.judge.provider.flow.rule.model.HitRuleVO;
 import com.ps.judge.provider.service.CallbackService;
 import com.ps.judge.provider.service.FlowService;
 import com.ps.jury.api.JuryApi;
@@ -127,7 +127,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         NodeResultVO node1 = new NodeResultVO();
         if (hitRuleVOList.isEmpty()) {
             node1.setIndex(1);
-            node1.setRulePackageCode("IDNAR");
+            node1.setRulePackageCode("");
             node1.setAuditScore(0);
             node1.setAuditCode(AuditCodeEnum.PASS.toString());
             node1.setTriggeredRules(new ArrayList<>());
@@ -136,7 +136,6 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
             int resultCode = 1;
             List<TriggeredRuleVO> triggeredRuleVOList = new ArrayList<>();
             for (HitRuleVO hitRule : hitRuleVOList) {
-
                 AuditTaskTriggeredRuleDO auditTaskTriggeredRule = new AuditTaskTriggeredRuleDO();
                 BeanUtils.copyProperties(hitRule, auditTaskTriggeredRule);
                 BeanUtils.copyProperties(auditTask, auditTaskTriggeredRule);

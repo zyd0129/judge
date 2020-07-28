@@ -1,4 +1,4 @@
-package com.ps.judge.provider.rule.executor;
+package com.ps.judge.provider.flow.rule.executor;
 
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;

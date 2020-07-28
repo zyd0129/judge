@@ -1,8 +1,8 @@
-package com.ps.judge.provider.rule.builder;
+package com.ps.judge.provider.flow.rule.builder;
 
-import com.ps.judge.provider.rule.model.ConditionRelationEnum;
-import com.ps.judge.provider.rule.model.ConditionVO;
-import com.ps.judge.provider.rule.model.RuleVO;
+import com.ps.judge.provider.flow.rule.model.ConditionRelationEnum;
+import com.ps.judge.provider.flow.rule.model.ConditionVO;
+import com.ps.judge.provider.flow.rule.model.RuleVO;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class DroolsRuleTemplate extends RuleTemplate {
     private static final String IMPORTS = "import java.util.Map;" + LINE_SEPARATOR
             + "import java.util.ArrayList;" + LINE_SEPARATOR
             + "import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;" + LINE_SEPARATOR
-            + "import com.ps.judge.provider.rule.model.HitRuleVO;" + LINE_SEPARATOR;
+            + "import com.ps.judge.provider.flow.rule.model.HitRuleVO;" + LINE_SEPARATOR;
 
     @Override
     String buildImports() {

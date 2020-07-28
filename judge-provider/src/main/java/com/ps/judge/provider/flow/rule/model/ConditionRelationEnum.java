@@ -1,4 +1,4 @@
-package com.ps.judge.provider.rule.model;
+package com.ps.judge.provider.flow.rule.model;
 
 public enum ConditionRelationEnum {
     OR(0, "||"),

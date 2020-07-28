@@ -1,4 +1,4 @@
-package com.ps.judge.provider.rule.executor;
+package com.ps.judge.provider.flow.rule.executor;
 
 import org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand;
 
@@ -36,7 +36,6 @@ public class DroolsRuleExecutor implements RuleExecutor {
         List<Command> commandList = new ArrayList();
         for (Object fact : factList) {
             commandList.add(CommandFactory.newInsert(fact));
-
         }
         commandList.add(new AgendaGroupSetFocusCommand(ruleFlowGroup));
         statelessKieSession.execute(CommandFactory.newBatchExecution(commandList));

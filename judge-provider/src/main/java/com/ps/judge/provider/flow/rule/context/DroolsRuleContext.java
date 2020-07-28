@@ -1,4 +1,4 @@
-package com.ps.judge.provider.rule.context;
+package com.ps.judge.provider.flow.rule.context;
 
 import lombok.extern.slf4j.Slf4j;
 import org.drools.core.impl.InternalKnowledgeBase;

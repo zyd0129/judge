@@ -1,7 +1,7 @@
-package com.ps.judge.provider.rule.builder;
+package com.ps.judge.provider.flow.rule.builder;
 
-import com.ps.judge.provider.rule.model.ConditionVO;
-import com.ps.judge.provider.rule.model.RuleVO;
+import com.ps.judge.provider.flow.rule.model.ConditionVO;
+import com.ps.judge.provider.flow.rule.model.RuleVO;
 
 import java.util.List;
 
