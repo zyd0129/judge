@@ -3,7 +3,6 @@ package com.ps.judge.provider.service;
 import com.ps.judge.dao.entity.ConfigFlowDO;
 import com.ps.judge.dao.entity.ConfigFlowRulePackageDO;
 import com.ps.judge.dao.entity.ConfigRulePackageDO;
-import org.kie.api.runtime.KieSession;
 
 import java.util.List;
 
@@ -28,5 +27,5 @@ public interface FlowService {
 
     boolean existedFlow(String flowCode);
 
-    KieSession getKieSession(String flowCode);
+    boolean executorFlow(String flowCode, List paramList);
 }

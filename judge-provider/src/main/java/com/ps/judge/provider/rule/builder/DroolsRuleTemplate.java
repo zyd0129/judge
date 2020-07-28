@@ -1,5 +1,6 @@
 package com.ps.judge.provider.rule.builder;
 
+import com.ps.judge.provider.rule.model.ConditionRelationEnum;
 import com.ps.judge.provider.rule.model.ConditionVO;
 import com.ps.judge.provider.rule.model.RuleVO;
 
@@ -14,7 +15,8 @@ import java.util.List;
 public class DroolsRuleTemplate extends RuleTemplate {
     private static final String IMPORTS = "import java.util.Map;" + LINE_SEPARATOR
             + "import java.util.ArrayList;" + LINE_SEPARATOR
-            + "import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;" + LINE_SEPARATOR;
+            + "import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;" + LINE_SEPARATOR
+            + "import com.ps.judge.provider.rule.model.HitRuleVO;" + LINE_SEPARATOR;
 
     @Override
     String buildImports() {
@@ -34,7 +36,7 @@ public class DroolsRuleTemplate extends RuleTemplate {
     }
 
     @Override
-    String buildLHS(Integer conditionRelation, List<ConditionVO> conditionList) {
+    String buildLHS(List<ConditionVO> conditionList) {
         StringBuilder lhsStr = new StringBuilder();
         lhsStr.append("when").append(LINE_SEPARATOR);
         lhsStr.append("$arrayList : ArrayList( )").append(LINE_SEPARATOR);
@@ -42,13 +44,17 @@ public class DroolsRuleTemplate extends RuleTemplate {
         int index = 0;
         for (ConditionVO condition : conditionList) {
             index++;
-            lhsStr.append(this.buildCondition(index, conditionRelation, condition));
+            lhsStr.append(this.buildCondition(index, condition));
         }
-        if (conditionRelation == 1) {
-            lhsStr.deleteCharAt(lhsStr.length() - 1);
-        } else {
-            lhsStr.deleteCharAt(lhsStr.length() - 2);
+
+        //除去最后一个多余的逻辑关系符合
+        ConditionVO lastCondition = conditionList.get(conditionList.size() - 1);
+        if (lastCondition.getRelation() == ConditionRelationEnum.AND.code()) {
+            lhsStr.deleteCharAt(lhsStr.length() - ConditionRelationEnum.AND.value().length());
+        }  else {
+            lhsStr.deleteCharAt(lhsStr.length() - ConditionRelationEnum.OR.value().length());
         }
+
         lhsStr.append(")").append(LINE_SEPARATOR);
         return new String(lhsStr);
     }
@@ -57,13 +63,14 @@ public class DroolsRuleTemplate extends RuleTemplate {
     String buildRHS(RuleVO rule) {
         StringBuilder rhsStr = new StringBuilder();
         rhsStr.append("then").append(LINE_SEPARATOR);
-        rhsStr.append("AuditTaskTriggeredRuleDO triggeredRule = new AuditTaskTriggeredRuleDO();").append(LINE_SEPARATOR);
-        rhsStr.append("triggeredRule.setRuleCode(\"").append(rule.getRuleCode()).append("\");").append(LINE_SEPARATOR);
-        rhsStr.append("triggeredRule.setRuleName(\"").append(rule.getRuleName()).append("\");").append(LINE_SEPARATOR);
-        rhsStr.append("triggeredRule.setRuleVersion(\"").append(rule.getRuleVersion()).append("\");").append(LINE_SEPARATOR);
-        rhsStr.append("triggeredRule.setRulePackageCode(\"").append(rule.getRuleFlowGroup()).append("\");").append(LINE_SEPARATOR);
-        rhsStr.append("triggeredRule.setRulePackageName(\"").append(rule.getRulePackageName()).append("\");").append(LINE_SEPARATOR);
-        rhsStr.append("triggeredRule.setRulePackageVersion(\"").append(rule.getRulePackageVersion()).append("\");").append(LINE_SEPARATOR);
+
+        rhsStr.append("HitRuleVO hitRule = new HitRuleVO();").append(LINE_SEPARATOR);
+        rhsStr.append("hitRule.setRuleCode(\"").append(rule.getRuleCode()).append("\");").append(LINE_SEPARATOR);
+        rhsStr.append("hitRule.setRuleName(\"").append(rule.getRuleName()).append("\");").append(LINE_SEPARATOR);
+        rhsStr.append("hitRule.setRuleVersion(\"").append(rule.getRuleVersion()).append("\");").append(LINE_SEPARATOR);
+        rhsStr.append("hitRule.setRulePackageCode(\"").append(rule.getRuleFlowGroup()).append("\");").append(LINE_SEPARATOR);
+        rhsStr.append("hitRule.setRulePackageName(\"").append(rule.getRulePackageName()).append("\");").append(LINE_SEPARATOR);
+        rhsStr.append("hitRule.setRulePackageVersion(\"").append(rule.getRulePackageVersion()).append("\");").append(LINE_SEPARATOR);
 
         StringBuilder expression = new StringBuilder();
         StringBuilder conditionValue = new StringBuilder();
@@ -71,33 +78,38 @@ public class DroolsRuleTemplate extends RuleTemplate {
         int index = 0;
         for (ConditionVO condition : rule.getConditionList()) {
             index++;
-            expression.append(condition.getOperator()).append("|");
-            conditionValue.append(condition.getOperand()).append("|");
-            param.append("$param").append(index).append("+").append("\"|\"+");
+            if (index != rule.getConditionList().size()) {
+                expression.append(condition.getOperator()).append("|");
+                conditionValue.append(condition.getOperand()).append("|");
+                param.append("$param").append(index).append("+").append("\"|\"+");
+            } else {
+                expression.append(condition.getOperator());
+                conditionValue.append(condition.getOperand());
+                param.append("$param").append(index).append("+").append("\"\"");
+            }
         }
-        expression.deleteCharAt(expression.length() - 1);
-        conditionValue.deleteCharAt(conditionValue.length() - 1);
-        param.delete(param.length() - 5, param.length()).append("+").append("\"\"");
-        rhsStr.append("triggeredRule.setExpression(\"").append(expression).append("\");").append(LINE_SEPARATOR);
-        rhsStr.append("triggeredRule.setCondition(\"").append(conditionValue).append("\");").append(LINE_SEPARATOR);
-        rhsStr.append("triggeredRule.setParam(").append(param).append(");").append(LINE_SEPARATOR);
-        rhsStr.append("triggeredRule.setResult(\"").append(rule.getResult()).append("\");").append(LINE_SEPARATOR);
-        rhsStr.append("triggeredRule.setScore(").append(rule.getScore()).append(");").append(LINE_SEPARATOR);
-        rhsStr.append("$arrayList.add(triggeredRule);").append(LINE_SEPARATOR);
+
+        rhsStr.append("hitRule.setExpression(\"").append(expression).append("\");").append(LINE_SEPARATOR);
+        rhsStr.append("hitRule.setCondition(\"").append(conditionValue).append("\");").append(LINE_SEPARATOR);
+        rhsStr.append("hitRule.setParam(").append(param).append(");").append(LINE_SEPARATOR);
+
+        rhsStr.append("hitRule.setResult(\"").append(rule.getResult()).append("\");").append(LINE_SEPARATOR);
+        rhsStr.append("hitRule.setScore(").append(rule.getScore()).append(");").append(LINE_SEPARATOR);
+        rhsStr.append("$arrayList.add(hitRule);").append(LINE_SEPARATOR);
         rhsStr.append("end").append(LINE_SEPARATOR);
         return new String(rhsStr);
     }
 
-    private String buildCondition(int index, Integer conditionRelation, ConditionVO condition) {
+    private String buildCondition(int index, ConditionVO condition) {
         StringBuilder conditionalStr = new StringBuilder();
         conditionalStr.append(" $param").append(index).append(" : ");
         conditionalStr.append("this.get(\"").append(condition.getVariableCode()).append("\") ");
         conditionalStr.append(condition.getOperator()).append(" ");
         conditionalStr.append(condition.getOperand()).append(" ");
-        if (conditionRelation == 1) {
-            conditionalStr.append(",");
-        } else {
-            conditionalStr.append("&&");
+        if (condition.getRelation() == ConditionRelationEnum.AND.code()) {
+            conditionalStr.append(ConditionRelationEnum.AND.value());
+        }  else {
+            conditionalStr.append(ConditionRelationEnum.OR.value());
         }
         return new String(conditionalStr);
     }

@@ -33,7 +33,7 @@ public abstract class RuleTemplate {
     private String buildRule(RuleVO rule) {
         StringBuilder sb = new StringBuilder();
         sb.append(this.buildAttributes(rule));
-        sb.append(this.buildLHS(rule.getConditionRelation(), rule.getConditionList()));
+        sb.append(this.buildLHS(rule.getConditionList()));
         sb.append(this.buildRHS(rule));
         return new String(sb);
     }
@@ -42,7 +42,7 @@ public abstract class RuleTemplate {
 
     abstract String buildAttributes(RuleVO rule);
 
-    abstract String buildLHS(Integer conditionRelation, List<ConditionVO> conditionList);
+    abstract String buildLHS(List<ConditionVO> conditionList);
 
     abstract String buildRHS(RuleVO rule);
 }

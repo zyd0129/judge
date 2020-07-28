@@ -92,13 +92,13 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
+       <!-- <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-bom</artifactId>
             <type>pom</type>
             <version>${drools.version}</version>
             <scope>import</scope>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>org.drools</groupId>
@@ -110,16 +110,16 @@
             <artifactId>drools-compiler</artifactId>
             <version>${drools.version}</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-decisiontables</artifactId>
             <version>${drools.version}</version>
-        </dependency>
-        <dependency>
+        </dependency>-->
+<!--        <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-templates</artifactId>
             <version>${drools.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-api</artifactId>
@@ -130,16 +130,16 @@
             <artifactId>kie-server-client</artifactId>
             <version>${drools.version}</version>
         </dependency>-->
-        <dependency>
+        <!--<dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-bpmn2</artifactId>
             <version>${drools.version}</version>
-        </dependency>
-        <dependency>
+        </dependency>-->
+     <!--   <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-ci</artifactId>
             <version>${drools.version}</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
 
     <profiles>

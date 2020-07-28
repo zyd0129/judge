@@ -1,6 +1,7 @@
 package com.ps.judge.provider.rule.executor;
 
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 
 import java.util.List;
 
@@ -11,5 +12,7 @@ import java.util.List;
  * @date ：2020/7/14
  */
 public interface RuleExecutor {
-    void executor(KieSession kieSession, List paramList, String ruleFlowGroup);
+    void executor(KieSession kieSession, List factList, String ruleFlowGroup);
+
+    void executor(StatelessKieSession statelessKieSession, List factList, String ruleFlowGroup);
 }

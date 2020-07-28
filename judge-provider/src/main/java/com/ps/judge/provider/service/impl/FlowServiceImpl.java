@@ -5,6 +5,7 @@ import com.ps.judge.dao.mapper.*;
 import com.ps.judge.provider.enums.StatusEnum;
 import com.ps.judge.provider.rule.builder.RuleTemplate;
 import com.ps.judge.provider.rule.context.RuleContext;
+import com.ps.judge.provider.rule.executor.RuleExecutor;
 import com.ps.judge.provider.rule.model.ConditionVO;
 import com.ps.judge.provider.rule.model.RuleVO;
 import com.ps.judge.provider.service.FlowService;
@@ -40,9 +41,11 @@ public class FlowServiceImpl implements FlowService {
     @Autowired
     ConfigRuleConditionMapper configRuleConditionMapper;
     @Autowired
+    RuleTemplate ruleTemplate;
+    @Autowired
     RuleContext ruleContext;
     @Autowired
-    RuleTemplate ruleTemplate;
+    RuleExecutor ruleExecutor;
 
     @Override
     public ConfigFlowDO getByFlowCode(String flowCode) {
@@ -61,9 +64,7 @@ public class FlowServiceImpl implements FlowService {
         if (Objects.isNull(configRulePackageVersion)) {
             return null;
         }
-        ConfigRulePackageDO configRulePackage =
-                this.configRulePackageMapper.getConfigRulePackageById(configRulePackageVersion.getRulePackageId());
-        return configRulePackage;
+        return this.configRulePackageMapper.getConfigRulePackageById(configRulePackageVersion.getRulePackageId());
     }
 
     @Override
@@ -91,57 +92,37 @@ public class FlowServiceImpl implements FlowService {
         List<ConfigRuleDO> allConfigRuleList = new ArrayList<>();
         for (ConfigFlowRulePackageDO configFlowRulePackage : configFlowRulePackageList) {
             List<ConfigRuleDO> configRuleList =
-                    this.configRuleMapper.listConfigRule(configFlowRulePackage.getRulePackageVersionId());
+                    this.configRuleMapper.listEnableConfigRule(configFlowRulePackage.getRulePackageVersionId());
             allConfigRuleList.addAll(configRuleList);
         }
         if (allConfigRuleList.isEmpty()) {
             return false;
         }
+
         List<RuleVO> ruleList = this.getRuleVOList(allConfigRuleList);
         String ruleStr = this.ruleTemplate.build(ruleList);
         return this.ruleContext.add(configFlow.getFlowCode(), ruleStr);
-    }
-
-    @Override
-    public boolean removeFlow(String flowCode) {
-        return this.ruleContext.remove(flowCode);
-    }
-
-    @Override
-    public boolean existedFlow(String flowCode) {
-        return this.ruleContext.existed(flowCode);
-    }
-
-    @Override
-    public KieSession getKieSession(String flowCode) {
-        return this.ruleContext.getKieSession(flowCode);
     }
 
     private List<RuleVO> getRuleVOList(List<ConfigRuleDO> configRuleList) {
         List<RuleVO> ruleList = new ArrayList<>(configRuleList.size());
         for (ConfigRuleDO configRule : configRuleList) {
             List<ConfigRuleConditionDO> configRuleConditionList =
-                    this.configRuleConditionMapper.getConfigRuleCondition(configRule.getId());
+                    this.configRuleConditionMapper.listEnableConfigRuleCondition(configRule.getId());
             if (configRuleConditionList.isEmpty()) {
                 continue;
             }
 
             ConfigRulePackageVersionDO configRulePackageVersion =
                     this.configRulePackageVersionMapper.getConfigRulePackageVersionById(configRule.getRulePackageVersionId());
-            if (Objects.isNull(configRulePackageVersion)) {
-                continue;
-            }
             ConfigRulePackageDO configRulePackage =
                     this.configRulePackageMapper.getConfigRulePackageById(configRulePackageVersion.getRulePackageId());
-            if (Objects.isNull(configRulePackage)) {
-                continue;
-            }
-            List<ConditionVO> conditionList = this.getConditionVOList(configRuleConditionList);
+
+            List<ConditionVO> conditionList = this.getConditionVOList(configRule.getConditionRelation(), configRuleConditionList);
             RuleVO rule = new RuleVO();
             BeanUtils.copyProperties(configRule, rule);
             rule.setRuleCode(configRule.getCode());
             rule.setRuleName(configRule.getName());
-            rule.setConditionRelation(configRule.getConditionRelation());
             rule.setRuleVersion(String.valueOf(configRule.getVersion()));
             rule.setRuleFlowGroup(configRulePackage.getCode());
             rule.setAgendaGroup(configRulePackage.getCode());
@@ -153,13 +134,53 @@ public class FlowServiceImpl implements FlowService {
         return ruleList;
     }
 
-    private List<ConditionVO> getConditionVOList(List<ConfigRuleConditionDO> configRuleConditionList) {
+    private List<ConditionVO> getConditionVOList(int conditionRelation, List<ConfigRuleConditionDO> configRuleConditionList) {
         List<ConditionVO> conditionList = new ArrayList<>(configRuleConditionList.size());
         for (ConfigRuleConditionDO configRuleCondition : configRuleConditionList) {
             ConditionVO condition = new ConditionVO();
             BeanUtils.copyProperties(configRuleCondition, condition);
+            condition.setRelation(conditionRelation);
             conditionList.add(condition);
         }
         return conditionList;
     }
+
+    @Override
+    public boolean removeFlow(String flowCode) {
+        return this.ruleContext.remove(flowCode);
+    }
+
+    @Override
+    public boolean existedFlow(String flowCode) {
+        ConfigFlowDO configFlow = this.getByFlowCode(flowCode);
+        if (Objects.isNull(configFlow)) {
+            return false;
+        }
+        if (configFlow.getStatus() == StatusEnum.DISABLE.value()) {
+            return false;
+        }
+        return this.ruleContext.existed(flowCode);
+    }
+
+    @Override
+    public boolean executorFlow(String flowCode, List paramList) {
+        if (!this.existedFlow(flowCode)) {
+            return false;
+        }
+        List<ConfigFlowRulePackageDO> configFlowRulePackageList = this.getConfigFlowRulePackageList(flowCode);
+        if (configFlowRulePackageList.isEmpty()) {
+            return false;
+        }
+        KieSession kieSession = this.ruleContext.getKieSession(flowCode);
+        if (Objects.isNull(kieSession)) {
+            return false;
+        }
+        for (ConfigFlowRulePackageDO configFlowRulePackage : configFlowRulePackageList) {
+            ConfigRulePackageDO configRulePackage =
+                    this.getConfigRulePackage(configFlowRulePackage.getRulePackageVersionId());
+            this.ruleExecutor.executor(kieSession, paramList, configRulePackage.getCode());
+        }
+        return true;
+    }
+
 }

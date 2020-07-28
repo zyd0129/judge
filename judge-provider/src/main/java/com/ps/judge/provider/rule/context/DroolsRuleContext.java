@@ -5,6 +5,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
@@ -30,6 +31,15 @@ public class DroolsRuleContext implements RuleContext {
         if (this.existed(flowCode)) {
             InternalKnowledgeBase internalKnowledgeBase = this.ruleContext.get(flowCode);
             return internalKnowledgeBase.newKieSession();
+        }
+        return null;
+    }
+
+    @Override
+    public StatelessKieSession getStatelessKieSession(String flowCode) {
+        if (this.existed(flowCode)) {
+            InternalKnowledgeBase internalKnowledgeBase = this.ruleContext.get(flowCode);
+            return internalKnowledgeBase.newStatelessKieSession();
         }
         return null;
     }
@@ -68,7 +78,6 @@ public class DroolsRuleContext implements RuleContext {
         // Check the builder for errors
         if (knowledgeBuilder.hasErrors()) {
             log.error("规则文件错误 ：{}", knowledgeBuilder.getErrors().toString());
-            System.err.println("规则文件错误 ：" + knowledgeBuilder.getErrors().toString());
             return null;
         }
         InternalKnowledgeBase internalKnowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -83,7 +92,6 @@ public class DroolsRuleContext implements RuleContext {
         }
         // Check the builder for errors
         if (knowledgeBuilder.hasErrors()) {
-            System.err.println("规则文件错误 ：" + knowledgeBuilder.getErrors().toString());
             log.error("规则文件错误 ：{}", knowledgeBuilder.getErrors().toString());
             return null;
         }
