@@ -92,7 +92,7 @@ public class FlowServiceImpl implements FlowService {
         List<ConfigRuleDO> allConfigRuleList = new ArrayList<>();
         for (ConfigFlowRulePackageDO configFlowRulePackage : configFlowRulePackageList) {
             List<ConfigRuleDO> configRuleList =
-                    this.configRuleMapper.listConfigRule(configFlowRulePackage.getRulePackageVersionId());
+                    this.configRuleMapper.listEnableConfigRule(configFlowRulePackage.getRulePackageVersionId());
             allConfigRuleList.addAll(configRuleList);
         }
         if (allConfigRuleList.isEmpty()) {
@@ -108,7 +108,7 @@ public class FlowServiceImpl implements FlowService {
         List<RuleVO> ruleList = new ArrayList<>(configRuleList.size());
         for (ConfigRuleDO configRule : configRuleList) {
             List<ConfigRuleConditionDO> configRuleConditionList =
-                    this.configRuleConditionMapper.getConfigRuleCondition(configRule.getId());
+                    this.configRuleConditionMapper.listEnableConfigRuleCondition(configRule.getId());
             if (configRuleConditionList.isEmpty()) {
                 continue;
             }

@@ -18,7 +18,7 @@ spring:
     nacos:
       discovery:
         server-addr: ${CONFIG_SERVER:192.168.40.150:8848}
-        namespace: 70b438a3-b902-4247-b670-fabebe33db71
+        #namespace: 70b438a3-b902-4247-b670-fabebe33db71
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     password: Dev@123456

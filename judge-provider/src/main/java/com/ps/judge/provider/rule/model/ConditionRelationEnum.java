@@ -1,7 +1,7 @@
 package com.ps.judge.provider.rule.model;
 
 public enum ConditionRelationEnum {
-    OR(0, "&&"),
+    OR(0, "||"),
     AND(1, ",");
 
     private int code;

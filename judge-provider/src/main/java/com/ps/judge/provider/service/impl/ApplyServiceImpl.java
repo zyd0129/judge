@@ -81,7 +81,7 @@ public class ApplyServiceImpl implements ApplyService {
                 && auditTask.getRetryCount() < MAX_RETRY_COUNT) {
             return ApiResponse.error(HttpStatus.BAD_REQUEST.value(), "订单自动重试中，不能手动重试");
         }
-        //规则计算失败，重新申请计算变量
+        //变量计算失败，重新申请计算变量
         if (auditTask.getTaskStatus() == AuditTaskStatusEnum.VAR_COMPUTE_FAIL.value()
                 || auditTask.getTaskStatus() == AuditTaskStatusEnum.FORWARDED_FAIL.value()) {
             AuditTaskParamDO auditTaskParam = this.auditTaskParamMapper.getAuditTaskParam(auditId);

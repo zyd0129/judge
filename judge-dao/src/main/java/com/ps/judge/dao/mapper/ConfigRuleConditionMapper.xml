@@ -17,8 +17,8 @@
         <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP"/>
     </resultMap>
 
-    <select id="getConfigRuleCondition" resultMap="resultMap">
-        select * from config_rule_condition where rule_id = #{ruleId}
+    <select id="listEnableConfigRuleCondition" resultMap="resultMap">
+        select * from config_rule_condition where rule_id = #{ruleId} and status = 1
     </select>
 
     <insert id="insert" parameterType="ConfigRuleConditionDO" useGeneratedKeys="true" keyProperty="id" keyColumn="id">

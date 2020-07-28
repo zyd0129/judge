@@ -15,7 +15,7 @@ import javax.annotation.PostConstruct;
  */
 @Component
 @Slf4j
-public class JudgeProviderInitialization {
+public class ProviderInitialization {
     @Autowired
     FlowService flowService;
 

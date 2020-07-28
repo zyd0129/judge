@@ -92,13 +92,13 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
+       <!-- <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-bom</artifactId>
             <type>pom</type>
             <version>${drools.version}</version>
             <scope>import</scope>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>org.drools</groupId>

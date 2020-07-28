@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @date ：2020/7/14
  */
 @Component
-public class JudgeProviderRunnerImpl implements ApplicationRunner {
+public class ProviderRunnerImpl implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {

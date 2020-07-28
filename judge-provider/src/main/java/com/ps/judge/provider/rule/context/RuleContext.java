@@ -1,6 +1,7 @@
 package com.ps.judge.provider.rule.context;
 
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 
 import java.util.List;
 
@@ -12,6 +13,8 @@ import java.util.List;
  */
 public interface RuleContext {
     KieSession getKieSession(String flowCode);
+
+    StatelessKieSession getStatelessKieSession(String flowCode);
 
     boolean add(String flowCode, String ruleStr);
 
