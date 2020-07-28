@@ -22,13 +22,13 @@ public class RulePackageVersionServiceImpl implements RulePackageVersionService 
     @Transactional
     public void create(ConfigRulePackageVersionBO rulePackageVersionBO) {
         //** 这行加锁了
-        int sequence = sequenceMapper.getSequenceByPackageId(rulePackageVersionBO.getPackageId());
+        int sequence = sequenceMapper.getSequenceByPackageId(rulePackageVersionBO.getRulePackageId());
         rulePackageVersionBO.setVersion(sequence + 1);
         //设置为未启用
         rulePackageVersionBO.setStatus(0);
         ConfigRulePackageVersionDO versionDO = rulePackageVersionBO.convertToDo();
         versionMapper.insert(versionDO);
-        sequenceMapper.setSequenceByPackageId(rulePackageVersionBO.getPackageId(), sequence + 1);
+        sequenceMapper.setSequenceByPackageId(rulePackageVersionBO.getRulePackageId(), sequence + 1);
         rulePackageVersionBO.setId(versionDO.getId());
     }
 

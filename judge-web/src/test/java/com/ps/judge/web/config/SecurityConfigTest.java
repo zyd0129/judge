@@ -16,7 +16,7 @@ public class SecurityConfigTest {
     @Test
     public void password() {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        System.out.println(bCryptPasswordEncoder.encode("admin"));
+        System.out.println(bCryptPasswordEncoder.encode("a123456"));
     }
 
     @Test
