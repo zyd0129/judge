@@ -3,7 +3,7 @@ package com.ps.judge.provider.flow.rule.model;
 import lombok.Data;
 
 @Data
-public class ConditionVO {
+public class Condition {
     private String variableCode;
     private Integer variableType;
     private String operator;

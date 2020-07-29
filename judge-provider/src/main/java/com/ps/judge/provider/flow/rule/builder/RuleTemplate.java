@@ -1,7 +1,7 @@
 package com.ps.judge.provider.flow.rule.builder;
 
-import com.ps.judge.provider.flow.rule.model.ConditionVO;
-import com.ps.judge.provider.flow.rule.model.RuleVO;
+import com.ps.judge.provider.flow.rule.model.Condition;
+import com.ps.judge.provider.flow.rule.model.Rule;
 
 import java.util.List;
 
@@ -14,23 +14,23 @@ import java.util.List;
 public abstract class RuleTemplate {
     protected static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
-    public String build(RuleVO rule) {
+    public String build(Rule rule) {
         StringBuilder ruleStr = new StringBuilder();
         ruleStr.append(this.buildImports());
         ruleStr.append(this.buildRule(rule));
         return new String(ruleStr);
     }
 
-    public String build(List<RuleVO> ruleList) {
+    public String build(List<Rule> ruleList) {
         StringBuilder ruleStr = new StringBuilder();
         ruleStr.append(this.buildImports());
-        for (RuleVO rule : ruleList) {
+        for (Rule rule : ruleList) {
             ruleStr.append(this.buildRule(rule));
         }
         return new String(ruleStr);
     }
 
-    private String buildRule(RuleVO rule) {
+    private String buildRule(Rule rule) {
         StringBuilder sb = new StringBuilder();
         sb.append(this.buildAttributes(rule));
         sb.append(this.buildLHS(rule.getConditionList()));
@@ -40,9 +40,9 @@ public abstract class RuleTemplate {
 
     abstract String buildImports();
 
-    abstract String buildAttributes(RuleVO rule);
+    abstract String buildAttributes(Rule rule);
 
-    abstract String buildLHS(List<ConditionVO> conditionList);
+    abstract String buildLHS(List<Condition> conditionList);
 
-    abstract String buildRHS(RuleVO rule);
+    abstract String buildRHS(Rule rule);
 }

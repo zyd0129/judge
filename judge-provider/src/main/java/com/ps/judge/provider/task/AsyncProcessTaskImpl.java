@@ -12,7 +12,7 @@ import com.ps.judge.dao.mapper.AuditTaskParamMapper;
 import com.ps.judge.dao.mapper.AuditTaskTriggeredRuleMapper;
 import com.ps.judge.provider.enums.AuditCodeEnum;
 import com.ps.judge.provider.enums.AuditTaskStatusEnum;
-import com.ps.judge.provider.flow.rule.model.HitRuleVO;
+import com.ps.judge.provider.flow.rule.model.HitRule;
 import com.ps.judge.provider.service.CallbackService;
 import com.ps.judge.provider.service.FlowService;
 import com.ps.jury.api.JuryApi;
@@ -62,27 +62,27 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         if (!syncAuditTaskStatus(auditTask)) {
             return;
         }
-
         Map<String, Object> varResultMap = this.getVarResultMap((Map) map.get("varResult"));
         if (Objects.isNull(varResultMap)) {
             this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
             return;
         }
-        List<HitRuleVO> hitRuleVOList = new ArrayList<>();
+        List<HitRule> hitRuleList = new ArrayList<>();
 
         List<Object> paramList = new ArrayList<>();
         paramList.add(varResultMap);
-        paramList.add(hitRuleVOList);
+        paramList.add(hitRuleList);
         try {
             if (!this.flowService.executorFlow(auditTask.getFlowCode(), paramList)) {
                 this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
                 return;
             }
         } catch (Exception e) {
-            log.error("规则流flowCode : {}, 执行异常，异常原因 ：{}", auditTask.getFlowCode(), e.getMessage());
+            log.error("规则流flowCode:{}, 执行异常，异常原因:{}", auditTask.getFlowCode(), e.getMessage());
             this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_FAIL.value());
         }
-        this.processResult(auditTask, hitRuleVOList);
+        this.updateAuditStatus(auditTask, AuditTaskStatusEnum.AUDIT_COMPLETE_SUCCESS.value());
+        this.processResult(auditTask, hitRuleList);
     }
 
     @Transactional
@@ -122,10 +122,10 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         return varResultMap;
     }
 
-    public void processResult(AuditTaskDO auditTask, List<HitRuleVO> hitRuleVOList) {
+    public void processResult(AuditTaskDO auditTask, List<HitRule> hitRuleList) {
         List<NodeResultVO> nodeResult = new ArrayList<>();
         NodeResultVO node1 = new NodeResultVO();
-        if (hitRuleVOList.isEmpty()) {
+        if (hitRuleList.isEmpty()) {
             node1.setIndex(1);
             node1.setRulePackageCode("");
             node1.setAuditScore(0);
@@ -135,7 +135,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         } else {
             int resultCode = 1;
             List<TriggeredRuleVO> triggeredRuleVOList = new ArrayList<>();
-            for (HitRuleVO hitRule : hitRuleVOList) {
+            for (HitRule hitRule : hitRuleList) {
                 AuditTaskTriggeredRuleDO auditTaskTriggeredRule = new AuditTaskTriggeredRuleDO();
                 BeanUtils.copyProperties(hitRule, auditTaskTriggeredRule);
                 BeanUtils.copyProperties(auditTask, auditTaskTriggeredRule);
@@ -150,7 +150,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
                 resultCode = resultCode & Integer.parseInt(auditTaskTriggeredRule.getResult());
             }
             node1.setIndex(1);
-            node1.setRulePackageCode(hitRuleVOList.get(0).getRulePackageCode());
+            node1.setRulePackageCode(hitRuleList.get(0).getRulePackageCode());
             node1.setAuditCode(AuditCodeEnum.getAuditCode(resultCode));
             node1.setAuditScore(0);
             node1.setTriggeredRules(triggeredRuleVOList);
@@ -177,6 +177,7 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
 
     private boolean updateAuditStatus(AuditTaskDO auditTask, int status) {
         auditTask.setTaskStatus(status);
+        auditTask.setCompleteTime(LocalDateTime.now());
         auditTask.setGmtModified(LocalDateTime.now());
         return this.auditTaskMapper.update(auditTask) > 0;
     }

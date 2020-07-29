@@ -1,8 +1,8 @@
 package com.ps.judge.provider.flow.rule.builder;
 
 import com.ps.judge.provider.flow.rule.model.ConditionRelationEnum;
-import com.ps.judge.provider.flow.rule.model.ConditionVO;
-import com.ps.judge.provider.flow.rule.model.RuleVO;
+import com.ps.judge.provider.flow.rule.model.Condition;
+import com.ps.judge.provider.flow.rule.model.Rule;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class DroolsRuleTemplate extends RuleTemplate {
     private static final String IMPORTS = "import java.util.Map;" + LINE_SEPARATOR
             + "import java.util.ArrayList;" + LINE_SEPARATOR
             + "import com.ps.judge.dao.entity.AuditTaskTriggeredRuleDO;" + LINE_SEPARATOR
-            + "import com.ps.judge.provider.flow.rule.model.HitRuleVO;" + LINE_SEPARATOR;
+            + "import com.ps.judge.provider.flow.rule.model.HitRule;" + LINE_SEPARATOR;
 
     @Override
     String buildImports() {
@@ -24,7 +24,7 @@ public class DroolsRuleTemplate extends RuleTemplate {
     }
 
     @Override
-    String buildAttributes(RuleVO rule) {
+    String buildAttributes(Rule rule) {
         StringBuilder attributesStr = new StringBuilder();
         attributesStr.append(LINE_SEPARATOR);
         attributesStr.append("rule \"").append(rule.getRuleCode()).append("\"").append(LINE_SEPARATOR);
@@ -36,19 +36,19 @@ public class DroolsRuleTemplate extends RuleTemplate {
     }
 
     @Override
-    String buildLHS(List<ConditionVO> conditionList) {
+    String buildLHS(List<Condition> conditionList) {
         StringBuilder lhsStr = new StringBuilder();
         lhsStr.append("when").append(LINE_SEPARATOR);
         lhsStr.append("$arrayList : ArrayList( )").append(LINE_SEPARATOR);
         lhsStr.append("$map : Map(");
         int index = 0;
-        for (ConditionVO condition : conditionList) {
+        for (Condition condition : conditionList) {
             index++;
             lhsStr.append(this.buildCondition(index, condition));
         }
 
         //除去最后一个多余的逻辑关系符合
-        ConditionVO lastCondition = conditionList.get(conditionList.size() - 1);
+        Condition lastCondition = conditionList.get(conditionList.size() - 1);
         if (lastCondition.getRelation() == ConditionRelationEnum.AND.code()) {
             lhsStr.deleteCharAt(lhsStr.length() - ConditionRelationEnum.AND.value().length());
         }  else {
@@ -60,11 +60,11 @@ public class DroolsRuleTemplate extends RuleTemplate {
     }
 
     @Override
-    String buildRHS(RuleVO rule) {
+    String buildRHS(Rule rule) {
         StringBuilder rhsStr = new StringBuilder();
         rhsStr.append("then").append(LINE_SEPARATOR);
 
-        rhsStr.append("HitRuleVO hitRule = new HitRuleVO();").append(LINE_SEPARATOR);
+        rhsStr.append("HitRule hitRule = new HitRule();").append(LINE_SEPARATOR);
         rhsStr.append("hitRule.setRuleCode(\"").append(rule.getRuleCode()).append("\");").append(LINE_SEPARATOR);
         rhsStr.append("hitRule.setRuleName(\"").append(rule.getRuleName()).append("\");").append(LINE_SEPARATOR);
         rhsStr.append("hitRule.setRuleVersion(\"").append(rule.getRuleVersion()).append("\");").append(LINE_SEPARATOR);
@@ -76,7 +76,7 @@ public class DroolsRuleTemplate extends RuleTemplate {
         StringBuilder conditionValue = new StringBuilder();
         StringBuilder param = new StringBuilder();
         int index = 0;
-        for (ConditionVO condition : rule.getConditionList()) {
+        for (Condition condition : rule.getConditionList()) {
             index++;
             if (index != rule.getConditionList().size()) {
                 expression.append(condition.getOperator()).append("|");
@@ -100,7 +100,7 @@ public class DroolsRuleTemplate extends RuleTemplate {
         return new String(rhsStr);
     }
 
-    private String buildCondition(int index, ConditionVO condition) {
+    private String buildCondition(int index, Condition condition) {
         StringBuilder conditionalStr = new StringBuilder();
         conditionalStr.append(" $param").append(index).append(" : ");
         conditionalStr.append("this.get(\"").append(condition.getVariableCode()).append("\") ");

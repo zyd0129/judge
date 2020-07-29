@@ -2,17 +2,19 @@ package com.ps.judge.provider.flow.rule.model;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
-public class HitRuleVO {
+public class Rule {
     private String ruleCode;
     private String ruleName;
     private String ruleVersion;
-    private String rulePackageCode;
+    private String ruleFlowGroup;
+    private String agendaGroup;
     private String rulePackageName;
     private String rulePackageVersion;
-    private String expression;
-    private String condition;
-    private String param;
+    private Integer salience;
     private Integer score;
     private String result;
+    List<Condition> conditionList;
 }

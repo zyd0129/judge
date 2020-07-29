@@ -6,8 +6,8 @@ import com.ps.judge.provider.enums.StatusEnum;
 import com.ps.judge.provider.flow.rule.builder.RuleTemplate;
 import com.ps.judge.provider.flow.rule.context.RuleContext;
 import com.ps.judge.provider.flow.rule.executor.RuleExecutor;
-import com.ps.judge.provider.flow.rule.model.ConditionVO;
-import com.ps.judge.provider.flow.rule.model.RuleVO;
+import com.ps.judge.provider.flow.rule.model.Condition;
+import com.ps.judge.provider.flow.rule.model.Rule;
 import com.ps.judge.provider.service.FlowService;
 import lombok.extern.slf4j.Slf4j;
 import org.kie.api.runtime.KieSession;
@@ -99,13 +99,13 @@ public class FlowServiceImpl implements FlowService {
             return false;
         }
 
-        List<RuleVO> ruleList = this.getRuleVOList(allConfigRuleList);
+        List<Rule> ruleList = this.getRuleVOList(allConfigRuleList);
         String ruleStr = this.ruleTemplate.build(ruleList);
         return this.ruleContext.add(configFlow.getFlowCode(), ruleStr);
     }
 
-    private List<RuleVO> getRuleVOList(List<ConfigRuleDO> configRuleList) {
-        List<RuleVO> ruleList = new ArrayList<>(configRuleList.size());
+    private List<Rule> getRuleVOList(List<ConfigRuleDO> configRuleList) {
+        List<Rule> ruleList = new ArrayList<>(configRuleList.size());
         for (ConfigRuleDO configRule : configRuleList) {
             List<ConfigRuleConditionDO> configRuleConditionList =
                     this.configRuleConditionMapper.listEnableConfigRuleCondition(configRule.getId());
@@ -118,8 +118,8 @@ public class FlowServiceImpl implements FlowService {
             ConfigRulePackageDO configRulePackage =
                     this.configRulePackageMapper.getConfigRulePackageById(configRulePackageVersion.getRulePackageId());
 
-            List<ConditionVO> conditionList = this.getConditionVOList(configRule.getConditionRelation(), configRuleConditionList);
-            RuleVO rule = new RuleVO();
+            List<Condition> conditionList = this.getConditionVOList(configRule.getConditionRelation(), configRuleConditionList);
+            Rule rule = new Rule();
             BeanUtils.copyProperties(configRule, rule);
             rule.setRuleCode(configRule.getCode());
             rule.setRuleName(configRule.getName());
@@ -134,10 +134,10 @@ public class FlowServiceImpl implements FlowService {
         return ruleList;
     }
 
-    private List<ConditionVO> getConditionVOList(int conditionRelation, List<ConfigRuleConditionDO> configRuleConditionList) {
-        List<ConditionVO> conditionList = new ArrayList<>(configRuleConditionList.size());
+    private List<Condition> getConditionVOList(int conditionRelation, List<ConfigRuleConditionDO> configRuleConditionList) {
+        List<Condition> conditionList = new ArrayList<>(configRuleConditionList.size());
         for (ConfigRuleConditionDO configRuleCondition : configRuleConditionList) {
-            ConditionVO condition = new ConditionVO();
+            Condition condition = new Condition();
             BeanUtils.copyProperties(configRuleCondition, condition);
             condition.setRelation(conditionRelation);
             conditionList.add(condition);
