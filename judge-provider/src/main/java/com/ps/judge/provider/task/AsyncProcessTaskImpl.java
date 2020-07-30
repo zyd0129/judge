@@ -56,8 +56,10 @@ public class AsyncProcessTaskImpl implements AsyncProcessTask {
         this.updateAuditStatus(auditTask, AuditTaskStatusEnum.FORWARDED_SUCCESS.value());
     }
 
+    //发生异常时不回滚，事务只用来保证syncAuditTaskStatus方法能够锁住当前订单
     @Override
     @Async
+    @Transactional(noRollbackFor = RuntimeException.class)
     public void startProcess(AuditTaskDO auditTask, Map map) {
         if (!syncAuditTaskStatus(auditTask)) {
             return;
