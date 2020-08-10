@@ -20,9 +20,9 @@ spring:
         server-addr: ${CONFIG_SERVER:192.168.2.143:8848}
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://rm-a2d2p89h8614dumf5.mysql.ap-south-1.rds.aliyuncs.com:3306/judge?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
-    username: public_user
-    password: qYmKQ$Z!8TZQTe6c
+    url: jdbc:mysql://rm-d9j9i57cp931v35xl.mysql.ap-southeast-5.rds.aliyuncs.com:3306/judge?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    username: fk_user
+    password: dzZhSLRJw
   jackson:
     default-property-inclusion: non_null
 

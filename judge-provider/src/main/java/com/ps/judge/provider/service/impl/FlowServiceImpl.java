@@ -80,9 +80,6 @@ public class FlowServiceImpl implements FlowService {
 
     @Override
     public boolean loadFlow(ConfigFlowDO configFlow) {
-        if (configFlow.getStatus() == StatusEnum.DISABLE.value()) {
-            return false;
-        }
         List<ConfigFlowRulePackageDO> configFlowRulePackageList =
                 this.getConfigFlowRulePackageList(configFlow.getFlowCode());
         if (configFlowRulePackageList.isEmpty()) {
