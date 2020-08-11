@@ -5,18 +5,18 @@
     <parent>
         <groupId>com.ps.judge</groupId>
         <artifactId>judge-parent</artifactId>
-        <version>1.1.0-SNAPSHOT</version>
+        <version>1.1.0</version>
         <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
     <artifactId>judge-provider</artifactId>
-    <version>0.1.1-SNAPSHOT</version>
+    <version>1.1.0</version>
     <name>judge-provider</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <judge.api.version>0.1.0-SNAPSHOT</judge.api.version>
-        <judge.dao.version>0.1.0-SNAPSHOT</judge.dao.version>
+        <judge.api.version>1.1.0</judge.api.version>
+        <judge.dao.version>1.1.0</judge.dao.version>
         <drools.version>7.36.0.Final</drools.version>
     </properties>
 
