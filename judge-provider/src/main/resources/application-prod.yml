@@ -18,6 +18,7 @@ spring:
     nacos:
       discovery:
         server-addr: ${CONFIG_SERVER:147.139.162.187:8848}
+        namespace: 628056f0-010d-4777-9b76-c9e76e37f6b5
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://rm-d9j9i57cp931v35xl.mysql.ap-southeast-5.rds.aliyuncs.com:3306/judge?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
