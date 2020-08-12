@@ -7,7 +7,7 @@
     <parent>
         <artifactId>judge-parent</artifactId>
         <groupId>com.ps.judge</groupId>
-        <version>1.0.0</version>
+        <version>1.1.0</version>
         <relativePath>../pom.xml</relativePath> <!-- lookup parent from repository -->
     </parent>
     <artifactId>judge-web</artifactId>
@@ -23,13 +23,13 @@
         <dependency>
             <groupId>com.ps.judge</groupId>
             <artifactId>judge-api</artifactId>
-            <version>0.0.1</version>
+            <version>1.1.0</version>
         </dependency>
 
         <dependency>
             <groupId>com.ps.judge</groupId>
             <artifactId>judge-dao</artifactId>
-            <version>0.0.1</version>
+            <version>1.1.0</version>
         </dependency>
 
         <dependency>
