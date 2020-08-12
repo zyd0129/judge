@@ -9,7 +9,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class PageUtils {
-    public static <Do, Bo> PageInfo<Bo> convertPage(Page<Do> pageDO, Function<Do,Bo> convert) {
+    public static <Do, Bo> PageInfo<Bo> convertPage(Page<Do> pageDO, Function<Do, Bo> convert) {
         PageInfo<Do> pageInfoDO = new PageInfo<>(pageDO);
         PageInfo<Bo> pageInfoBO = new PageInfo<>();
         BeanUtils.copyProperties(pageInfoDO, pageInfoBO);
