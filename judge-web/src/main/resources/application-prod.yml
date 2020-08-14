@@ -8,7 +8,8 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: ${CONFIG_SERVER:192.168.2.143:8848}
+        server-addr: ${CONFIG_SERVER}
+        namespace: ${CONFIG_SERVER_NAMESPACE}
     alicloud:
       access-key: LTAI4G5NNyhfmByUfKFruGfZ
       secret-key: B4oV09ggyKirJxmz0sXY8miuX3tQJb
