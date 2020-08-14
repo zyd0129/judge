@@ -23,8 +23,8 @@ build:
     name:
       "$CI_COMMIT_REF_SLUG"
     paths:
-      - judge-web/target/judge-web-[0-9.-]\.jar
-      - judge-provider/target/judge-provider-[0-9.-]jar
+      - judge-web/target/judge-web-[^a-z]\.jar
+      - judge-provider/target/judge-provider-[^a-z]\.jar
       - .config.json
       - .md5.txt
     when:
