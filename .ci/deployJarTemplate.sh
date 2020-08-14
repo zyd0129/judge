@@ -1,8 +1,8 @@
 #!/bin/env bash
 #
-#jar部署通用脚本
-#date: 20200708
-#auth: 廖发友
+# jar部署通用脚本
+# date: 20200715
+# auth: 廖发友
 
 DEBUG
 
@@ -33,6 +33,7 @@ function check_environment() {
 function stop_process() {
 	local stop_status=0
 	local stop_flag=0
+	local path=${jar_path%/*}
 	for (( count=0; count<${stop_max_wait_time}; count++ ));do
 		local name=${jar_path##*/}
 		local pid=$(ps -ef | grep java | fgrep ${name} | awk '{print $2}')
@@ -53,6 +54,9 @@ function stop_process() {
 	done
 	if [[ ${stop_status} -eq 0 && ${stop_flag} -eq 1 ]];then
 		echo -e "进程\t${name}\t停止失败"
+		echo "输出nohup日志文件"
+		cd ${path}
+		cat nohup.out
 		exit 1
 	fi
 }
@@ -64,39 +68,78 @@ function start_process() {
 	
 	local path=${jar_path%/*}
 	local name=${jar_path##*/}
+
+	if [[ ! -d ${path} ]];then
+		echo -e "目录不存在,新建目录 ${path}"
+		mkdir -p ${path}
+	fi
 	cd ${path}
-	echo -e "备份\t${name}\t前一个版本并删除历史版本"
-	rm -rf ${name}_*
-	mv ${name} ${name}_${Time}
+	if ( ls | grep ${name}_ -q );then
+		echo -e "删除历史版本 $(ls ${name}_*)"
+		rm -rf ${name}_*
+	fi
+	if [[ $(ls | grep -E "^${name}$" | wc -l) -eq 1 ]];then
+		echo -e "备份\t${name}\t前一个版本"
+		mv ${name} ${name}_${Time}
+	fi
+
 	mv /data/.tmp-gitlab-runner/${name} ${path}
 	echo > ${path}/nohup.out
 	echo -e "开始启动进程\t${name}"
-	nohup ${start_cmd} > nohup.out 2>&1 &
 	echo "进程启方式为: nohup ${start_cmd} > nohup.out 2>&1 &"
+	nohup ${start_cmd} > nohup.out 2>&1 &
 
 	sleep 5
+#	for (( count=1; count<${start_max_wait_time}; count++ ));do
+#		if [[ ${started_flag} -eq 0 ]];then
+#			local time=$(date -d "@$(( ${timestamp} + ${count} ))" "+%Y-%m-%d %H:%M:%S")
+#		fi
+#		if ( fgrep "${time}" "${path}/logs/catalina" | fgrep "Started" -q );then
+#			started_flag=1
+#			echo -e "检查进程\t${name}\t端口 ${jar_port}是否可以访问"
+#			if ( tcping 127.0.0.1 ${jar_port} | grep open -q );then
+#				echo -e "进程\t${name}\t端口 ${jar_port}正常"
+#				echo -e "进程\t${name}\t启动成功"
+#				success=1
+#				break
+#			else
+#				sleep 1
+#			fi
+#		else
+#			sleep 1
+#		fi
+#	done
+	echo -e "检查进程\t${name}\t端口 ${jar_port}是否可以访问"
 	for (( count=1; count<${start_max_wait_time}; count++ ));do
-		if [[ ${started_flag} -eq 0 ]];then
-			local time=$(date -d "@$(( ${timestamp} + ${count} ))" "+%Y-%m-%d %H:%M:%S")
+		if ( ! ( ps -ef | grep java | fgrep "${name}" -q ) );then
+			echo -e "\n进程\t${name}\t检测不存在"
+			break
 		fi
-		if ( fgrep "${time}" "${path}/nohup.out" | fgrep "Started" -q );then
-			started_flag=1
-			echo -e "检查进程\t${name}\t端口 ${jar_port}是否可以访问"
-			if ( tcping 127.0.0.1 ${jar_port} | grep open -q );then
-				echo -e "进程\t${name}\t端口 ${jar_port}正常"
-				echo -e "进程\t${name}\t启动成功"
-				success=1
-				break
-			else
-				sleep 1
-			fi
+		local flag=''
+		number=$(( ${count}%10 ))
+		if ( tcping 127.0.0.1 ${jar_port} | grep open -q );then
+			echo -e "\n进程\t${name}\t端口 ${jar_port}正常\n进程\t${name}\t启动成功"
+			success=1
+			break
 		else
 			sleep 1
-		fi
+			for ((i=0; i<=${number}; i++));do
+				flag+=". "
+			done
+	  	fi
+		printf "端口检测中: 第%02d秒 %-20s\r" "${count}" "${flag% *}"
 	done
-	if [[ ${started_flag} -eq 1 && ${success} -eq 0 ]];then
+#	if [[ ${started_flag} -eq 1 && ${success} -eq 0 ]];then
+#		echo -e "进程\t${name}\t启动失败,开始结束进程..."
+#		stop_process
+#		exit 1
+#	fi
+	if [[ ${success} -eq 0 ]];then
 		echo -e "进程\t${name}\t启动失败,开始结束进程..."
 		stop_process
+                echo "输出nohup日志文件"
+                cd ${path}
+                cat nohup.out
 		exit 1
 	fi
 }

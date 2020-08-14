@@ -1,30 +1,56 @@
 #gitlab CI部署文件，切勿删除
-#date: 20200707
+#date: 2020-08-14
 #auth: 廖发友
+
 stages:
   - build
-  - deploy_production
+  - deploy
 
 build:
   stage: build
   only:
     - master
+    - master-idn
+  variables:
+    ENV_CUSTOM_CONFIG: "/home/gitlab-runner/config/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/config.json"
+    ENV_CUSTOM_STAGE: "${CI_JOB_STAGE}"
+    ENV_CUSTOM_REF_NAME: "${CI_COMMIT_REF_SLUG}"
   script:
+    #- export
     - mvn clean package
-  after_script:
-    - mkdir -p ${HOME}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
-    - sh .ci/deploy.sh "${HOME}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}" "${CI_JOB_STAGE}"
+    - sh .ci/deploy.sh
+  artifacts:
+    name:
+      "$CI_COMMIT_REF_SLUG"
+    paths:
+      - judge-web/target/judge-web-*jar
+      - judge-provider/target/judge-provider-*jar
+      - .config.json
+      - .md5.txt
+    when:
+      on_success
+    expire_in:
+      #1 days
+      6 hours
   tags:
     - RunnerGroupNode-HK-149.129.89.208-印度征信
 
-deploy_production:
-  stage: deploy_production
+deploy:
+  stage: deploy
   only:
     - master
+    - master-idn
+  environment:
+    name: deploy_$CI_COMMIT_REF_SLUG
+  variables:
+    ENV_CUSTOM_CONFIG: "/home/gitlab-runner/config/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/config.json"
+    ENV_CUSTOM_STAGE: "${CI_JOB_STAGE}"
+    ENV_CUSTOM_REF_NAME: "${CI_COMMIT_REF_SLUG}"
   script:
-    - sh .ci/deploy.sh "${HOME}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}" "${CI_JOB_STAGE}"
-  after_script:
-    - rm -rf ${HOME}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}
+    #- export
+    - sh .ci/deploy.sh
+  #after_script:
+  #  - if [[ -d "${HOME}/.runner_tmp/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}" ]];then rm -rf "${HOME}/.runner_tmp/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}";fi
   when:
     on_success
   tags:
