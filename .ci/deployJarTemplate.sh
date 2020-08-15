@@ -84,10 +84,14 @@ function start_process() {
 	fi
 
 	mv /data/.tmp-gitlab-runner/${name} ${path}
+	local cmd_array=()
+	for i in ${start_cmd};do
+		cmd_array+=(${i})
+	done
 	echo > ${path}/nohup.out
 	echo -e "开始启动进程\t${name}"
-	echo "进程启方式为: nohup ${start_cmd} > nohup.out 2>&1 &"
-	nohup ${start_cmd} > nohup.out 2>&1 &
+	echo "进程启方式为: nohup ${cmd_array[@]} > nohup.out 2>&1 &"
+	nohup ${cmd_array[@]} > nohup.out 2>&1 &
 
 	sleep 5
 #	for (( count=1; count<${start_max_wait_time}; count++ ));do
