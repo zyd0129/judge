@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ts.judge.provider.dao.ddao.ConfigRuleVariableMapper">
+    <resultMap id="resultMap" type="com.ts.judge.provider.dao.ddao.ConfigRuleVariableDO">
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="code" property="code" jdbcType="VARCHAR" />
+        <result column="level" property="level" jdbcType="VARCHAR" />
+        <result column="group" property="group" jdbcType="VARCHAR" />
+        <result column="type" property="type" jdbcType="INTEGER" />
+        <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP" />
+        <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+
+    <select id="query" parameterType="ConfigRuleVariableDO" resultMap="resultMap">
+        select *
+        from config_rule_variable
+        <where>
+            <if test="level!=null">
+                and level=#{level}
+            </if>
+            <if test="group!=null">
+                and group=#{group}
+            </if>
+        </where>
+    </select>
+
+</mapper>

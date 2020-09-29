@@ -16,13 +16,12 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <judge.api.version>2.0.0-SNAPSHOT</judge.api.version>
-        <judge.dao.version>1.1.0</judge.dao.version>
         <drools.version>7.36.0.Final</drools.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>com.ps.judge</groupId>
+            <groupId>com.ts.judge</groupId>
             <artifactId>judge-api</artifactId>
             <version>${judge.api.version}</version>
         </dependency>
@@ -31,12 +30,6 @@
             <groupId>com.ts.panama</groupId>
             <artifactId>panama-sdk</artifactId>
             <version>1.0.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.ps.judge</groupId>
-            <artifactId>judge-dao</artifactId>
-            <version>${judge.dao.version}</version>
         </dependency>
 
         <dependency>
@@ -100,20 +93,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-stream-test-support</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-       <!-- <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-bom</artifactId>
-            <type>pom</type>
-            <version>${drools.version}</version>
-            <scope>import</scope>
-        </dependency>-->
-
-        <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-core</artifactId>
             <version>${drools.version}</version>
@@ -123,64 +102,15 @@
             <artifactId>drools-compiler</artifactId>
             <version>${drools.version}</version>
         </dependency>
-<!--        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-decisiontables</artifactId>
-            <version>${drools.version}</version>
-        </dependency>-->
-<!--        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-templates</artifactId>
-            <version>${drools.version}</version>
-        </dependency>-->
+
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-api</artifactId>
             <version>${drools.version}</version>
         </dependency>
-<!--        <dependency>
-            <groupId>org.kie.server</groupId>
-            <artifactId>kie-server-client</artifactId>
-            <version>${drools.version}</version>
-        </dependency>-->
-        <!--<dependency>
-            <groupId>org.jbpm</groupId>
-            <artifactId>jbpm-bpmn2</artifactId>
-            <version>${drools.version}</version>
-        </dependency>-->
-     <!--   <dependency>
-            <groupId>org.kie</groupId>
-            <artifactId>kie-ci</artifactId>
-            <version>${drools.version}</version>
-        </dependency>-->
+
     </dependencies>
 
-    <profiles>
-        <profile>
-            <!-- 本地开发环境 -->
-            <id>dev</id>
-            <properties>
-                <profileActive>dev</profileActive>
-            </properties>
-        </profile>
-        <profile>
-            <!-- 测试环境 -->
-            <id>test</id>
-            <properties>
-                <profileActive>test</profileActive>
-            </properties>
-        </profile>
-        <profile>
-            <!-- 生产环境 -->
-            <id>prod</id>
-            <properties>
-                <profileActive>prod</profileActive>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-    </profiles>
 
     <build>
         <plugins>

@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: "judge-provider"
+  cloud:
+    nacos:
+      config:
+        server-addr:  ${nacos.addr}
+        namespace: ${nacos.namespace}
+        file-extension: "yml"

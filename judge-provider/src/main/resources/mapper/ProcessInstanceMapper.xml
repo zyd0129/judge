@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ts.judge.provider.dao.mapper.ProcessInstanceMapper">
+    <resultMap id="resultMap" type="ProcessInstanceDO">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="definition_id" property="definitionId" jdbcType="VARCHAR"/>
+        <result column="definition" property="definition" jdbcType="VARCHAR"/>
+        <result column="current_node_instance_id" property="currentNodeInstanceId" jdbcType="VARCHAR"/>
+        <result column="current_node_name" property="currentNodeName" jdbcType="VARCHAR"/>
+        <result column="current_node_status" property="currentNodeStatus" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="msg" property="msg" jdbcType="VARCHAR"/>
+        <result column="apply_request" property="applyRequest" jdbcType="VARCHAR"/>
+        <result column="process_params" property="processParams" jdbcType="VARCHAR"/>
+        <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP"/>
+        <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP"/>
+        <result column="completed_time" property="completedTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <select id="getById" resultMap="resultMap">
+        select a.*, pd.definition
+        from judge.process_instance a
+                 left join process_definition pd on a.definition_id = pd.id
+    </select>
+
+    <insert id="insert" parameterType="ProcessInstanceDO" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+        insert into `judge`.process_instance (definition_id, current_node_instance_id, current_node_name,
+                                              current_node_status, status, msg,
+                                              apply_request, process_params, completed_time)
+        values (#{definitionId}, #{currentNodeInstanceId}, #{currentNodeName}, #{currentNodeStatus}, #{status}, #{msg},
+                #{applyRequest},
+                #{processParams}, #{completedTime})
+    </insert>
+
+    <update id="update" parameterType="ProcessInstanceDO">
+        update `judge`.process_instance
+        <set>
+            <if test="currentNodeInstanceId!=null">
+                current_node_instance_id=#{currentNodeInstanceId},
+            </if>
+            <if test="currentNodeName!=null">
+                current_node_name=#{currentNodeName},
+            </if>
+            <if test="currentNodeStatus!=null">
+                current_node_status=#{currentNodeStatus},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="msg!=null">
+                msg=#{msg},
+            </if>
+            <if test="processParams!=null">
+                process_params=#{processParams},
+            </if>
+            <if test="completedTime!=null">
+                completed_time=#{completedTime},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+</mapper>
