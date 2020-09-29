@@ -12,7 +12,6 @@
         <module>judge-dao</module>
         <module>judge-api</module>
         <module>judge-provider</module>
-        <module>judge-common</module>
     </modules>
 
     <groupId>com.ps.judge</groupId>

@@ -1,7 +1,7 @@
 package com.ps.judge.provider.flow.third.bluRay;
 
 import lombok.Data;
-import org.jsoup.helper.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.util.DigestUtils;
 
 /**
@@ -28,7 +28,7 @@ public class Ztdata {
   private String contact2;
 
   public String getPhoneNumber1() {
-    if (StringUtil.isBlank(phoneNumber1)) {
+    if (StringUtils.isBlank(phoneNumber1)) {
       return phoneNumber1;
     } else {
       return DigestUtils.md5DigestAsHex(phoneNumber1.getBytes());
@@ -36,7 +36,7 @@ public class Ztdata {
   }
 
   public String getPhoneNumber2() {
-    if (StringUtil.isBlank(phoneNumber2)) {
+    if (StringUtils.isBlank(phoneNumber2)) {
       return phoneNumber2;
     } else {
       return DigestUtils.md5DigestAsHex(phoneNumber2.getBytes());

@@ -15,7 +15,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <judge.api.version>1.1.0</judge.api.version>
+        <judge.api.version>2.0.0-SNAPSHOT</judge.api.version>
         <judge.dao.version>1.1.0</judge.dao.version>
         <drools.version>7.36.0.Final</drools.version>
     </properties>
@@ -25,6 +25,12 @@
             <groupId>com.ps.judge</groupId>
             <artifactId>judge-api</artifactId>
             <version>${judge.api.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ts.panama</groupId>
+            <artifactId>panama-sdk</artifactId>
+            <version>1.0.3</version>
         </dependency>
 
         <dependency>
@@ -78,6 +84,13 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>3.0.4</version>
+            <type>pom</type>
         </dependency>
 
         <dependency>

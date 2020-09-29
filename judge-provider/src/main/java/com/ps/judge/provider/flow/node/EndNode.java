@@ -1,11 +1,15 @@
 package com.ps.judge.provider.flow.node;
 
+import com.ps.judge.provider.flow.ProcessInstance;
+import com.ps.judge.provider.flow.exceptions.ProcessException;
+
 import java.util.Map;
 
 public class EndNode extends Node {
 
     @Override
-    public void process(Map<String, Object> flowParams) {
+    public void process(ProcessInstance flowInstance) throws ProcessException {
+
     }
 
     @Override

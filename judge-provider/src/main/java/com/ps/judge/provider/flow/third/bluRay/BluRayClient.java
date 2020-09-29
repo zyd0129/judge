@@ -1,7 +1,7 @@
 package com.ps.judge.provider.flow.third.bluRay;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ts.jury.api.common.ApiResponse;
+import com.ts.clerk.common.response.ApiResponse;
 import com.ts.panama.sdk.client.OpenClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

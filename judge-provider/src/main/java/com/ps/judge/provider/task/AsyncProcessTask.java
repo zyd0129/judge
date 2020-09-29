@@ -1,7 +1,7 @@
 package com.ps.judge.provider.task;
 
 import com.ps.judge.dao.entity.AuditTaskDO;
-import com.ps.jury.api.request.ApplyRequest;
+import com.ts.jury.api.request.ApplyRequest;
 
 import java.util.Map;
 

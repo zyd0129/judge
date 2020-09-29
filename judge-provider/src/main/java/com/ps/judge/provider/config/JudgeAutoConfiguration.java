@@ -7,7 +7,7 @@ import com.ps.judge.provider.flow.rule.context.DroolsRuleContext;
 import com.ps.judge.provider.flow.rule.context.RuleContext;
 import com.ps.judge.provider.flow.rule.executor.DroolsRuleExecutor;
 import com.ps.judge.provider.flow.rule.executor.RuleExecutor;
-import com.ps.jury.api.feign.ApiFeignFallbackFactory;
+import com.ts.jury.api.feign.ApiFeignFallbackFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
