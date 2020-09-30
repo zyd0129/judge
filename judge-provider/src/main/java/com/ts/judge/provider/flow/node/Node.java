@@ -15,7 +15,7 @@ public abstract class Node {
         try {
             process(flowInstance);
             nodeResult.setSuccess(true);
-        } catch (ProcessException e) {
+        } catch (Exception e) {
             nodeResult.setSuccess(false);
             nodeResult.setMsg(e.getMessage());
         }

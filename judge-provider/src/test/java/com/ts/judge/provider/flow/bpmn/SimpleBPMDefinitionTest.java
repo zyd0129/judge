@@ -20,13 +20,17 @@ public class SimpleBPMDefinitionTest {
         List<Edge> edgeList = new ArrayList<>();
 
         NodeInstance startNode = new NodeInstance("startNode", "startNode", null, null, "1");
-        NodeInstance endNode = new NodeInstance("endNode", "endNode", null, null, "2");
+        NodeInstance juryNode = new NodeInstance("juryNode", "juryNode", null, null, "2");
+        NodeInstance endNode = new NodeInstance("endNode", "endNode", null, null, "3");
 
         nodeInstanceList.add(startNode);
+        nodeInstanceList.add(juryNode);
         nodeInstanceList.add(endNode);
 
         Edge edge1 = new Edge("1","2","true");
+        Edge edge2 = new Edge("2","3","true");
         edgeList.add(edge1);
+        edgeList.add(edge2);
         SimpleBPMDefinition bpm = new SimpleBPMDefinition(nodeInstanceList,edgeList);
 
         System.out.println(JSONObject.toJSONString(bpm));

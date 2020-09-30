@@ -15,7 +15,7 @@ public class TxScoreNode extends Node {
 
     @Override
     public boolean isSync() {
-        return false;
+        return true;
     }
 
     @Override
