@@ -8,12 +8,12 @@ import lombok.Data;
 @Data
 public abstract class Node {
 
-    public abstract void process(ProcessInstance flowInstance) throws ProcessException;
+    public abstract void process(ProcessInstance flowInstance, NodeInstance nodeInstance) throws ProcessException;
 
-    public NodeResult execute(ProcessInstance flowInstance) {
+    public NodeResult execute(ProcessInstance flowInstance, NodeInstance nodeInstance) {
         NodeResult nodeResult = new NodeResult();
         try {
-            process(flowInstance);
+            process(flowInstance,nodeInstance);
             nodeResult.setSuccess(true);
         } catch (Exception e) {
             nodeResult.setSuccess(false);

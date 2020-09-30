@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
+
 /**
  * 节点可以复用，即一个节点可以在多个process里定义，一个process也可以定义多个相同节点
  */
@@ -21,4 +23,5 @@ public class NodeInstance {
     private RunTimeStatus status;
     private String msg;
     private String nodeInstanceId;
+    private Map<String,Object> properties;
 }

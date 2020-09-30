@@ -19,9 +19,9 @@ public class SimpleBPMDefinitionTest {
         List<NodeInstance> nodeInstanceList = new ArrayList<>();
         List<Edge> edgeList = new ArrayList<>();
 
-        NodeInstance startNode = new NodeInstance("startNode", "startNode", null, null, "1");
-        NodeInstance juryNode = new NodeInstance("juryNode", "juryNode", null, null, "2");
-        NodeInstance endNode = new NodeInstance("endNode", "endNode", null, null, "3");
+        NodeInstance startNode = new NodeInstance("startNode", "startNode", null, null, "1",null);
+        NodeInstance juryNode = new NodeInstance("juryNode", "juryNode", null, null, "2",null);
+        NodeInstance endNode = new NodeInstance("endNode", "endNode", null, null, "3",null);
 
         nodeInstanceList.add(startNode);
         nodeInstanceList.add(juryNode);

@@ -3,6 +3,7 @@ package com.ts.judge.provider.flow.node.type;
 import com.ts.judge.provider.flow.ProcessInstance;
 import com.ts.judge.provider.exceptions.ProcessException;
 import com.ts.judge.provider.flow.node.AsyncNode;
+import com.ts.judge.provider.flow.node.NodeInstance;
 import com.ts.judge.provider.flow.node.NodeResult;
 import com.ts.judge.provider.third.bluRay.BluRayClient;
 import com.ts.judge.provider.third.bluRay.BluRayParams;
@@ -17,7 +18,7 @@ public class BluRayNode extends AsyncNode {
     BluRayClient bluRayClient;
 
     @Override
-    public void process(ProcessInstance flowInstance) throws ProcessException {
+    public void process(ProcessInstance flowInstance, NodeInstance nodeInstance) throws ProcessException {
         BluRayParams bluRayParams = new BluRayParams();
         bluRayClient.send(bluRayParams);
     }

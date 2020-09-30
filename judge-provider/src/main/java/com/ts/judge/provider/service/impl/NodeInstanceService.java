@@ -41,7 +41,7 @@ public class NodeInstanceService {
             return;
         }
         log.info("processInstance-{}开始执行,节点{}-{}-{}", flowInstance.getId(), nodeInstance.getName(), nodeInstance.getNodeType(), nodeInstance.getNodeInstanceId());
-        NodeResult nodeResult = node.execute(flowInstance);
+        NodeResult nodeResult = node.execute(flowInstance,nodeInstance);
         log.info("processInstance-{}完成执行,节点{}-{}-{},结果{}", flowInstance.getId(), nodeInstance.getName(), nodeInstance.getNodeType(), nodeInstance.getNodeInstanceId(), JSONObject.toJSONString(nodeResult));
         if (!nodeResult.isSuccess()) {
             nodeInstance.setMsg(nodeResult.getMsg());
