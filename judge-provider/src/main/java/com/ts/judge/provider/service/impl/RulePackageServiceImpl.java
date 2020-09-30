@@ -62,6 +62,8 @@ public class RulePackageServiceImpl implements RulePackageService {
             ruleTriggeredDO.setProcessInstanceId(id);
             return ruleTriggeredDO;
         }).collect(Collectors.toList());
-        rulePackageMapper.batchInsert(ruleTriggeredDOList);
+        if (ruleTriggeredDOList.size() > 0) {
+            rulePackageMapper.batchInsert(ruleTriggeredDOList);
+        }
     }
 }

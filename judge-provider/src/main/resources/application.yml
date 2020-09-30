@@ -2,6 +2,7 @@ logging:
   level:
     root:
       info
+    com.ts.judge.provider.dao.mapper: debug
   file: /data/judge/log/provider.log
 spring:
   application:

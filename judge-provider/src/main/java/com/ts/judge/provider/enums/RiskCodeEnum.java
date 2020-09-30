@@ -3,10 +3,10 @@ package com.ts.judge.provider.enums;
 import org.apache.commons.lang.StringUtils;
 
 public enum RiskCodeEnum {
-    REJECT(0, "拒绝"),
-    MANUAL_REVIEW(5, "人工初审"),
-    MANUAL_FINAL_REVIEW(10, "人工终审"),
-    PASS(15, "通过");
+    REJECT(0, "REJECT"),
+    MANUAL_REVIEW(5, "MANUAL_REVIEW"),
+    MANUAL_FINAL_REVIEW(10, "MANUAL_FINAL_REVIEW"),
+    PASS(15, "PASS");
 
     private int code;
     private String name;

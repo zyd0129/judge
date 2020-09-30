@@ -5,8 +5,8 @@
 <mapper namespace="com.ts.judge.provider.dao.mapper.RulePackageMapper">
     <resultMap id="resultMap" type="RulePackageDO">
         <id column="id" property="id" jdbcType="INTEGER"/>
-        <result column="name" property="definitionId" jdbcType="VARCHAR"/>
-        <result column="operator" property="definition" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="operator" property="operator" jdbcType="VARCHAR"/>
         <result column="gmt_created" property="gmtCreated" jdbcType="TIMESTAMP"/>
         <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP"/>
         <collection property="ruleDOList" ofType="RuleDO">
@@ -20,13 +20,14 @@
     </resultMap>
 
     <select id="getById" resultMap="resultMap">
-        select rp.*,r.id rid,r.rule_name,r.rule_code,r.risk_result,r.expression
+        select rp.*, r.id rid, r.rule_name, r.rule_code, r.risk_result, r.expression
         from judge.rule_package rp
                  left join rule r on rp.id = r.rule_package_id
-        where r.id = #{param}
+        where rp.id = #{id}
     </select>
-    <insert id="batchInsert" parameterType="list">
-        insert into judge.rule_triggered (rule_id,process_instance_id)
+    <insert id="batchInsert" parameterType="RuleTriggeredDO">
+        insert into judge.rule_triggered(rule_id,process_instance_id)
+        values
         <foreach collection="list" item="item" separator=",">
             (#{item.ruleId}, #{item.processInstanceId})
         </foreach>

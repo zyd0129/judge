@@ -32,6 +32,7 @@ public class RuleNode extends Node {
         RulePackage rulePackage = rulePackageService.getById(rulePackageId);
         RulePackageResult rulePackageResult = ruleEngine.execute(rulePackage,flowInstance.getProcessParams());
         rulePackageService.insert(flowInstance.getId(), rulePackageResult);
+        flowInstance.putProcessParam(nodeInstance.getName(),rulePackageResult);
     }
 
     @Override
