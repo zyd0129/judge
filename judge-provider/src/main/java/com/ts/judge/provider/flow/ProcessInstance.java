@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @Data
@@ -32,4 +33,11 @@ public class ProcessInstance {
     private LocalDateTime gmtModified;
     private LocalDateTime gmtCreated;
     private LocalDateTime CompletedTime;
+
+    public void putProcessParam(String name, Object value) {
+        if (processParams == null) {
+            processParams = new HashMap<>();
+        }
+        processParams.put(name, value);
+    }
 }

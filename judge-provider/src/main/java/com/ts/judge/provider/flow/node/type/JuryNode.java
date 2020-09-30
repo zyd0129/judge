@@ -44,10 +44,10 @@ public class JuryNode extends Node {
                 Map<String, Object> processParams = flowInstance.getProcessParams();
                 if (processParams == null) {
                     processParams = new HashMap<>();
+                    flowInstance.setProcessParams(processParams);
                 }
                 processParams.put(varName, varValue);
 
-                flowInstance.setProcessParams(processParams);
             }
         });
     }
