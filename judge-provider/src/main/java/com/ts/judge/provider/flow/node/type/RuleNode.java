@@ -1,6 +1,6 @@
 package com.ts.judge.provider.flow.node.type;
 
-import com.ts.judge.provider.flow.ProcessInstance;
+import com.alibaba.fastjson.JSONObject;
 import com.ts.judge.provider.exceptions.ProcessException;
 import com.ts.judge.provider.flow.node.Node;
 import com.ts.judge.provider.flow.node.NodeInstance;
@@ -23,16 +23,16 @@ public class RuleNode extends Node {
     RuleEngine ruleEngine;
 
     @Override
-    public void process(ProcessInstance flowInstance, NodeInstance nodeInstance) throws ProcessException {
+    protected Map<String, Object> process(Map<String, Object> inputParams, NodeInstance nodeInstance) throws ProcessException {
         Map<String, Object> properties = nodeInstance.getProperties();
         Integer rulePackageId = (Integer) properties.getOrDefault("rulePackageId", null);
         if (rulePackageId == null) {
             throw new ProcessException(70003, "ruleNode 缺少 rulePackageId");
         }
         RulePackage rulePackage = rulePackageService.getById(rulePackageId);
-        RulePackageResult rulePackageResult = ruleEngine.execute(rulePackage,flowInstance.getProcessParams());
-        rulePackageService.insert(flowInstance.getId(), rulePackageResult);
-        flowInstance.putProcessParam(nodeInstance.getName(),rulePackageResult);
+        RulePackageResult rulePackageResult = ruleEngine.execute(rulePackage, inputParams);
+        rulePackageService.insert((Integer) inputParams.get("processInstanceId"), rulePackageResult);
+        return JSONObject.parseObject(JSONObject.toJSONString(rulePackageResult));
     }
 
     @Override

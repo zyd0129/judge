@@ -6,12 +6,16 @@ import com.ts.judge.provider.flow.node.Node;
 import com.ts.judge.provider.flow.node.NodeInstance;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service("startNode")
 public class StartNode extends Node {
-    @Override
-    public void process(ProcessInstance flowInstance, NodeInstance nodeInstance) throws ProcessException {
 
+    @Override
+    protected Map<String, Object> process(Map<String, Object> inputParams, NodeInstance nodeInstance) {
+        return null;
     }
+
 
     @Override
     public boolean isSync() {

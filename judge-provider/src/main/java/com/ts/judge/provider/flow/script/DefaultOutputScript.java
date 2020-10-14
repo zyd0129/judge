@@ -4,9 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.util.Map;
 
-public class DefaultJSONOutputScript implements IOutputScript{
+public class DefaultOutputScript implements IOutputScript{
+
     @Override
-    public Object process(String body) {
-        return JSONObject.parse(body);
+    public Map<String, Object> process(Map<String, Object> output) {
+        return output;
     }
 }

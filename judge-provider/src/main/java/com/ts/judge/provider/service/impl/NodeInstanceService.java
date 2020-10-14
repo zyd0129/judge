@@ -45,6 +45,7 @@ public class NodeInstanceService {
         log.info("processInstance-{}完成执行,节点{}-{}-{},结果{}", flowInstance.getId(), nodeInstance.getName(), nodeInstance.getNodeType(), nodeInstance.getNodeInstanceId(), JSONObject.toJSONString(nodeResult));
         if (!nodeResult.isSuccess()) {
             nodeInstance.setMsg(nodeResult.getMsg());
+            flowInstance.setMsg(nodeResult.getMsg());
             nodeInstance.setStatus(RunTimeStatus.EXCEPTION);
             flowInstance.setStatus(RunTimeStatus.EXCEPTION);
             processInstanceService.update(flowInstance);

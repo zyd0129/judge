@@ -1,13 +1,9 @@
-package com.ts.judge.provider.flow.node;
-
+package com.ts.judge.provider.flow.node.type;
 
 import com.alibaba.fastjson.JSONObject;
 import com.ts.judge.provider.exceptions.ProcessException;
-import com.ts.judge.provider.flow.ProcessInstance;
-import com.ts.judge.provider.flow.script.DefaultInputScript;
-import com.ts.judge.provider.flow.script.DefaultOutputScript;
-import com.ts.judge.provider.flow.script.IInputScript;
-import com.ts.judge.provider.flow.script.IOutputScript;
+import com.ts.judge.provider.flow.node.Node;
+import com.ts.judge.provider.flow.node.NodeInstance;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -28,10 +23,6 @@ public class WebNode extends Node {
     RestTemplate restTemplate;
 
     @Override
-    public void process(ProcessInstance flowInstance, NodeInstance nodeInstance) throws ProcessException {
-    }
-
-    @Override
     protected Map<String, Object> process(Map<String, Object> inputParams, NodeInstance nodeInstance) throws ProcessException {
         Map<String, Object> properties = nodeInstance.getProperties();
         String url = (String) properties.get("url");
@@ -40,12 +31,13 @@ public class WebNode extends Node {
             throw new ProcessException(70002, url + "调用失败");
         }
         String body = responseEntity.getBody();
+        log.info("{}回调结果{}",url,body);
         return JSONObject.parseObject(body);
     }
 
     @Override
     public boolean isSync() {
-        return false;
+        return true;
     }
 
     @Override
